@@ -240,6 +240,7 @@ const navigate = useNavigate();
                 boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)",
                 transition: "transform 0.3s ease",
               }}
+                onClick={handleGetStarted}
               onMouseEnter={(e) =>
                 (e.target.style.transform = "translateY(-2px)")
               }
@@ -1147,6 +1148,8 @@ const navigate = useNavigate();
                       e.currentTarget.style.color = plan.color;
                     }
                   }}
+                   
+                    onClick={handleGetStarted}
                 >
                   Get Started
                 </button>
@@ -1799,234 +1802,244 @@ const navigate = useNavigate();
         </div>
       </section>
 
-      {/* Footer */}
-      <footer
-        style={{
-          background: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
-          color: "white",
-          padding: "60px 24px 24px",
-        }}
-      >
-        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                window.innerWidth > 768 ? "repeat(4, 1fr)" : "1fr",
-              gap: "40px",
-              marginBottom: "40px",
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  fontSize: "24px",
-                  fontWeight: "bold",
-                  marginBottom: "16px",
-                }}
-              >
-                Code Web Telecom
-              </div>
-              <p
-                style={{
-                  fontSize: "14px",
-                  opacity: 0.9,
-                  lineHeight: "1.6",
-                  marginBottom: "20px",
-                }}
-              >
-                Your trusted partner for digital recharge and bill payment
-                solutions across India.
-              </p>
-              <div style={{ display: "flex", gap: "12px" }}>
-                {["facebook", "twitter", "instagram", "linkedin"].map(
-                  (social) => (
-                    <div
-                      key={social}
-                      style={{
-                        width: "40px",
-                        height: "40px",
-                        borderRadius: "50%",
-                        background: "rgba(255,255,255,0.2)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                        transition: "all 0.3s ease",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "white";
-                        e.currentTarget.style.color = "#667eea";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background =
-                          "rgba(255,255,255,0.2)";
-                        e.currentTarget.style.color = "white";
-                      }}
-                    >
-                      {social.charAt(0).toUpperCase()}
-                    </div>
-                  )
-                )}
-              </div>
-            </div>
-
-            <div>
-              <h4
-                style={{
-                  fontSize: "18px",
-                  fontWeight: "bold",
-                  marginBottom: "20px",
-                }}
-              >
-                Quick Links
-              </h4>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "12px",
-                }}
-              >
-                {["Home", "Services", "About Us", "Pricing", "Contact"].map(
-                  (link) => (
-                    <a
-                      key={link}
-                      href={`#${link.toLowerCase().replace(" ", "")}`}
-                      style={{
-                        color: "white",
-                        textDecoration: "none",
-                        fontSize: "14px",
-                        opacity: 0.9,
-                        transition: "opacity 0.3s ease",
-                      }}
-                      onMouseEnter={(e) => (e.target.style.opacity = 1)}
-                      onMouseLeave={(e) => (e.target.style.opacity = 0.9)}
-                    >
-                      {link}
-                    </a>
-                  )
-                )}
-              </div>
-            </div>
-
-            <div>
-              <h4
-                style={{
-                  fontSize: "18px",
-                  fontWeight: "bold",
-                  marginBottom: "20px",
-                }}
-              >
-                Services
-              </h4>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "12px",
-                }}
-              >
-                {[
-                  "Mobile Recharge",
-                  "DTH Recharge",
-                  "Bill Payments",
-                  "FASTag Recharge",
-                  "Google Play",
-                ].map((service) => (
-                  <a
-                    key={service}
-                    href="#services"
-                    style={{
-                      color: "white",
-                      textDecoration: "none",
-                      fontSize: "14px",
-                      opacity: 0.9,
-                      transition: "opacity 0.3s ease",
-                    }}
-                    onMouseEnter={(e) => (e.target.style.opacity = 1)}
-                    onMouseLeave={(e) => (e.target.style.opacity = 0.9)}
-                  >
-                    {service}
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h4
-                style={{
-                  fontSize: "18px",
-                  fontWeight: "bold",
-                  marginBottom: "20px",
-                }}
-              >
-                Support
-              </h4>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "12px",
-                }}
-              >
-                {[
-                  "Help Center",
-                  "Terms & Conditions",
-                  "Privacy Policy",
-                  "FAQs",
-                  "Support",
-                ].map((link) => (
-                  <a
-                    key={link}
-                    href="#"
-                    style={{
-                      color: "white",
-                      textDecoration: "none",
-                      fontSize: "14px",
-                      opacity: 0.9,
-                      transition: "opacity 0.3s ease",
-                    }}
-                    onMouseEnter={(e) => (e.target.style.opacity = 1)}
-                    onMouseLeave={(e) => (e.target.style.opacity = 0.9)}
-                  >
-                    {link}
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div
-            style={{
-              borderTop: "1px solid rgba(255,255,255,0.2)",
-              paddingTop: "24px",
-              display: "flex",
-              flexDirection: window.innerWidth > 768 ? "row" : "column",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "16px",
-            }}
-          >
-            <div style={{ fontSize: "14px", opacity: 0.9 }}>
-              © {new Date().getFullYear()} Code Web Telecom. All Rights
-              Reserved.
-            </div>
-            <div
+  <footer
+  style={{
+    background: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
+    color: "white",
+    padding: "60px 24px 24px",
+  }}
+>
+  <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns:
+          window.innerWidth > 768 ? "repeat(4, 1fr)" : "1fr",
+        gap: "40px",
+        marginBottom: "40px",
+      }}
+    >
+      {/* About Section */}
+      <div>
+        <div
+          style={{
+            fontSize: "24px",
+            fontWeight: "bold",
+            marginBottom: "16px",
+          }}
+        >
+          Code Web Telecom
+        </div>
+        <p
+          style={{
+            fontSize: "14px",
+            opacity: 0.9,
+            lineHeight: "1.6",
+            marginBottom: "20px",
+          }}
+        >
+          Your trusted partner for digital recharge and bill payment
+          solutions across India.
+        </p>
+        <div style={{ display: "flex", gap: "12px" }}>
+          {[
+            { name: "facebook", url: "https://www.facebook.com/profile.php?id=61577141469086" },
+            { name: "instagram", url: "https://www.instagram.com/?next=%2F" },
+            { name: "linkedin", url: "https://www.linkedin.com/feed/" },
+          ].map((social) => (
+            <a
+              key={social.name}
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.2)",
                 display: "flex",
                 alignItems: "center",
-                gap: "8px",
-                fontSize: "14px",
-                opacity: 0.9,
+                justifyContent: "center",
+                cursor: "pointer",
+                color: "white",
+                textDecoration: "none",
+                transition: "all 0.3s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "white";
+                e.currentTarget.style.color = "#667eea";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.2)";
+                e.currentTarget.style.color = "white";
               }}
             >
-              <Shield size={16} />
-              <span>Secured with Best Security Practices</span>
-            </div>
-          </div>
+              {social.name.charAt(0).toUpperCase()}
+            </a>
+          ))}
         </div>
-      </footer>
+      </div>
+
+      {/* Quick Links */}
+      <div>
+        <h4
+          style={{
+            fontSize: "18px",
+            fontWeight: "bold",
+            marginBottom: "20px",
+          }}
+        >
+          Quick Links
+        </h4>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+          }}
+        >
+          {["Home", "Services", "About Us", "Pricing", "Contact"].map(
+            (link) => (
+              <a
+                key={link}
+                href={`#${link.toLowerCase().replace(" ", "")}`}
+                style={{
+                  color: "white",
+                  textDecoration: "none",
+                  fontSize: "14px",
+                  opacity: 0.9,
+                  transition: "opacity 0.3s ease",
+                }}
+                onMouseEnter={(e) => (e.target.style.opacity = 1)}
+                onMouseLeave={(e) => (e.target.style.opacity = 0.9)}
+              >
+                {link}
+              </a>
+            )
+          )}
+        </div>
+      </div>
+
+      {/* Services */}
+      <div>
+        <h4
+          style={{
+            fontSize: "18px",
+            fontWeight: "bold",
+            marginBottom: "20px",
+          }}
+        >
+          Services
+        </h4>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+          }}
+        >
+          {[
+            "Mobile Recharge",
+            "DTH Recharge",
+            "Bill Payments",
+            "FASTag Recharge",
+            "Google Play",
+          ].map((service) => (
+            <a
+              key={service}
+              href="#services"
+              style={{
+                color: "white",
+                textDecoration: "none",
+                fontSize: "14px",
+                opacity: 0.9,
+                transition: "opacity 0.3s ease",
+              }}
+              onMouseEnter={(e) => (e.target.style.opacity = 1)}
+              onMouseLeave={(e) => (e.target.style.opacity = 0.9)}
+            >
+              {service}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* Support */}
+      <div>
+        <h4
+          style={{
+            fontSize: "18px",
+            fontWeight: "bold",
+            marginBottom: "20px",
+          }}
+        >
+          Support
+        </h4>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+          }}
+        >
+          {[
+            "Help Center",
+            "Terms & Conditions",
+            "Privacy Policy",
+            "FAQs",
+            "Support",
+          ].map((link) => (
+            <a
+              key={link}
+              href="#"
+              style={{
+                color: "white",
+                textDecoration: "none",
+                fontSize: "14px",
+                opacity: 0.9,
+                transition: "opacity 0.3s ease",
+              }}
+              onMouseEnter={(e) => (e.target.style.opacity = 1)}
+              onMouseLeave={(e) => (e.target.style.opacity = 0.9)}
+            >
+              {link}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* Bottom Section */}
+    <div
+      style={{
+        borderTop: "1px solid rgba(255,255,255,0.2)",
+        paddingTop: "24px",
+        display: "flex",
+        flexDirection: window.innerWidth > 768 ? "row" : "column",
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: "16px",
+      }}
+    >
+      <div style={{ fontSize: "14px", opacity: 0.9 }}>
+        © {new Date().getFullYear()} Code Web Telecom. All Rights Reserved.
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          fontSize: "14px",
+          opacity: 0.9,
+        }}
+      >
+        <Shield size={16} />
+        <span>Secured with Best Security Practices</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
 
       {/* Floating Action Button */}
       <a
