@@ -1,8 +1,15 @@
 import React from "react";
 import logo from "../assets/logo.jpeg";
 import "./Header.css";
+import { useNavigate } from "react-router-dom"; 
 
 const Header = () => {
+   const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    console.log("Get Started clicked");
+    navigate("/login"); 
+  };
   return (
     <header className="header">
       <nav className="nav-container">
@@ -19,7 +26,7 @@ const Header = () => {
           <a href="#about">About</a>
           <a href="#contact">Contact</a>
         </div>
-        <button className="cta-btn">Get Started</button>
+        <button className="cta-btn" onClick={handleGetStarted}>Get Started</button>
       </nav>
     </header>
   );

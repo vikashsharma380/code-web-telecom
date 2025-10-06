@@ -5,6 +5,7 @@ import upcomingServices from "./Components/upcomingServices";
 import benefits from "./Components/benefits";
 import testimonials from "./Components/testimonials";
 import pricingPlans from "./Components/pricingplans";
+import { useNavigate } from "react-router-dom";
 
 
 import {
@@ -44,7 +45,12 @@ const CodeWebTelecomWebsite = () => {
     operators: 0,
     uptime: 0,
   });
+const navigate = useNavigate();
 
+  const handleGetStarted = () => {
+    console.log("Get Started clicked");
+    navigate("/login"); 
+  };
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
@@ -138,6 +144,7 @@ const CodeWebTelecomWebsite = () => {
           scroll-behavior: smooth;
         }
       `}</style>
+      
 
       {/* Header / Navigation */}
       <header
@@ -302,6 +309,7 @@ const CodeWebTelecomWebsite = () => {
                 width: "100%",
                 marginTop: "16px",
               }}
+              onClick={handleGetStarted}
             >
               Get Started
             </button>
