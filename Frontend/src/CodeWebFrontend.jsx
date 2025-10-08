@@ -32,7 +32,7 @@ import {
   ChevronDown,
   Play,
 } from "lucide-react";
-import ServicesGrid from "../../backend/Api/ServicesGrid";
+import ServicesGrid from "./Grid/ServicesGrid";
 // import logo from "../src/assets/logo.jpeg";
 
 const CodeWebTelecomWebsite = () => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 export default function ServicePage() {
-  const { id } = useParams();
+  const { id } = useParams(); // service id from card click (e.g., "airtel", "jio")
   const [formData, setFormData] = useState({
     number: "",
     amount: "",
@@ -10,58 +10,34 @@ export default function ServicePage() {
     circlecode: "",
   });
   const [loading, setLoading] = useState(false);
-  const [detecting, setDetecting] = useState(false);
   const [result, setResult] = useState(null);
 
-  const username = "8517007867"; // Replace with your API username
-  const pwd = "0936Ec211013@"; // Replace with your API password
-
-  // Handle input change
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // Optional mapping: if card id corresponds to operatorcode, prefill it
+  const serviceMap = {
+    airtel: { operatorcode: "AT", circlecode: "" },
+    jio: { operatorcode: "RJ", circlecode: "" },
+    vi: { operatorcode: "VI", circlecode: "" },
+    bsnl: { operatorcode: "BS", circlecode: "" },
+    dth: { operatorcode: "DTH", circlecode: "" },
   };
 
-  // Auto detect operator
+  // Prefill operator if we have mapping for clicked card
   useEffect(() => {
-    const detectOperator = async () => {
-      if (formData.number.length === 10) {
-        setDetecting(true);
-        try {
-          const res = await fetch(
-            `http://localhost:5000/api/lookup?number=${formData.number}`
-          );
-          const data = await res.json();
+    if (id && serviceMap[id]) {
+      setFormData((p) => ({
+        ...p,
+        operatorcode: serviceMap[id].operatorcode,
+        circlecode: serviceMap[id].circlecode || p.circlecode,
+      }));
+    }
+  }, [id]);
 
-          if (data.operatorcode && data.circlecode) {
-            setFormData((prev) => ({
-              ...prev,
-              operatorcode: data.operatorcode,
-              circlecode: data.circlecode,
-            }));
-          } else {
-            setFormData((prev) => ({
-              ...prev,
-              operatorcode: "",
-              circlecode: "",
-            }));
-          }
-        } catch (error) {
-          console.error("Detection failed:", error);
-          setFormData((prev) => ({
-            ...prev,
-            operatorcode: "",
-            circlecode: "",
-          }));
-        } finally {
-          setDetecting(false);
-        }
-      }
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setResult(null);
+  };
 
-    detectOperator();
-  }, [formData.number]);
-
-  // Recharge handler
   const handleRecharge = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -69,18 +45,24 @@ export default function ServicePage() {
 
     const { number, amount, operatorcode, circlecode } = formData;
     const orderid = "ORD" + Date.now();
-    const format = "json";
-
-    const url = `http://localhost:5000/api/recharge?username=${username}&pwd=${pwd}&operatorcode=${operatorcode}&circlecode=${circlecode}&number=${number}&amount=${amount}&orderid=${orderid}&format=json`;
 
     try {
-        const response = await fetch(url);
-const result = await response.json();
-     
+      const res = await fetch("http://localhost:5000/api/recharge", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ number, amount, operatorcode, circlecode, orderid }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || "Server error");
+      }
+
+      const data = await res.json();
       setResult(data);
-    } catch (error) {
-      console.error("Recharge failed:", error);
-      setResult({ error: "Failed to connect to API" });
+    } catch (err) {
+      console.error("Recharge failed:", err);
+      setResult({ error: err.message || "Failed to connect to API" });
     } finally {
       setLoading(false);
     }
@@ -89,7 +71,7 @@ const result = await response.json();
   return (
     <div style={{ padding: "40px", textAlign: "center" }}>
       <h2 style={{ color: "#333", marginBottom: "20px" }}>
-        {id.toUpperCase()} Recharge
+        {id ? id.toUpperCase() + " Recharge" : "Recharge"}
       </h2>
 
       <form
@@ -98,7 +80,7 @@ const result = await response.json();
           display: "flex",
           flexDirection: "column",
           gap: "16px",
-          maxWidth: "400px",
+          maxWidth: "420px",
           margin: "0 auto",
           background: "#fff",
           padding: "24px",
@@ -115,22 +97,25 @@ const result = await response.json();
           maxLength="10"
           required
         />
-        {detecting && <small style={{ color: "orange" }}>Detecting operator...</small>}
 
         <input
           type="text"
           name="operatorcode"
-          placeholder="Operator Code"
+          placeholder="Operator Code (e.g., AT, RJ)"
           value={formData.operatorcode}
-          readOnly
+          onChange={handleChange}
+          required
         />
+
         <input
           type="text"
           name="circlecode"
-          placeholder="Circle Code"
+          placeholder="Circle Code (e.g., MP, DL)"
           value={formData.circlecode}
-          readOnly
+          onChange={handleChange}
+          required
         />
+
         <input
           type="number"
           name="amount"
@@ -164,14 +149,14 @@ const result = await response.json();
             padding: "16px",
             borderRadius: "8px",
             textAlign: "left",
-            maxWidth: "400px",
+            maxWidth: "420px",
             marginInline: "auto",
           }}
         >
           {result.error ? (
             <p style={{ color: "red" }}>Error: {result.error}</p>
           ) : (
-            <p style={{ color: "green" }}>Recharge processed successfully!</p>
+            <p style={{ color: "green" }}>Response from provider:</p>
           )}
           <pre>{JSON.stringify(result, null, 2)}</pre>
         </div>
@@ -179,3 +164,5 @@ const result = await response.json();
     </div>
   );
 }
+
+

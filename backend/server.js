@@ -1,17 +1,17 @@
+// server.js
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
+const axios = require("axios");
+const { v4: uuidv4 } = require("uuid");
 const dotenv = require("dotenv");
-dotenv.config();
+const mongoose = require("mongoose");
 
+dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-
-
-
-// --- MongoDB Connection ---
+// ----------------- MongoDB Connection -----------------
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -22,63 +22,58 @@ mongoose.connect(process.env.MONGO_URI, {
   process.exit(1);
 });
 
-
-
-// --- Lookup operator ---
-app.get("/api/lookup", async (req, res) => {
-  const { number } = req.query;
-  if (!number) return res.status(400).json({ error: "Number is required" });
-
+// ----------------- Recharge API -----------------
+app.post("/api/recharge", async (req, res) => {
   try {
-    const response = await fetch(
-  `https://business.a1topup.com/recharge/lookup?number=${number}&format=json`
-);
+    const { username, pwd, circlecode, operatorcode, number, amount, value1, value2 } = req.body;
 
-    if (!response.ok) {
-      return res.status(response.status).json({ error: "Operator lookup failed" });
+    // Validation
+    if (!username || !pwd || !circlecode || !operatorcode || !number || !amount) {
+      return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const data = await response.json();
-    res.json(data);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
+    // Generate unique order ID
+    const orderid = uuidv4();
+
+    // Build API URL
+    let url = `https://codewebtelecom.com/recharge/api?username=${encodeURIComponent(username)}&pwd=${encodeURIComponent(pwd)}&circlecode=${circlecode}&operatorcode=${operatorcode}&number=${number}&amount=${amount}&orderid=${orderid}&format=json`;
+
+    if (value1) url += `&value1=${encodeURIComponent(value1)}`;
+    if (value2) url += `&value2=${encodeURIComponent(value2)}`;
+
+    console.log("Recharge API call URL:", url);
+    console.log("Request Body:", req.body);
+
+    // Call external API
+    const response = await axios.get(url);
+    console.log("Recharge API response:", response.data);
+
+    res.json(response.data);
+  } catch (error) {
+    console.error("Recharge failed:", error.message);
+    res.status(500).json({ error: "Recharge failed", details: error.message });
   }
 });
 
-// --- Recharge ---
-app.get("/api/recharge", async (req, res) => {
-  const { username, pwd, operatorcode, circlecode, number, amount, orderid, format } = req.query;
-
-  if (!username || !pwd || !operatorcode || !circlecode || !number || !amount || !orderid || !format) {
-    return res.status(400).json({ error: "All parameters are required" });
-  }
-
+// ----------------- Operator Lookup API -----------------
+app.get("/api/lookup", async (req, res) => {
   try {
-    const response = await fetch(
-      `https://business.a1topup.com/recharge/recharge?username=${username}&pwd=${pwd}&operatorcode=${operatorcode}&circlecode=${circlecode}&number=${number}&amount=${amount}&orderid=${orderid}&format=${format}`
-    );
+    const { number } = req.query;
+    if (!number) return res.status(400).json({ error: "Number is required" });
 
-    const data = await response.json();
+    const lookupUrl = `https://codewebtelecom.com/recharge/lookup?number=${number}&format=json`;
+    console.log("Lookup API call URL:", lookupUrl);
 
-    // Optionally store recharge info in MongoDB
-    // const Recharge = mongoose.model("Recharge", new mongoose.Schema({
-    //   number: String,
-    //   amount: Number,
-    //   operatorcode: String,
-    //   circlecode: String,
-    //   orderid: String,
-    //   response: Object,
-    //   createdAt: { type: Date, default: Date.now }
-    // }));
-    // await Recharge.create({ number, amount, operatorcode, circlecode, orderid, response: data });
+    const response = await axios.get(lookupUrl);
+    console.log("Lookup API response:", response.data);
 
-    res.json(data);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
+    res.json(response.data);
+  } catch (error) {
+    console.error("Lookup failed:", error.message);
+    res.status(500).json({ error: "Lookup failed", details: error.message });
   }
 });
 
+// ----------------- Start Server -----------------
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import services from "../../Frontend/src/Components/services";
+import services from "../Components/services";
 import { useNavigate } from "react-router-dom";
 
 
@@ -78,7 +78,8 @@ const navigate = useNavigate();
                 key={service.id}
                 onMouseEnter={() => setActiveService(service.id)}
                 onMouseLeave={() => setActiveService(null)}
-               onClick={() => navigate(`/service/${service.id}`)}
+              onClick={() => navigate("/MobileRecharge")}
+
                 style={{
                   background: "white",
                   borderRadius: "20px",
