@@ -46,7 +46,8 @@ export default function LoginPage() {
     e.preventDefault();
     console.log("Login attempt:", { email, password, rememberMe });
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, {
+      
+      const res = await axios.post("https://code-web-telecom.onrender.com/api/auth/login", {
         email,
         password,
       });

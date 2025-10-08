@@ -5,6 +5,7 @@ const axios = require("axios");
 const { v4: uuidv4 } = require("uuid");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const authRoutes = require("./routes/authRoutes");
 
 dotenv.config();
 const app = express();
@@ -104,6 +105,8 @@ app.get("/callback", (req, res) => {
   // Database me update kar do ya notification bhej do
   res.send("Callback received");
 });
+app.use("/api/auth", authRoutes);
+
 
 
 // ----------------- Start Server -----------------
