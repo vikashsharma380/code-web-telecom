@@ -5,7 +5,7 @@ const axios = require("axios");
 const { v4: uuidv4 } = require("uuid");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const authRoutes = require("./routes/authRoutes");
+const authRoutes = require("./routes/auth");
 
 dotenv.config();
 const app = express();
