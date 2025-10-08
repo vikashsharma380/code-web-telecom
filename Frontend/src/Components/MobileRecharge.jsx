@@ -11,61 +11,60 @@ export default function MobileRecharge() {
   const [loading, setLoading] = useState(false);
   const [detecting, setDetecting] = useState(false);
   const [result, setResult] = useState(null);
+  const [lookupError, setLookupError] = useState(null); // New state for lookup error
 
- const operators = [
-  { code: "A", name: "Airtel" },
-  { code: "V", name: "Vodafone" },
-  { code: "BT", name: "BSNL - TOPUP" },
-  { code: "RC", name: "RELIANCE - JIO" },
-  { code: "I", name: "Idea" },
-  { code: "BR", name: "BSNL - STV" },
-  { code: "GLF", name: "Google Play" },
-  { code: "AXF", name: "Axis Bank Fastag" },
-  { code: "BBF", name: "Bank Of Baroda - Fastag" },
-  { code: "EFF", name: "Equitas Fastag Recharge" },
-  { code: "FDF", name: "Federal Bank - Fastag" },
-  { code: "HDF", name: "Hdfc Bank - Fastag" },
-  { code: "ICF", name: "Icici Bank Fastag" },
-  { code: "IBF", name: "Idbi Bank Fastag" },
-  { code: "IFF", name: "Idfc First Bank- Fastag" },
-  { code: "IHMCF", name: "Indian Highways Management Company Ltd Fastag" },
-  { code: "INDF", name: "Indusind Bank Fastag" },
-  { code: "JKF", name: "Jammu And Kashmir Bank Fastag" },
-  { code: "KMF", name: "Kotak Mahindra Bank - Fastag" },
-  { code: "PTF", name: "Paytm Payments Bank Fastag" },
-  { code: "SBF", name: "Sbi Bank Fastag" },
-  { code: "HPSEBL", name: "HP" },
-  { code: "Hpgas", name: "Hp Gas" },
-];
+  const operators = [
+    { code: "A", name: "Airtel" },
+    { code: "V", name: "Vodafone" },
+    { code: "BT", name: "BSNL - TOPUP" },
+    { code: "RC", name: "RELIANCE - JIO" },
+    { code: "I", name: "Idea" },
+    { code: "BR", name: "BSNL - STV" },
+    { code: "GLF", name: "Google Play" },
+    { code: "AXF", name: "Axis Bank Fastag" },
+    { code: "BBF", name: "Bank Of Baroda - Fastag" },
+    { code: "EFF", name: "Equitas Fastag Recharge" },
+    { code: "FDF", name: "Federal Bank - Fastag" },
+    { code: "HDF", name: "Hdfc Bank - Fastag" },
+    { code: "ICF", name: "Icici Bank Fastag" },
+    { code: "IBF", name: "Idbi Bank Fastag" },
+    { code: "IFF", name: "Idfc First Bank- Fastag" },
+    { code: "IHMCF", name: "Indian Highways Management Company Ltd Fastag" },
+    { code: "INDF", name: "Indusind Bank Fastag" },
+    { code: "JKF", name: "Jammu And Kashmir Bank Fastag" },
+    { code: "KMF", name: "Kotak Mahindra Bank - Fastag" },
+    { code: "PTF", name: "Paytm Payments Bank Fastag" },
+    { code: "SBF", name: "Sbi Bank Fastag" },
+    { code: "HPSEBL", name: "HP" },
+    { code: "Hpgas", name: "Hp Gas" },
+  ];
 
-
-const circles = [
-  { code: "13", name: "Andhra Pradesh" },
-  { code: "24", name: "Assam" },
-  { code: "17", name: "Bihar" },
-  { code: "27", name: "Chhattisgarh" },
-  { code: "12", name: "Gujarat" },
-  { code: "20", name: "Haryana" },
-  { code: "21", name: "Himachal Pradesh" },
-  { code: "25", name: "Jammu And Kashmir" },
-  { code: "22", name: "Jharkhand" },
-  { code: "9",  name: "Karnataka" },
-  { code: "14", name: "Kerala" },
-  { code: "16", name: "Madhya Pradesh" },
-  { code: "4",  name: "Maharashtra" },
-  { code: "2",  name: "West Bengal" },
-  { code: "10", name: "Uttar Pradesh East" },
-  { code: "11", name: "Uttar Pradesh West" },
-  { code: "3",  name: "Mumbai" },
-  { code: "5",  name: "Delhi" },
-  { code: "7",  name: "CHENNAI" },
-  { code: "6",  name: "Kolkata" },
-  { code: "8",  name: "Tamil Nadu" },
-  { code: "1",  name: "Punjab" },
-  { code: "18", name: "Rajasthan" },
-  { code: "26", name: "NORTH EAST" },
-];
-
+  const circles = [
+    { code: "13", name: "Andhra Pradesh" },
+    { code: "24", name: "Assam" },
+    { code: "17", name: "Bihar" },
+    { code: "27", name: "Chhattisgarh" },
+    { code: "12", name: "Gujarat" },
+    { code: "20", name: "Haryana" },
+    { code: "21", name: "Himachal Pradesh" },
+    { code: "25", name: "Jammu And Kashmir" },
+    { code: "22", name: "Jharkhand" },
+    { code: "9",  name: "Karnataka" },
+    { code: "14", name: "Kerala" },
+    { code: "16", name: "Madhya Pradesh" },
+    { code: "4",  name: "Maharashtra" },
+    { code: "2",  name: "West Bengal" },
+    { code: "10", name: "Uttar Pradesh East" },
+    { code: "11", name: "Uttar Pradesh West" },
+    { code: "3",  name: "Mumbai" },
+    { code: "5",  name: "Delhi" },
+    { code: "7",  name: "CHENNAI" },
+    { code: "6",  name: "Kolkata" },
+    { code: "8",  name: "Tamil Nadu" },
+    { code: "1",  name: "Punjab" },
+    { code: "18", name: "Rajasthan" },
+    { code: "26", name: "NORTH EAST" },
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -83,11 +82,12 @@ const circles = [
     }
   };
 
-  // Auto detect operator safely
+  // Auto detect operator safely (optional)
   useEffect(() => {
     const detectOperator = async () => {
       if (formData.number.length === 10) {
         setDetecting(true);
+        setLookupError(null);
         try {
           const res = await fetch(`http://localhost:5000/api/lookup?number=${formData.number}`);
           if (!res.ok) throw new Error(`Server returned ${res.status}`);
@@ -96,6 +96,7 @@ const circles = [
           if (data.circlecode) setFormData((prev) => ({ ...prev, circlecode: data.circlecode }));
         } catch (error) {
           console.warn("Auto-detect failed, use dropdown manually", error);
+          setLookupError("Operator auto-detect failed. Please select manually.");
         } finally {
           setDetecting(false);
         }
@@ -104,7 +105,6 @@ const circles = [
     detectOperator();
   }, [formData.number]);
 
-  // Recharge API POST call
   const handleRecharge = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -114,11 +114,11 @@ const circles = [
       const res = await fetch("http://localhost:5000/api/recharge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-    username: "8517007867",  
-    pwd: "0936Ec211013@",   
-    ...formData             
-  }),
+        body: JSON.stringify({
+          username: "8517007867",
+          pwd: "0936Ec211013@",
+          ...formData
+        }),
       });
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
@@ -152,9 +152,8 @@ const circles = [
                   maxLength="10"
                   required
                 />
-                {detecting && (
-                  <span className="detecting-text">Detecting operator...</span>
-                )}
+                {detecting && <span className="detecting-text">Detecting operator...</span>}
+                {lookupError && <span className="lookup-error">{lookupError}</span>}
               </div>
 
               <div className="form-group">
@@ -167,9 +166,7 @@ const circles = [
                 >
                   <option value="">--Select Operator--</option>
                   {operators.map((op) => (
-                    <option key={op.code} value={op.code}>
-                      {op.name}
-                    </option>
+                    <option key={op.code} value={op.code}>{op.name}</option>
                   ))}
                 </select>
               </div>
@@ -184,9 +181,7 @@ const circles = [
                 >
                   <option value="">--Select Circle--</option>
                   {circles.map((c) => (
-                    <option key={c.code} value={c.code}>
-                      {c.name}
-                    </option>
+                    <option key={c.code} value={c.code}>{c.name}</option>
                   ))}
                 </select>
               </div>
@@ -248,3 +243,4 @@ const circles = [
     </div>
   );
 }
+  

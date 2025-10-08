@@ -74,6 +74,38 @@ app.get("/api/lookup", async (req, res) => {
   }
 });
 
+app.get("/api/balance", async (req, res) => {
+  try {
+    const { username, pwd } = req.query;
+    const url = `https://codewebtelecom.com/recharge/balance?username=${encodeURIComponent(username)}&pwd=${encodeURIComponent(pwd)}&format=json`;
+    const response = await axios.get(url);
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: "Balance check failed", details: error.message });
+  }
+});
+
+
+app.get("/api/status", async (req, res) => {
+  try {
+    const { username, pwd, orderid } = req.query;
+    const url = `https://codewebtelecom.com/recharge/status?username=${encodeURIComponent(username)}&pwd=${encodeURIComponent(pwd)}&orderid=${orderid}&format=json`;
+    const response = await axios.get(url);
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: "Status check failed", details: error.message });
+  }
+});
+
+
+app.get("/callback", (req, res) => {
+  const { txid, status, opid } = req.query;
+  console.log("Callback received:", txid, status, opid);
+  // Database me update kar do ya notification bhej do
+  res.send("Callback received");
+});
+
+
 // ----------------- Start Server -----------------
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
