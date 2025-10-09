@@ -37,7 +37,7 @@ app.post("/api/recharge", async (req, res) => {
     const orderid = uuidv4();
 
     // Build API URL
-    let url = `https://codewebtelecom.com/recharge/api?username=${encodeURIComponent(username)}&pwd=${encodeURIComponent(pwd)}&circlecode=${circlecode}&operatorcode=${operatorcode}&number=${number}&amount=${amount}&orderid=${orderid}&format=json`;
+    let url = `https://code-web-telecom.onrender.com/recharge?username=${encodeURIComponent(username)}&pwd=${encodeURIComponent(pwd)}&circlecode=${circlecode}&operatorcode=${operatorcode}&number=${number}&amount=${amount}&orderid=${orderid}&format=json`;
 
     if (value1) url += `&value1=${encodeURIComponent(value1)}`;
     if (value2) url += `&value2=${encodeURIComponent(value2)}`;
@@ -62,7 +62,7 @@ app.get("/api/lookup", async (req, res) => {
     const { number } = req.query;
     if (!number) return res.status(400).json({ error: "Number is required" });
 
-    const lookupUrl = `https://codewebtelecom.com/recharge/lookup?number=${number}&format=json`;
+    const lookupUrl = `https://code-web-telecom.onrender.com/recharge/lookup?number=${number}&format=json`;
     console.log("Lookup API call URL:", lookupUrl);
 
     const response = await axios.get(lookupUrl);
@@ -78,7 +78,7 @@ app.get("/api/lookup", async (req, res) => {
 app.get("/api/balance", async (req, res) => {
   try {
     const { username, pwd } = req.query;
-    const url = `https://codewebtelecom.com/recharge/balance?username=${encodeURIComponent(username)}&pwd=${encodeURIComponent(pwd)}&format=json`;
+    const url = `https://code-web-telecom.onrender.com/recharge/balance?username=${encodeURIComponent(username)}&pwd=${encodeURIComponent(pwd)}&format=json`;
     const response = await axios.get(url);
     res.json(response.data);
   } catch (error) {
@@ -90,7 +90,7 @@ app.get("/api/balance", async (req, res) => {
 app.get("/api/status", async (req, res) => {
   try {
     const { username, pwd, orderid } = req.query;
-    const url = `https://codewebtelecom.com/recharge/status?username=${encodeURIComponent(username)}&pwd=${encodeURIComponent(pwd)}&orderid=${orderid}&format=json`;
+    const url = `https://code-web-telecom.onrender.com/recharge/status?username=${encodeURIComponent(username)}&pwd=${encodeURIComponent(pwd)}&orderid=${orderid}&format=json`;
     const response = await axios.get(url);
     res.json(response.data);
   } catch (error) {
