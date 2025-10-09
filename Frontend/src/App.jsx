@@ -7,21 +7,26 @@ import MobileRecharge from "./Components/MobileRecharge";
 
 import { useParams } from "react-router-dom";
 import ServicePage from "./pages/ServicePage";
-
+import DTHRecharge from "./Components/DTHRecharge";
+import ElectricityRecharge from "./Components/ElectricityRecharge";
+import FASTagRecharge from "./Components/FASTagRecharge";
+import GasRecharge from "./Components/GasRecharge";
+import DataCardRecharge from "./Components/DataCardRecharge";
 
 function App() {
   return (
     <>
-     
-     
       <Routes>
         <Route path="/" element={<CodeWebTelecom />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         {/* <Route path="/service/:id" element={<ServicePage />} /> */}
-        <Route path="/MobileRecharge" element={<MobileRecharge  />} />
-        
-         
+        <Route path="/MobileRecharge" element={<MobileRecharge />} />
+        <Route path="/DTHRecharge" element={<DTHRecharge />} />
+        <Route path="/ElectricityRecharge" element={<ElectricityRecharge />} />
+        <Route path="/FASTagRecharge" element={<FASTagRecharge />} />
+        <Route path="/GasRecharge" element={<GasRecharge />} />
+        <Route path="/DataCardRecharge" element={<DataCardRecharge />} />
       </Routes>
     </>
   );

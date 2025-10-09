@@ -1,14 +1,14 @@
 import React from "react";
 import logo from "../assets/logo.jpeg";
-import "./Header.css";
-import { useNavigate } from "react-router-dom"; 
+import "./CSS/Header.css";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleGetStarted = () => {
     console.log("Get Started clicked");
-    navigate("/login"); 
+    navigate("/login");
   };
   return (
     <header className="header">
@@ -25,8 +25,11 @@ const Header = () => {
           <a href="#services">Services</a>
           <a href="#about">About</a>
           <a href="#contact">Contact</a>
+          <a href="#webSolutions">Web Solutions</a>
         </div>
-        <button className="cta-btn" onClick={handleGetStarted}>Get Started</button>
+        <button className="cta-btn" onClick={handleGetStarted}>
+          Get Started
+        </button>
       </nav>
     </header>
   );

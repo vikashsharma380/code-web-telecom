@@ -2,12 +2,9 @@ import React, { useState } from "react";
 import services from "../Components/services";
 import { useNavigate } from "react-router-dom";
 
-
-
 export default function ServicesGrid() {
   const [activeService, setActiveService] = useState(null);
-const navigate = useNavigate();
-
+  const navigate = useNavigate();
 
   return (
     <section
@@ -78,8 +75,22 @@ const navigate = useNavigate();
                 key={service.id}
                 onMouseEnter={() => setActiveService(service.id)}
                 onMouseLeave={() => setActiveService(null)}
-              onClick={() => navigate("/MobileRecharge")}
-
+                // onClick={() => navigate("/MobileRecharge")}
+                onClick={() => {
+                  if (service.type === "mobile") {
+                    navigate("/MobileRecharge");
+                  } else if (service.type === "dth") {
+                    navigate("/DTHRecharge");
+                  } else if (service.type === "electricity") {
+                    navigate("/ElectricityRecharge");
+                  } else if (service.type === "FASTagRecharge") {
+                    navigate("/FASTagRecharge");
+                  } else if (service.type === "GasRecharge") {
+                    navigate("/GasRecharge");
+                  } else if (service.type === "DataCardRecharge") {
+                    navigate("/DataCardRecharge");
+                  }
+                }}
                 style={{
                   background: "white",
                   borderRadius: "20px",
