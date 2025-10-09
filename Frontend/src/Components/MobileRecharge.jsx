@@ -128,8 +128,8 @@ export default function MobileRecharge() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username: "8517007867",
-          pwd: "0936Ec211013@",
+          username: "500032",
+          pwd: "k0ly9gts",
           ...formData,
         }),
       });
