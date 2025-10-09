@@ -49,7 +49,7 @@ export default function Signup() {
     }
 
     try {
-      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/register`, {
+      const res = await axios.post("https://code-web-telecom.onrender.com/api/auth/register", {
         name,
         email,
         phone,
