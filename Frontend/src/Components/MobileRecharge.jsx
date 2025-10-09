@@ -456,9 +456,10 @@
 //   </footer>
 // </div>
 //   );
-// }
-import React, { useState, useEffect } from "react";
+// }import React, { useState, useEffect } from "react";
 import { Smartphone, Zap, Clock } from "lucide-react";
+import { useState, useEffect } from "react";
+
 
 export default function MobileRecharge() {
   const [formData, setFormData] = useState({
@@ -473,6 +474,7 @@ export default function MobileRecharge() {
   const [result, setResult] = useState(null);
   const [detecting, setDetecting] = useState(false);
 
+  // Operator list
   const operators = [
     { code: "A", name: "Airtel" },
     { code: "V", name: "Vodafone" },
@@ -499,6 +501,7 @@ export default function MobileRecharge() {
     { code: "Hpgas", name: "Hp Gas" },
   ];
 
+  // Circles
   const circles = [
     { code: "13", name: "Andhra Pradesh" },
     { code: "24", name: "Assam" },
@@ -526,6 +529,7 @@ export default function MobileRecharge() {
     { code: "26", name: "NORTH EAST" },
   ];
 
+  // Quick amounts
   const quickAmounts = [49, 99, 199, 299, 499, 999];
 
   const cellStyle = {
@@ -535,22 +539,13 @@ export default function MobileRecharge() {
     whiteSpace: "nowrap",
   };
 
+  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "amount") {
-      if (value === "" || /^\d+$/.test(value)) {
-        setFormData({ ...formData, [name]: value });
-        setAmount(value);
-      }
-    } else if (name === "number") {
-      if (value === "" || /^\d+$/.test(value)) {
-        setFormData({ ...formData, [name]: value });
-      }
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Amount input
   const handleAmountChange = (e) => {
     const value = e.target.value;
     if (value === "" || /^\d+$/.test(value)) {
@@ -564,6 +559,7 @@ export default function MobileRecharge() {
     setFormData({ ...formData, amount: amt.toString() });
   };
 
+  // Detect operator automatically
   useEffect(() => {
     const detectOperator = async () => {
       if (formData.number.length === 10) {
@@ -575,10 +571,7 @@ export default function MobileRecharge() {
           if (!res.ok) throw new Error(`Server returned ${res.status}`);
           const data = await res.json();
           if (data.operatorcode)
-            setFormData((prev) => ({
-              ...prev,
-              operatorcode: data.operatorcode,
-            }));
+            setFormData((prev) => ({ ...prev, operatorcode: data.operatorcode }));
           if (data.circlecode)
             setFormData((prev) => ({ ...prev, circlecode: data.circlecode }));
         } catch (error) {
@@ -591,18 +584,22 @@ export default function MobileRecharge() {
     detectOperator();
   }, [formData.number]);
 
+  // Recharge handler
   const handleRecharge = async (e) => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
 
     try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) throw new Error("User not logged in!");
+
       const res = await fetch("https://code-web-telecom.onrender.com/api/recharge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username: "8517007867",
-          pwd: "0936Ec211013@",
+          username: user.username,
+          pwd: user.password,
           ...formData,
         }),
       });
@@ -627,13 +624,12 @@ export default function MobileRecharge() {
       setAmount("");
     } catch (error) {
       console.error("Recharge failed:", error);
-      setResult({ type: "error", message: "Failed to connect to API" });
+      setResult({ type: "error", message: error.message || "API connection failed" });
     } finally {
       setLoading(false);
       setTimeout(() => setResult(null), 5000);
     }
   };
-
 
   return (
     <div style={styles.container}>
