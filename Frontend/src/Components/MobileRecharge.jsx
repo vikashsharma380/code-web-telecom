@@ -458,7 +458,9 @@
 //   );
 // }
 import React, { useState, useEffect } from "react";
-import { Smartphone, Zap, Clock } from "lucide-react";
+import { Smartphone, Zap, Clock, TrendingUp } from "lucide-react";
+
+
 
 export default function MobileRecharge() {
   const [formData, setFormData] = useState({
@@ -467,11 +469,13 @@ export default function MobileRecharge() {
     circlecode: "",
     amount: "",
   });
+  const [amount, setAmount] = useState("");
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [detecting, setDetecting] = useState(false);
-  const [activeTab, setActiveTab] = useState("mobile");
+  const [activeTab, setActiveTab] = useState("recharge");
+
 
   // Operator list
   const operators = [
@@ -481,6 +485,23 @@ export default function MobileRecharge() {
     { code: "RC", name: "RELIANCE - JIO" },
     { code: "I", name: "Idea" },
     { code: "BR", name: "BSNL - STV" },
+    { code: "GLF", name: "Google Play" },
+    { code: "AXF", name: "Axis Bank Fastag" },
+    { code: "BBF", name: "Bank Of Baroda - Fastag" },
+    { code: "EFF", name: "Equitas Fastag Recharge" },
+    { code: "FDF", name: "Federal Bank - Fastag" },
+    { code: "HDF", name: "Hdfc Bank - Fastag" },
+    { code: "ICF", name: "Icici Bank Fastag" },
+    { code: "IBF", name: "Idbi Bank Fastag" },
+    { code: "IFF", name: "Idfc First Bank- Fastag" },
+    { code: "IHMCF", name: "Indian Highways Management Company Ltd Fastag" },
+    { code: "INDF", name: "Indusind Bank Fastag" },
+    { code: "JKF", name: "Jammu And Kashmir Bank Fastag" },
+    { code: "KMF", name: "Kotak Mahindra Bank - Fastag" },
+    { code: "PTF", name: "Paytm Payments Bank Fastag" },
+    { code: "SBF", name: "Sbi Bank Fastag" },
+    { code: "HPSEBL", name: "HP" },
+    { code: "Hpgas", name: "Hp Gas" },
   ];
 
   // Circles
@@ -514,23 +535,20 @@ export default function MobileRecharge() {
   // Quick amounts
   const quickAmounts = [49, 99, 199, 299, 499, 999];
 
+  const cellStyle = {
+    color: "rgba(255,255,255,0.8)",
+    fontSize: "13px",
+    padding: "10px 16px",
+    whiteSpace: "nowrap",
+  };
+
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "amount") {
-      if (value === "" || /^\d+$/.test(value)) {
-        setFormData({ ...formData, [name]: value });
-        setAmount(value);
-      }
-    } else if (name === "number") {
-      if (value === "" || /^\d+$/.test(value)) {
-        setFormData({ ...formData, [name]: value });
-      }
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Amount input
   const handleAmountChange = (e) => {
     const value = e.target.value;
     if (value === "" || /^\d+$/.test(value)) {
@@ -550,6 +568,7 @@ export default function MobileRecharge() {
       if (formData.number.length === 10) {
         setDetecting(true);
         try {
+
           const res = await fetch(
             `https://code-web-telecom.onrender.com/api/lookup?number=${formData.number}`
           );
@@ -572,43 +591,24 @@ export default function MobileRecharge() {
   // Recharge handler
   const handleRecharge = async (e) => {
     e.preventDefault();
-
-    if (
-      !formData.number ||
-      !formData.operatorcode ||
-      !formData.circlecode ||
-      !formData.amount
-    ) {
-      setResult({ type: "error", message: "Please fill all fields!" });
-      return;
-    }
-
-    if (formData.number.length !== 10) {
-      setResult({
-        type: "error",
-        message: "Please enter a valid 10-digit mobile number!",
-      });
-      return;
-    }
-
-    if (parseInt(formData.amount) <= 0) {
-      setResult({ type: "error", message: "Please enter a valid amount!" });
-      return;
-    }
-
     setLoading(true);
     setResult(null);
 
     try {
       const user = JSON.parse(localStorage.getItem("user"));
       if (!user) throw new Error("User not logged in!");
+      console.log("Recharge Request Body:", {
+  username: user.username,
+  pwd: user.password,
+  ...formData,
+});
 
       const res = await fetch("https://code-web-telecom.onrender.com/api/recharge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username: "8517007867",
-          pwd: "0936Ec211013@",
+          username: user.username,
+          pwd: user.password,
           ...formData,
         }),
       });
@@ -630,16 +630,15 @@ export default function MobileRecharge() {
       setTransactions([newTransaction, ...transactions]);
 
       setFormData({ number: "", operatorcode: "", circlecode: "", amount: "" });
-
-      setTimeout(() => setResult(null), 5000);
+      setAmount("");
     } catch (error) {
       console.error("Recharge failed:", error);
       setResult({ type: "error", message: error.message || "API connection failed" });
     } finally {
       setLoading(false);
+      setTimeout(() => setResult(null), 5000);
     }
   };
-
   return (
     <div style={styles.container}>
       {/* Animated Background */}
