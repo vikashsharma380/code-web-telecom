@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { CreditCard, Clock, Zap, Smartphone } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function FASTagRecharge() {
   const [vehicleNumber, setVehicleNumber] = useState("");
@@ -62,9 +63,12 @@ export default function FASTagRecharge() {
           </div>
 
           <div style={styles.navLinks}>
-            <a href="#" style={styles.navLink}>
+            {/* <a href="#" style={styles.navLink}>
               Dashboard
-            </a>
+            </a> */}{" "}
+            <Link to="/dashboard" style={styles.navLink}>
+              Dashboard
+            </Link>
             <a href="#" style={styles.navLink}>
               Reports
             </a>

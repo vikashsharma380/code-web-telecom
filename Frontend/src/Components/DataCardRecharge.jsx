@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Smartphone, Zap, TrendingUp, Clock } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function DataCardRecharge() {
   const [dataCardNumber, setDataCardNumber] = useState("");
@@ -72,9 +73,12 @@ export default function DataCardRecharge() {
           </div>
 
           <div style={styles.navLinks}>
-            <a href="#" style={styles.navLink}>
+            {/* <a href="#" style={styles.navLink}>
               Dashboard
-            </a>
+            </a> */}{" "}
+            <Link to="/dashboard" style={styles.navLink}>
+              Dashboard
+            </Link>
             <a href="#" style={styles.navLink}>
               Reports
             </a>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Smartphone, Zap, Clock, TrendingUp } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function MobileRecharge() {
   const [formData, setFormData] = useState({
@@ -194,9 +195,12 @@ export default function MobileRecharge() {
           </div>
 
           <div style={styles.navLinks}>
-            <a href="#" style={styles.navLink}>
+            {/* <a href="/Dashboard" style={styles.navLink}>
               Dashboard
-            </a>
+            </a> */}{" "}
+            <Link to="/dashboard" style={styles.navLink}>
+              Dashboard
+            </Link>
             <a href="#" style={styles.navLink}>
               Reports
             </a>

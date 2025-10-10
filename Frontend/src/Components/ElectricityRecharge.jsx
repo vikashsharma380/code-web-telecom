@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Zap, Clock, TrendingUp, Smartphone } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function ElectricityRecharge() {
   const [consumerNumber, setConsumerNumber] = useState("");
@@ -70,9 +71,12 @@ export default function ElectricityRecharge() {
           </div>
 
           <div style={styles.navLinks}>
-            <a href="#" style={styles.navLink}>
+            {/* <a href="#" style={styles.navLink}>
+              Dashboard 
+            </a>  */}{" "}
+            <Link to="/dashboard" style={styles.navLink}>
               Dashboard
-            </a>
+            </Link>
             <a href="#" style={styles.navLink}>
               Reports
             </a>
