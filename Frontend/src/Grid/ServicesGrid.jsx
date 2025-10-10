@@ -6,6 +6,40 @@ export default function ServicesGrid() {
   const [activeService, setActiveService] = useState(null);
   const navigate = useNavigate();
 
+  // Function to handle service click with login check
+  const handleServiceClick = (serviceType) => {
+    const token = localStorage.getItem("token"); // JWT ya login token
+    if (!token) {
+      alert("Please login first!");
+      navigate("/login");
+      return;
+    }
+
+    // Navigate to the selected service page
+    switch (serviceType) {
+      case "mobile":
+        navigate("/MobileRecharge");
+        break;
+      case "dth":
+        navigate("/DTHRecharge");
+        break;
+      case "electricity":
+        navigate("/ElectricityRecharge");
+        break;
+      case "FASTagRecharge":
+        navigate("/FASTagRecharge");
+        break;
+      case "GasRecharge":
+        navigate("/GasRecharge");
+        break;
+      case "DataCardRecharge":
+        navigate("/DataCardRecharge");
+        break;
+      default:
+        console.error("Unknown service type:", serviceType);
+    }
+  };
+
   return (
     <section
       id="services"
@@ -75,22 +109,7 @@ export default function ServicesGrid() {
                 key={service.id}
                 onMouseEnter={() => setActiveService(service.id)}
                 onMouseLeave={() => setActiveService(null)}
-                // onClick={() => navigate("/MobileRecharge")}
-                onClick={() => {
-                  if (service.type === "mobile") {
-                    navigate("/MobileRecharge");
-                  } else if (service.type === "dth") {
-                    navigate("/DTHRecharge");
-                  } else if (service.type === "electricity") {
-                    navigate("/ElectricityRecharge");
-                  } else if (service.type === "FASTagRecharge") {
-                    navigate("/FASTagRecharge");
-                  } else if (service.type === "GasRecharge") {
-                    navigate("/GasRecharge");
-                  } else if (service.type === "DataCardRecharge") {
-                    navigate("/DataCardRecharge");
-                  }
-                }}
+                onClick={() => handleServiceClick(service.type)}
                 style={{
                   background: "white",
                   borderRadius: "20px",
