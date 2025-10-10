@@ -73,7 +73,7 @@ export default function MobileRecharge() {
         setDetecting(true);
         try {
           const res = await fetch(
-            `https://code-web-telecom.onrender.com/api/lookup?number=${formData.number}`
+            `http://localhost:5000/api/lookup?number=${formData.number}`
           );
           if (!res.ok) throw new Error(`Server returned ${res.status}`);
           const data = await res.json();
@@ -124,7 +124,7 @@ export default function MobileRecharge() {
     setResult(null);
 
     try {
-      const res = await fetch("https://code-web-telecom.onrender.com/api/recharge", {
+      const res = await fetch("http://localhost:5000/api/recharge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -160,7 +160,6 @@ export default function MobileRecharge() {
       setLoading(false);
     }
   };
-
 
   return (
     <div style={styles.container}>
@@ -748,7 +747,7 @@ const styles = {
     border: "1px solid rgba(255, 255, 255, 0.1)",
     borderRadius: "12px",
     fontSize: "15px",
-    color: "white",
+    color: "gray",
     boxSizing: "border-box",
     cursor: "pointer",
     transition: "all 0.3s ease",
@@ -833,7 +832,7 @@ const styles = {
   emptyText: {
     fontSize: "16px",
     fontWeight: "600",
-    color: "rgba(255, 255, 255, 0.7)",
+    color: "rgba(152, 46, 46, 0.7)",
     margin: "0 0 8px 0",
   },
   emptySubtext: {
