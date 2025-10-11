@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Smartphone, Zap, Clock, TrendingUp } from "lucide-react";
-
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
 export default function MobileRecharge() {
   const [formData, setFormData] = useState({
     number: "",
@@ -17,12 +15,10 @@ export default function MobileRecharge() {
   const [activeTab, setActiveTab] = useState("recharge");
   const [balance, setBalance] = useState(0);
   const [balanceLoading, setBalanceLoading] = useState(false);
-
   const rechargeUser = {
     username: "500032",
     pwd: "k0ly9gts",
   };
-
   // === FETCH BALANCE ===
 const fetchBalance = async () => {
   setBalanceLoading(true);
@@ -32,7 +28,6 @@ const fetchBalance = async () => {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
-
     if (!res.ok) throw new Error(`Server returned ${res.status}`);
     const data = await res.json();
     setBalance(data.balance || 0);
@@ -45,11 +40,9 @@ const fetchBalance = async () => {
 };
 
 
-
   useEffect(() => {
     fetchBalance();
   }, []);
-
   // === OPERATOR AUTO-DETECT ===
   useEffect(() => {
     const detectOperator = async () => {
@@ -77,7 +70,6 @@ const fetchBalance = async () => {
     };
     detectOperator();
   }, [formData.number]);
-
   // === OPERATORS & CIRCLES ===
   const operators = [
     { code: "A", name: "Airtel" },
@@ -104,7 +96,6 @@ const fetchBalance = async () => {
     { code: "HPSEBL", name: "HP" },
     { code: "Hpgas", name: "Hp Gas" },
   ];
-
   const circles = [
     { code: "13", name: "Andhra Pradesh" },
     { code: "24", name: "Assam" },
@@ -131,36 +122,29 @@ const fetchBalance = async () => {
     { code: "18", name: "Rajasthan" },
     { code: "26", name: "NORTH EAST" },
   ];
-
   const quickAmounts = [49, 99, 199, 299, 499, 999];
-
   // === FORM HANDLERS ===
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
   const handleAmountChange = (e) => {
     const value = e.target.value;
     if (value === "" || /^\d+$/.test(value)) {
       setFormData({ ...formData, amount: value });
     }
   };
-
   const handleQuickAmount = (amt) => {
     setFormData({ ...formData, amount: amt.toString() });
   };
-
   const handleRecharge = async (e) => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
-
     try {
       const { number, operatorcode, circlecode, amount } = formData;
       if (!number || !operatorcode || !circlecode || !amount)
         throw new Error("All fields are required");
-
       const res = await fetch(`${API_URL}/api/recharge`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -172,11 +156,9 @@ const fetchBalance = async () => {
           amount,
         }),
       });
-
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
       console.log("✅ Recharge API response:", data);
-
       if (data.status === "Success") {
         setResult({
           type: "success",
@@ -189,7 +171,6 @@ const fetchBalance = async () => {
           message: `Recharge Failed: ${data.opid || "Unknown"}`,
         });
       }
-
       setTransactions([
         {
           txid: data.txid || Math.random(),
@@ -201,7 +182,6 @@ const fetchBalance = async () => {
         },
         ...transactions,
       ]);
-
       setFormData({ number: "", operatorcode: "", circlecode: "", amount: "" });
     } catch (error) {
       console.error("Recharge failed:", error);
@@ -214,7 +194,6 @@ const fetchBalance = async () => {
       setTimeout(() => setResult(null), 5000);
     }
   };
-
   // === RETURN JSX ===
   return (
     <div style={styles.container}>
@@ -230,7 +209,6 @@ const fetchBalance = async () => {
               <div style={styles.logoSubtext}>Digital Recharge Partner</div>
             </div>
           </div>
-
           <div style={styles.navLinks}>
             <a href="#" style={styles.navLink}>
               Dashboard
@@ -245,7 +223,6 @@ const fetchBalance = async () => {
               Support
             </a>
           </div>
-
           <div style={styles.userSection}>
             <div style={styles.balanceBadge}>
               <span style={styles.balanceLabel}>Balance</span>
@@ -257,7 +234,6 @@ const fetchBalance = async () => {
           </div>
         </div>
       </nav>
-
       {/* Hero Section */}
       <div style={styles.hero}>
         <div style={styles.heroContent}>
@@ -270,7 +246,6 @@ const fetchBalance = async () => {
             <p style={styles.heroSubtitle}>
               Fast, secure, and reliable mobile recharge for all operators
             </p>
-
             <div style={styles.statsGrid}>
               <div style={styles.statCard}>
                 <TrendingUp size={20} />
@@ -290,7 +265,6 @@ const fetchBalance = async () => {
           </div>
         </div>
       </div>
-
       {/* Tab Section */}
       <div style={styles.tabSection}>
         <div style={styles.tabsContainer}>
@@ -317,7 +291,6 @@ const fetchBalance = async () => {
           ))}
         </div>
       </div>
-
       {/* Main Content */}
       <div style={styles.mainContent}>
         <div style={styles.contentGrid}>
@@ -333,7 +306,6 @@ const fetchBalance = async () => {
                   </p>
                 </div>
               </div>
-
               <div style={styles.cardBody}>
                 <form onSubmit={handleRecharge}>
                   <div style={styles.formGroup}>
@@ -353,7 +325,6 @@ const fetchBalance = async () => {
                       </div>
                     )}
                   </div>
-
                   <div style={styles.formGroup}>
                     <label style={styles.label}>Select Operator</label>
                     <select
@@ -370,7 +341,6 @@ const fetchBalance = async () => {
                       ))}
                     </select>
                   </div>
-
                   <div style={styles.formGroup}>
                     <label style={styles.label}>Circle Code</label>
                     <select
@@ -387,7 +357,6 @@ const fetchBalance = async () => {
                       ))}
                     </select>
                   </div>
-
                   <div style={styles.formGroup}>
                     <label style={styles.label}>Recharge Amount</label>
                     <input
@@ -398,7 +367,6 @@ const fetchBalance = async () => {
                       onChange={handleChange}
                       style={styles.input}
                     />
-
                     <div style={styles.quickAmounts}>
                       {quickAmounts.map((amt) => (
                         <button
@@ -414,7 +382,6 @@ const fetchBalance = async () => {
                       ))}
                     </div>
                   </div>
-
                   <button
                     type="submit"
                     disabled={loading}
@@ -432,7 +399,6 @@ const fetchBalance = async () => {
                       </>
                     )}
                   </button>
-
                   {result && (
                     <div
                       style={{
@@ -449,7 +415,6 @@ const fetchBalance = async () => {
               </div>
             </div>
           </div>
-
           {/* Transaction History */}
           <div style={styles.transactionSection}>
             <div style={styles.card}>
@@ -460,7 +425,6 @@ const fetchBalance = async () => {
                   <p style={styles.cardSubtitle}>Your last 5 recharges</p>
                 </div>
               </div>
-
               <div style={styles.cardBody}>
                 {transactions.length === 0 ? (
                   <div style={styles.emptyState}>
@@ -499,7 +463,6 @@ const fetchBalance = async () => {
           </div>
         </div>
       </div>
-
       {/* Footer */}
       <footer style={styles.footer}>
         <p style={styles.footerText}>
@@ -510,7 +473,6 @@ const fetchBalance = async () => {
     </div>
   );
 }
-
 // === STYLES ===
 const styles = {
   container: {
@@ -976,3 +938,4 @@ const styles = {
     },
   },
 };
+

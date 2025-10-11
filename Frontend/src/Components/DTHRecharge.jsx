@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Smartphone, Zap, Clock, TrendingUp } from "lucide-react";
 import axios from "axios";
-
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
 export default function DTHRecharge() {
   const [formData, setFormData] = useState({
     dthNumber: "",
@@ -17,18 +15,15 @@ export default function DTHRecharge() {
   const [balance, setBalance] = useState(0);
   const [balanceLoading, setBalanceLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("recharge");
-
   const rechargeUser = {
     username: "500032",
     pwd: "k0ly9gts",
   };
   const payload = {
     number: formData.number,
-
     operatorcode: formData.operator,
     amount: formData.amount,
   };
-
   // === FETCH BALANCE ===
   const fetchBalance = async () => {
     setBalanceLoading(true);
@@ -45,11 +40,9 @@ export default function DTHRecharge() {
       setBalanceLoading(false);
     }
   };
-
   useEffect(() => {
     fetchBalance();
   }, []);
-
   // === OPERATOR AUTO-DETECT ===
   useEffect(() => {
     const detectOperator = async () => {
@@ -77,7 +70,6 @@ export default function DTHRecharge() {
     };
     detectOperator();
   }, [formData.dthNumber]);
-
   // === OPERATORS & CIRCLES ===
   const operators = [
     { code: "A", name: "Airtel" },
@@ -104,7 +96,6 @@ export default function DTHRecharge() {
     { code: "HPSEBL", name: "HP" },
     { code: "Hpgas", name: "Hp Gas" },
   ];
-
   const circles = [
     { code: "13", name: "Andhra Pradesh" },
     { code: "24", name: "Assam" },
@@ -131,38 +122,23 @@ export default function DTHRecharge() {
     { code: "18", name: "Rajasthan" },
     { code: "26", name: "NORTH EAST" },
   ];
-
   const quickAmounts = [49, 99, 199, 299, 499, 999];
-
   // === FORM HANDLERS ===
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-  const handleAmountChange = (e) => {
-    const value = e.target.value;
-    if (value === "" || /^\d+$/.test(value))
-      setFormData((prev) => ({ ...prev, amount: value }));
-  };
-
-  const handleQuickAmount = (amt) => {
-    setFormData((prev) => ({ ...prev, amount: amt.toString() }));
-  };
-
+  
   // === RECHARGE ===
  const handleRecharge = async (e) => {
   e.preventDefault();
   setLoading(true);
   setResult(null);
-
   try {
     const { dthNumber, operatorcode: operator, amount } = formData;
-
     if (!dthNumber || !operator || !amount) {
       throw new Error("All fields are required");
     }
-
     const payload = {
       ...rechargeUser,   // includes username & pwd
       number: dthNumber,
@@ -171,34 +147,27 @@ export default function DTHRecharge() {
       amount,
       // circlecode is intentionally omitted
     };
-
     console.log("🚀 Sending Payload:", payload);
-
     const res = await fetch(`${API_URL}/api/dthrecharge`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-
     if (!res.ok) throw new Error(`Server returned ${res.status}`);
-
     const data = await res.json();
     console.log("✅ Recharge API response:", data);
-
     if (data.status === "Success") {
       setResult({
         type: "success",
         message: `Recharge Successful! TXID: ${data.txid}`,
       });
-
-      fetchBalance(); // refresh balance
+      fetchBalance(); 
     } else {
       setResult({
         type: "error",
         message: `Recharge Failed: ${data.opid || "Unknown"}`,
       });
     }
-
     // Add to transaction history
     setTransactions([
       {
@@ -211,7 +180,6 @@ export default function DTHRecharge() {
       },
       ...transactions,
     ]);
-
     // Reset form
     setFormData({ dthNumber: "", operatorcode: "", amount: "" });
   } catch (error) {
@@ -226,12 +194,10 @@ export default function DTHRecharge() {
   }
 };
 
-
   return (
     <div style={styles.container}>
       {/* Animated Background */}
       <div style={styles.bgPattern}></div>
-
       {/* Navigation Bar */}
       <nav style={styles.navbar}>
         <div style={styles.navContent}>
@@ -244,7 +210,6 @@ export default function DTHRecharge() {
               <div style={styles.logoSubtext}>Digital Recharge Partner</div>
             </div>
           </div>
-
           <div style={styles.navLinks}>
             <a href="#" style={styles.navLink}>
               Dashboard
@@ -259,7 +224,6 @@ export default function DTHRecharge() {
               Support
             </a>
           </div>
-
           <div style={styles.userSection}>
             <div style={styles.balanceBadge}>
   <span style={styles.balanceLabel}>Balance</span>
@@ -267,12 +231,10 @@ export default function DTHRecharge() {
     {balanceLoading ? "..." : `₹${balance.toFixed(2)}`}
   </span>
 </div>
-
             <div style={styles.avatar}>V</div>
           </div>
         </div>
       </nav>
-
       {/* Hero Section */}
       <div style={styles.hero}>
         <div style={styles.heroContent}>
@@ -285,7 +247,6 @@ export default function DTHRecharge() {
             <p style={styles.heroSubtitle}>
               Fast, secure, and reliable DTH recharge for all operators
             </p>
-
             <div style={styles.statsGrid}>
               <div style={styles.statCard}>
                 <TrendingUp size={20} />
@@ -305,7 +266,6 @@ export default function DTHRecharge() {
           </div>
         </div>
       </div>
-
       {/* Tab Section */}
       <div style={styles.tabSection}>
         <div style={styles.tabsContainer}>
@@ -332,7 +292,6 @@ export default function DTHRecharge() {
           ))}
         </div>
       </div>
-
       {/* Main Content */}
       <div style={styles.mainContent}>
         <div style={styles.contentGrid}>
@@ -348,7 +307,6 @@ export default function DTHRecharge() {
                   </p>
                 </div>
               </div>
-
               <div style={styles.cardBody}>
                 <div style={styles.formGroup}>
                   <label style={styles.label}>DTH Number</label>
@@ -368,7 +326,6 @@ export default function DTHRecharge() {
                     style={styles.input}
                   />
                 </div>
-
                 <div style={styles.formGroup}>
                   <label style={styles.label}>Select Operator</label>
                   <select
@@ -397,7 +354,6 @@ export default function DTHRecharge() {
                     ))}
                   </select>
                 </div>
-
                 <div style={styles.formGroup}>
                   <label style={styles.label}>Recharge Amount</label>
                   <input
@@ -410,7 +366,6 @@ export default function DTHRecharge() {
                     }}
                     style={styles.input}
                   />
-
                   <div style={styles.quickAmounts}>
                     {quickAmounts.map((amt) => (
                       <button
@@ -424,7 +379,6 @@ export default function DTHRecharge() {
                     ))}
                   </div>
                 </div>
-
                 <button
                   onClick={handleRecharge}
                   disabled={loading}
@@ -442,7 +396,6 @@ export default function DTHRecharge() {
                     </>
                   )}
                 </button>
-
                 {result && (
                   <div
                     style={{
@@ -458,7 +411,6 @@ export default function DTHRecharge() {
               </div>
             </div>
           </div>
-
           {/* Transaction History */}
           <div style={styles.transactionSection}>
             <div style={styles.card}>
@@ -469,7 +421,6 @@ export default function DTHRecharge() {
                   <p style={styles.cardSubtitle}>Your last 5 recharges</p>
                 </div>
               </div>
-
               <div style={styles.cardBody}>
                 {transactions.length === 0 ? (
                   <div style={styles.emptyState}>
@@ -508,7 +459,6 @@ export default function DTHRecharge() {
           </div>
         </div>
       </div>
-
       {/* Footer */}
       <footer style={styles.footer}>
         <p style={styles.footerText}>
@@ -519,7 +469,6 @@ export default function DTHRecharge() {
     </div>
   );
 }
-
 // === STYLES ===
 const styles = {
   container: {
@@ -804,7 +753,6 @@ const styles = {
     transition: "all 0.3s ease",
   },
   /* Jab dropdown open ho, options ka color black */
-
   // select: {
   //   width: "100%",
   //   padding: "14px 16px",
@@ -817,7 +765,6 @@ const styles = {
   //   cursor: "pointer",
   //   transition: "all 0.3s ease",
   // },
-
   quickAmounts: {
     display: "flex",
     flexWrap: "wrap",
@@ -982,3 +929,4 @@ const styles = {
     },
   },
 };
+

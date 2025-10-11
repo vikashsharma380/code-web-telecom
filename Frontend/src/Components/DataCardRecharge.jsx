@@ -1,207 +1,6 @@
-// import React, { useState, useEffect } from "react";
-// import "./CSS/MobileRecharge.css";
-
-// export default function DataCardRecharge() {
-//   const [formData, setFormData] = useState({
-//     number: "",
-//     amount: "",
-//     operatorcode: "",
-//     circlecode: "",
-//   });
-//   const [loading, setLoading] = useState(false);
-//   const [detecting, setDetecting] = useState(false);
-//   const [result, setResult] = useState(null);
-
-//   const username = "8517007867";
-//   const pwd = "0936Ec211013@";
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-
-//     if (name === "amount") {
-//       if (value === "" || (/^\d+$/.test(value) && parseInt(value) > 0)) {
-//         setFormData({ ...formData, [name]: value });
-//       }
-//     } else if (name === "number") {
-//       if (value === "" || /^\d+$/.test(value)) {
-//         setFormData({ ...formData, [name]: value });
-//       }
-//     } else {
-//       setFormData({ ...formData, [name]: value });
-//     }
-//   };
-
-//   useEffect(() => {
-//     const detectOperator = async () => {
-//       if (formData.number.length === 10) {
-//         setDetecting(true);
-//         try {
-//           const res = await fetch(
-//             `http://localhost:5000/api/lookup?number=${formData.number}`
-//           );
-//           const data = await res.json();
-
-//           if (data.operatorcode && data.circlecode) {
-//             setFormData((prev) => ({
-//               ...prev,
-//               operatorcode: data.operatorcode,
-//               circlecode: data.circlecode,
-//             }));
-//           } else {
-//             setFormData((prev) => ({
-//               ...prev,
-//               operatorcode: "",
-//               circlecode: "",
-//             }));
-//           }
-//         } catch (error) {
-//           console.error("Detection failed:", error);
-//           setFormData((prev) => ({
-//             ...prev,
-//             operatorcode: "",
-//             circlecode: "",
-//           }));
-//         } finally {
-//           setDetecting(false);
-//         }
-//       }
-//     };
-
-//     detectOperator();
-//   }, [formData.number]);
-
-//   const handleRecharge = async (e) => {
-//     e.preventDefault();
-//     setLoading(true);
-//     setResult(null);
-
-//     const { number, amount, operatorcode, circlecode } = formData;
-//     const orderid = "ORD" + Date.now();
-
-//     const url = `http://localhost:5000/api/recharge?username=${username}&pwd=${pwd}&operatorcode=${operatorcode}&circlecode=${circlecode}&number=${number}&amount=${amount}&orderid=${orderid}&format=json`;
-
-//     try {
-//       const response = await fetch(url);
-//       const data = await response.json();
-//       setResult(data);
-//     } catch (error) {
-//       console.error("Recharge failed:", error);
-//       setResult({ error: "Failed to connect to API" });
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="recharge-page">
-//       <div className="recharge-container">
-//         <div className="recharge-header">
-//           <h2>DATA CARD RECHARGE</h2>
-//         </div>
-
-//         <div className="recharge-content">
-//           <div className="recharge-form-section">
-//             <form onSubmit={handleRecharge}>
-//               <div className="form-group">
-//                 <label>Data Card Number :</label>
-//                 <input
-//                   type="text"
-//                   name="number"
-//                   placeholder="Please Enter Data Card Number*"
-//                   value={formData.number}
-//                   onChange={handleChange}
-//                   maxLength="10"
-//                   required
-//                 />
-//                 {detecting && (
-//                   <span className="detecting-text">Detecting operator...</span>
-//                 )}
-//               </div>
-
-//               <div className="form-group">
-//                 <label>Select Operator :</label>
-//                 <input
-//                   type="text"
-//                   name="operatorcode"
-//                   placeholder="Select Operator*"
-//                   value={formData.operatorcode}
-//                   readOnly
-//                 />
-//               </div>
-
-//               <div className="form-group">
-//                 <label>Circle Code :</label>
-//                 <input
-//                   type="text"
-//                   name="circlecode"
-//                   placeholder="Circle Code"
-//                   value={formData.circlecode}
-//                   readOnly
-//                 />
-//               </div>
-
-//               <div className="form-group">
-//                 <label>Amount :</label>
-//                 <input
-//                   type="text"
-//                   name="amount"
-//                   placeholder="Amount"
-//                   value={formData.amount}
-//                   onChange={handleChange}
-//                   required
-//                 />
-//               </div>
-
-//               <button type="submit" className="recharge-btn" disabled={loading}>
-//                 {loading ? "Processing..." : "Recharge"}
-//               </button>
-//             </form>
-//           </div>
-//         </div>
-
-//         {result && (
-//           <div className="result-section">
-//             {result.error ? (
-//               <p className="result-error">Error: {result.error}</p>
-//             ) : (
-//               <p className="result-success">Recharge processed successfully!</p>
-//             )}
-//             <div className="result-data">{JSON.stringify(result, null, 2)}</div>
-//           </div>
-//         )}
-
-//         <div className="transaction-section">
-//           <h3>Last 5 Transaction</h3>
-//           <table className="transaction-table">
-//             <thead>
-//               <tr>
-//                 <th>TXID</th>
-//                 <th>Operator</th>
-//                 <th>Number</th>
-//                 <th>Operator Id</th>
-//                 <th>Amount</th>
-//                 <th>Status</th>
-//                 <th>Date</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               <tr>
-//                 <td
-//                   colSpan="7"
-//                   style={{ textAlign: "center", padding: "20px" }}
-//                 >
-//                   No transactions yet
-//                 </td>
-//               </tr>
-//             </tbody>
-//           </table>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
 import React, { useState } from "react";
 import { Smartphone, Zap, TrendingUp, Clock } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function DataCardRecharge() {
   const [dataCardNumber, setDataCardNumber] = useState("");
@@ -274,9 +73,12 @@ export default function DataCardRecharge() {
           </div>
 
           <div style={styles.navLinks}>
-            <a href="#" style={styles.navLink}>
+            {/* <a href="#" style={styles.navLink}>
               Dashboard
-            </a>
+            </a> */}{" "}
+            <Link to="/dashboard" style={styles.navLink}>
+              Dashboard
+            </Link>
             <a href="#" style={styles.navLink}>
               Reports
             </a>
@@ -803,7 +605,7 @@ const styles = {
     border: "1px solid rgba(255, 255, 255, 0.1)",
     borderRadius: "12px",
     fontSize: "15px",
-    color: "white",
+    color: "gray",
     boxSizing: "border-box",
     cursor: "pointer",
     transition: "all 0.3s ease",
