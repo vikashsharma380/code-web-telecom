@@ -292,12 +292,6 @@ const styles = {
     cursor: "pointer",
     transition: "all 0.3s ease",
   },
-  detectingText: {
-    fontSize: "12px",
-    color: "#a5b4fc",
-    marginTop: "8px",
-    fontWeight: "500",
-  },
   quickAmounts: {
     display: "flex",
     flexWrap: "wrap",
@@ -372,7 +366,7 @@ const styles = {
   emptyText: {
     fontSize: "16px",
     fontWeight: "600",
-    color: "rgba(152, 46, 46, 0.7)",
+    color: "rgba(255, 255, 255, 0.7)",
     margin: "0 0 8px 0",
   },
   emptySubtext: {
@@ -462,5 +456,4 @@ const styles = {
     },
   },
 };
-
 export default styles;

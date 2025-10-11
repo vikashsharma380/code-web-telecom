@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Smartphone, Zap, Clock, TrendingUp } from "lucide-react";
-import { Link } from "react-router-dom";
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 export default function MobileRecharge() {
   const [formData, setFormData] = useState({
     number: "",
@@ -9,14 +8,69 @@ export default function MobileRecharge() {
     circlecode: "",
     amount: "",
   });
-  const [amount, setAmount] = useState("");
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [detecting, setDetecting] = useState(false);
   const [activeTab, setActiveTab] = useState("recharge");
+  const [balance, setBalance] = useState(0);
+  const [balanceLoading, setBalanceLoading] = useState(false);
+  const rechargeUser = {
+    username: "500032",
+    pwd: "k0ly9gts",
+  };
+  // === FETCH BALANCE ===
+const fetchBalance = async () => {
+  setBalanceLoading(true);
+  try {
+    const query = new URLSearchParams(rechargeUser).toString();
+    const res = await fetch(`${API_URL}/api/balance?${query}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+    const data = await res.json();
+    setBalance(data.balance || 0);
+  } catch (error) {
+    console.error("Balance fetch failed:", error);
+    setBalance(0);
+  } finally {
+    setBalanceLoading(false);
+  }
+};
 
-  // Operator list
+
+  useEffect(() => {
+    fetchBalance();
+  }, []);
+  // === OPERATOR AUTO-DETECT ===
+  useEffect(() => {
+    const detectOperator = async () => {
+      if (formData.number.length === 10) {
+        setDetecting(true);
+        try {
+          const res = await fetch(
+            `${API_URL}/api/lookup?number=${formData.number}`
+          );
+          if (!res.ok) throw new Error(`Server returned ${res.status}`);
+          const data = await res.json();
+          if (data.operatorcode)
+            setFormData((prev) => ({
+              ...prev,
+              operatorcode: data.operatorcode,
+            }));
+          if (data.circlecode)
+            setFormData((prev) => ({ ...prev, circlecode: data.circlecode }));
+        } catch (error) {
+          console.warn("Auto-detect failed, use dropdown manually", error);
+        } finally {
+          setDetecting(false);
+        }
+      }
+    };
+    detectOperator();
+  }, [formData.number]);
+  // === OPERATORS & CIRCLES ===
   const operators = [
     { code: "A", name: "Airtel" },
     { code: "V", name: "Vodafone" },
@@ -42,8 +96,6 @@ export default function MobileRecharge() {
     { code: "HPSEBL", name: "HP" },
     { code: "Hpgas", name: "Hp Gas" },
   ];
-
-  // Circles
   const circles = [
     { code: "13", name: "Andhra Pradesh" },
     { code: "24", name: "Assam" },
@@ -70,100 +122,67 @@ export default function MobileRecharge() {
     { code: "18", name: "Rajasthan" },
     { code: "26", name: "NORTH EAST" },
   ];
-
-  // Quick amounts
   const quickAmounts = [49, 99, 199, 299, 499, 999];
-
-  const cellStyle = {
-    color: "rgba(255,255,255,0.8)",
-    fontSize: "13px",
-    padding: "10px 16px",
-    whiteSpace: "nowrap",
-  };
-
-  // Handle form input changes
+  // === FORM HANDLERS ===
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-  // Amount input
   const handleAmountChange = (e) => {
     const value = e.target.value;
     if (value === "" || /^\d+$/.test(value)) {
-      setAmount(value);
       setFormData({ ...formData, amount: value });
     }
   };
-
   const handleQuickAmount = (amt) => {
-    setAmount(amt.toString());
     setFormData({ ...formData, amount: amt.toString() });
   };
-
-  // Detect operator automatically
-  useEffect(() => {
-    const detectOperator = async () => {
-      if (formData.number.length === 10) {
-        setDetecting(true);
-        try {
-          const res = await fetch(
-            `http://localhost:5000/api/lookup?number=${formData.number}`
-          );
-          if (!res.ok) throw new Error(`Server returned ${res.status}`);
-          const data = await res.json();
-          if (data.operatorcode)
-            setFormData((prev) => ({
-              ...prev,
-              operatorcode: data.operatorcode,
-            }));
-          if (data.circlecode)
-            setFormData((prev) => ({ ...prev, circlecode: data.circlecode }));
-        } catch (error) {
-          console.warn("Auto-detect failed, use dropdown manually", error);
-        } finally {
-          setDetecting(false);
-        }
-      }
-    };
-    detectOperator();
-  }, [formData.number]);
-
-  // Recharge handler
   const handleRecharge = async (e) => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
-
     try {
-      const res = await fetch("http://localhost:5000/api/recharge", {
+      const { number, operatorcode, circlecode, amount } = formData;
+      if (!number || !operatorcode || !circlecode || !amount)
+        throw new Error("All fields are required");
+      const res = await fetch(`${API_URL}/api/recharge`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username: user.username,
-          pwd: user.password,
-          ...formData,
+          ...rechargeUser,
+          number,
+          operatorcode,
+          circlecode,
+          amount,
         }),
       });
-
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
-      await res.json();
-
-      setResult({ type: "success", message: "Recharge successful!" });
-
-      const newTransaction = {
-        txid: `TX${Date.now()}`,
-        operator: formData.operatorcode,
-        number: formData.number,
-        operatorId: formData.operatorcode.toUpperCase(),
-        amount: formData.amount,
-        status: "Success",
-        date: new Date().toLocaleString(),
-      };
-      setTransactions([newTransaction, ...transactions]);
-
+      const data = await res.json();
+      console.log("✅ Recharge API response:", data);
+      if (data.status === "Success") {
+        setResult({
+          type: "success",
+          message: `Recharge Successful! TXID: ${data.txid}`,
+        });
+        fetchBalance(); // refresh balance
+      } else {
+        setResult({
+          type: "error",
+          message: `Recharge Failed: ${data.opid || "Unknown"}`,
+        });
+      }
+      setTransactions([
+        {
+          txid: data.txid || Math.random(),
+          operator: operatorcode,
+          number,
+          amount,
+          status: data.status,
+          date: new Date().toLocaleString(),
+        },
+        ...transactions,
+      ]);
       setFormData({ number: "", operatorcode: "", circlecode: "", amount: "" });
-      setAmount("");
     } catch (error) {
       console.error("Recharge failed:", error);
       setResult({
@@ -175,13 +194,10 @@ export default function MobileRecharge() {
       setTimeout(() => setResult(null), 5000);
     }
   };
-
+  // === RETURN JSX ===
   return (
     <div style={styles.container}>
-      {/* Animated Background */}
-      <div style={styles.bgPattern}></div>
-
-      {/* Navigation Bar */}
+      {/* NAVBAR & BALANCE */}
       <nav style={styles.navbar}>
         <div style={styles.navContent}>
           <div style={styles.logoSection}>
@@ -193,14 +209,10 @@ export default function MobileRecharge() {
               <div style={styles.logoSubtext}>Digital Recharge Partner</div>
             </div>
           </div>
-
           <div style={styles.navLinks}>
-            {/* <a href="/Dashboard" style={styles.navLink}>
+            <a href="#" style={styles.navLink}>
               Dashboard
-            </a> */}{" "}
-            <Link to="/dashboard" style={styles.navLink}>
-              Dashboard
-            </Link>
+            </a>
             <a href="#" style={styles.navLink}>
               Reports
             </a>
@@ -211,17 +223,17 @@ export default function MobileRecharge() {
               Support
             </a>
           </div>
-
           <div style={styles.userSection}>
             <div style={styles.balanceBadge}>
               <span style={styles.balanceLabel}>Balance</span>
-              <span style={styles.balanceAmount}>₹0.00</span>
+              <div style={styles.balanceAmount}>
+                {balanceLoading ? "Loading..." : `₹${balance.toFixed(2)}`}
+              </div>
             </div>
             <div style={styles.avatar}>V</div>
           </div>
         </div>
       </nav>
-
       {/* Hero Section */}
       <div style={styles.hero}>
         <div style={styles.heroContent}>
@@ -234,7 +246,6 @@ export default function MobileRecharge() {
             <p style={styles.heroSubtitle}>
               Fast, secure, and reliable mobile recharge for all operators
             </p>
-
             <div style={styles.statsGrid}>
               <div style={styles.statCard}>
                 <TrendingUp size={20} />
@@ -254,7 +265,6 @@ export default function MobileRecharge() {
           </div>
         </div>
       </div>
-
       {/* Tab Section */}
       <div style={styles.tabSection}>
         <div style={styles.tabsContainer}>
@@ -281,7 +291,6 @@ export default function MobileRecharge() {
           ))}
         </div>
       </div>
-
       {/* Main Content */}
       <div style={styles.mainContent}>
         <div style={styles.contentGrid}>
@@ -297,7 +306,6 @@ export default function MobileRecharge() {
                   </p>
                 </div>
               </div>
-
               <div style={styles.cardBody}>
                 <form onSubmit={handleRecharge}>
                   <div style={styles.formGroup}>
@@ -317,7 +325,6 @@ export default function MobileRecharge() {
                       </div>
                     )}
                   </div>
-
                   <div style={styles.formGroup}>
                     <label style={styles.label}>Select Operator</label>
                     <select
@@ -334,7 +341,6 @@ export default function MobileRecharge() {
                       ))}
                     </select>
                   </div>
-
                   <div style={styles.formGroup}>
                     <label style={styles.label}>Circle Code</label>
                     <select
@@ -351,7 +357,6 @@ export default function MobileRecharge() {
                       ))}
                     </select>
                   </div>
-
                   <div style={styles.formGroup}>
                     <label style={styles.label}>Recharge Amount</label>
                     <input
@@ -362,7 +367,6 @@ export default function MobileRecharge() {
                       onChange={handleChange}
                       style={styles.input}
                     />
-
                     <div style={styles.quickAmounts}>
                       {quickAmounts.map((amt) => (
                         <button
@@ -378,7 +382,6 @@ export default function MobileRecharge() {
                       ))}
                     </div>
                   </div>
-
                   <button
                     type="submit"
                     disabled={loading}
@@ -396,7 +399,6 @@ export default function MobileRecharge() {
                       </>
                     )}
                   </button>
-
                   {result && (
                     <div
                       style={{
@@ -413,7 +415,6 @@ export default function MobileRecharge() {
               </div>
             </div>
           </div>
-
           {/* Transaction History */}
           <div style={styles.transactionSection}>
             <div style={styles.card}>
@@ -424,7 +425,6 @@ export default function MobileRecharge() {
                   <p style={styles.cardSubtitle}>Your last 5 recharges</p>
                 </div>
               </div>
-
               <div style={styles.cardBody}>
                 {transactions.length === 0 ? (
                   <div style={styles.emptyState}>
@@ -463,7 +463,6 @@ export default function MobileRecharge() {
           </div>
         </div>
       </div>
-
       {/* Footer */}
       <footer style={styles.footer}>
         <p style={styles.footerText}>
@@ -474,7 +473,6 @@ export default function MobileRecharge() {
     </div>
   );
 }
-
 // === STYLES ===
 const styles = {
   container: {
@@ -765,7 +763,7 @@ const styles = {
     border: "1px solid rgba(255, 255, 255, 0.1)",
     borderRadius: "12px",
     fontSize: "15px",
-    color: "gray",
+    color: "black",
     boxSizing: "border-box",
     cursor: "pointer",
     transition: "all 0.3s ease",
@@ -850,7 +848,7 @@ const styles = {
   emptyText: {
     fontSize: "16px",
     fontWeight: "600",
-    color: "rgba(152, 46, 46, 0.7)",
+    color: "rgba(255, 255, 255, 0.7)",
     margin: "0 0 8px 0",
   },
   emptySubtext: {
@@ -940,3 +938,4 @@ const styles = {
     },
   },
 };
+

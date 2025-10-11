@@ -1,73 +1,203 @@
-import React, { useState } from "react";
-import { Smartphone, Zap, TrendingUp, Clock } from "lucide-react";
-import { Link } from "react-router-dom";
-
+import React, { useState, useEffect } from "react";
+import { Smartphone, Zap, Clock, TrendingUp } from "lucide-react";
+import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 export default function DTHRecharge() {
-  const [dthNumber, setDthNumber] = useState("");
-  const [operator, setOperator] = useState("");
-  const [amount, setAmount] = useState("");
+  const [formData, setFormData] = useState({
+    dthNumber: "",
+    operatorcode: "",
+    amount: "",
+  });
+  const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
-  const [transactions, setTransactions] = useState([]);
-  const [activeTab, setActiveTab] = useState("dth");
-
-  const handleAmountChange = (e) => {
-    const value = e.target.value;
-    if (value === "" || (/^\d+$/.test(value) && parseInt(value) > 0)) {
-      setAmount(value);
+  const [detecting, setDetecting] = useState(false);
+  const [balance, setBalance] = useState(0);
+  const [balanceLoading, setBalanceLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("recharge");
+  const rechargeUser = {
+    username: "500032",
+    pwd: "k0ly9gts",
+  };
+  const payload = {
+    number: formData.number,
+    operatorcode: formData.operator,
+    amount: formData.amount,
+  };
+  // === FETCH BALANCE ===
+  const fetchBalance = async () => {
+    setBalanceLoading(true);
+    try {
+      const query = new URLSearchParams(rechargeUser).toString();
+      const res = await fetch(`${API_URL}/api/balance?${query}`);
+      if (!res.ok) throw new Error(`Server returned ${res.status}`);
+      const data = await res.json();
+      setBalance(data.balance || 0);
+    } catch (error) {
+      console.error("Balance fetch failed:", error);
+      setBalance(0);
+    } finally {
+      setBalanceLoading(false);
     }
   };
-
-  const handleRecharge = () => {
+  useEffect(() => {
+    fetchBalance();
+  }, []);
+  // === OPERATOR AUTO-DETECT ===
+  useEffect(() => {
+    const detectOperator = async () => {
+      if (formData.dthNumber.length === 10) {
+        setDetecting(true);
+        try {
+          const res = await fetch(
+            `${API_URL}/api/lookup?number=${formData.dthNumber}`
+          );
+          if (!res.ok) throw new Error(`Server returned ${res.status}`);
+          const data = await res.json();
+          if (data.operatorcode)
+            setFormData((prev) => ({
+              ...prev,
+              operatorcode: data.operatorcode,
+            }));
+          if (data.circlecode)
+            setFormData((prev) => ({ ...prev, circlecode: data.circlecode }));
+        } catch (error) {
+          console.warn("Auto-detect failed, use dropdown manually", error);
+        } finally {
+          setDetecting(false);
+        }
+      }
+    };
+    detectOperator();
+  }, [formData.dthNumber]);
+  // === OPERATORS & CIRCLES ===
+  const operators = [
+    { code: "A", name: "Airtel" },
+    { code: "V", name: "Vodafone" },
+    { code: "BT", name: "BSNL - TOPUP" },
+    { code: "RC", name: "RELIANCE - JIO" },
+    { code: "I", name: "Idea" },
+    { code: "BR", name: "BSNL - STV" },
+    { code: "GLF", name: "Google Play" },
+    { code: "AXF", name: "Axis Bank Fastag" },
+    { code: "BBF", name: "Bank Of Baroda - Fastag" },
+    { code: "EFF", name: "Equitas Fastag Recharge" },
+    { code: "FDF", name: "Federal Bank - Fastag" },
+    { code: "HDF", name: "Hdfc Bank - Fastag" },
+    { code: "ICF", name: "Icici Bank Fastag" },
+    { code: "IBF", name: "Idbi Bank Fastag" },
+    { code: "IFF", name: "Idfc First Bank- Fastag" },
+    { code: "IHMCF", name: "Indian Highways Management Company Ltd Fastag" },
+    { code: "INDF", name: "Indusind Bank Fastag" },
+    { code: "JKF", name: "Jammu And Kashmir Bank Fastag" },
+    { code: "KMF", name: "Kotak Mahindra Bank - Fastag" },
+    { code: "PTF", name: "Paytm Payments Bank Fastag" },
+    { code: "SBF", name: "Sbi Bank Fastag" },
+    { code: "HPSEBL", name: "HP" },
+    { code: "Hpgas", name: "Hp Gas" },
+  ];
+  const circles = [
+    { code: "13", name: "Andhra Pradesh" },
+    { code: "24", name: "Assam" },
+    { code: "17", name: "Bihar" },
+    { code: "27", name: "Chhattisgarh" },
+    { code: "12", name: "Gujarat" },
+    { code: "20", name: "Haryana" },
+    { code: "21", name: "Himachal Pradesh" },
+    { code: "25", name: "Jammu And Kashmir" },
+    { code: "22", name: "Jharkhand" },
+    { code: "9", name: "Karnataka" },
+    { code: "14", name: "Kerala" },
+    { code: "16", name: "Madhya Pradesh" },
+    { code: "4", name: "Maharashtra" },
+    { code: "2", name: "West Bengal" },
+    { code: "10", name: "Uttar Pradesh East" },
+    { code: "11", name: "Uttar Pradesh West" },
+    { code: "3", name: "Mumbai" },
+    { code: "5", name: "Delhi" },
+    { code: "7", name: "CHENNAI" },
+    { code: "6", name: "Kolkata" },
+    { code: "8", name: "Tamil Nadu" },
+    { code: "1", name: "Punjab" },
+    { code: "18", name: "Rajasthan" },
+    { code: "26", name: "NORTH EAST" },
+  ];
+  const quickAmounts = [49, 99, 199, 299, 499, 999];
+  // === FORM HANDLERS ===
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  
+  // === RECHARGE ===
+ const handleRecharge = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setResult(null);
+  try {
+    const { dthNumber, operatorcode: operator, amount } = formData;
     if (!dthNumber || !operator || !amount) {
-      setResult({ type: "error", message: "Please fill all fields!" });
-      return;
+      throw new Error("All fields are required");
     }
-
-    if (dthNumber.length !== 10) {
+    const payload = {
+      ...rechargeUser,   // includes username & pwd
+      number: dthNumber,
+      operatorcode: operator,
+      circlecode: "1", // circlecode is not used for DTH
+      amount,
+      // circlecode is intentionally omitted
+    };
+    console.log("🚀 Sending Payload:", payload);
+    const res = await fetch(`${API_URL}/api/dthrecharge`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+    const data = await res.json();
+    console.log("✅ Recharge API response:", data);
+    if (data.status === "Success") {
+      setResult({
+        type: "success",
+        message: `Recharge Successful! TXID: ${data.txid}`,
+      });
+      fetchBalance(); 
+    } else {
       setResult({
         type: "error",
-        message: "Please enter a valid 10-digit DTH number!",
+        message: `Recharge Failed: ${data.opid || "Unknown"}`,
       });
-      return;
     }
-
-    if (parseInt(amount) <= 0) {
-      setResult({ type: "error", message: "Please enter a valid amount!" });
-      return;
-    }
-
-    setLoading(true);
-    setResult(null);
-
-    setTimeout(() => {
-      setLoading(false);
-      setResult({ type: "success", message: "Recharge successful!" });
-      const newTransaction = {
-        txid: `TX${Date.now()}`,
+    // Add to transaction history
+    setTransactions([
+      {
+        txid: data.txid || Math.random(),
         operator,
         number: dthNumber,
-        operatorId: operator.toUpperCase(),
-        amount: amount,
-        status: "Success",
+        amount,
+        status: data.status,
         date: new Date().toLocaleString(),
-      };
-      setTransactions([newTransaction, ...transactions]);
-      setDthNumber("");
-      setOperator("");
-      setAmount("");
-
-      setTimeout(() => setResult(null), 5000);
-    }, 1500);
-  };
-
-  const quickAmounts = [49, 99, 199, 299, 499, 999];
+      },
+      ...transactions,
+    ]);
+    // Reset form
+    setFormData({ dthNumber: "", operatorcode: "", amount: "" });
+  } catch (error) {
+    console.error("Recharge failed:", error);
+    setResult({
+      type: "error",
+      message: error.message || "API connection failed",
+    });
+  } finally {
+    setLoading(false);
+    setTimeout(() => setResult(null), 5000);
+  }
+};
 
   return (
     <div style={styles.container}>
       {/* Animated Background */}
       <div style={styles.bgPattern}></div>
-
       {/* Navigation Bar */}
       <nav style={styles.navbar}>
         <div style={styles.navContent}>
@@ -80,14 +210,10 @@ export default function DTHRecharge() {
               <div style={styles.logoSubtext}>Digital Recharge Partner</div>
             </div>
           </div>
-
           <div style={styles.navLinks}>
-            {/* <a href="#" style={styles.navLink}>
+            <a href="#" style={styles.navLink}>
               Dashboard
-            </a> */}{" "}
-            <Link to="/dashboard" style={styles.navLink}>
-              Dashboard
-            </Link>
+            </a>
             <a href="#" style={styles.navLink}>
               Reports
             </a>
@@ -98,17 +224,17 @@ export default function DTHRecharge() {
               Support
             </a>
           </div>
-
           <div style={styles.userSection}>
             <div style={styles.balanceBadge}>
-              <span style={styles.balanceLabel}>Balance</span>
-              <span style={styles.balanceAmount}>₹0.00</span>
-            </div>
+  <span style={styles.balanceLabel}>Balance</span>
+  <span style={styles.balanceAmount}>
+    {balanceLoading ? "..." : `₹${balance.toFixed(2)}`}
+  </span>
+</div>
             <div style={styles.avatar}>V</div>
           </div>
         </div>
       </nav>
-
       {/* Hero Section */}
       <div style={styles.hero}>
         <div style={styles.heroContent}>
@@ -121,7 +247,6 @@ export default function DTHRecharge() {
             <p style={styles.heroSubtitle}>
               Fast, secure, and reliable DTH recharge for all operators
             </p>
-
             <div style={styles.statsGrid}>
               <div style={styles.statCard}>
                 <TrendingUp size={20} />
@@ -141,7 +266,6 @@ export default function DTHRecharge() {
           </div>
         </div>
       </div>
-
       {/* Tab Section */}
       <div style={styles.tabSection}>
         <div style={styles.tabsContainer}>
@@ -168,7 +292,6 @@ export default function DTHRecharge() {
           ))}
         </div>
       </div>
-
       {/* Main Content */}
       <div style={styles.mainContent}>
         <div style={styles.contentGrid}>
@@ -184,61 +307,78 @@ export default function DTHRecharge() {
                   </p>
                 </div>
               </div>
-
               <div style={styles.cardBody}>
                 <div style={styles.formGroup}>
                   <label style={styles.label}>DTH Number</label>
                   <input
                     type="tel"
                     placeholder="Enter 10-digit DTH number"
-                    value={dthNumber}
+                    name="dthNumber"
+                    value={formData.dthNumber || ""}
                     onChange={(e) =>
-                      setDthNumber(
-                        e.target.value.replace(/\D/g, "").slice(0, 10)
-                      )
+                      setFormData((prev) => ({
+                        ...prev,
+                        dthNumber: e.target.value
+                          .replace(/\D/g, "")
+                          .slice(0, 10),
+                      }))
                     }
                     style={styles.input}
                   />
                 </div>
-
                 <div style={styles.formGroup}>
                   <label style={styles.label}>Select Operator</label>
                   <select
-                    value={operator}
-                    onChange={(e) => setOperator(e.target.value)}
-                    style={styles.select}
+                    name="operatorcode"
+                    value={formData.operatorcode}
+                    onChange={handleChange}
+                    className="selectBox"
+                    style={{
+                      width: "100%",
+                      padding: "14px 16px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      borderRadius: "12px",
+                      fontSize: "15px",
+                      color: "white",
+                      boxSizing: "border-box",
+                      cursor: "pointer",
+                      transition: "all 0.3s ease",
+                    }}
                   >
-                    <option value="">Choose your DTH operator</option>
-                    <option value="Tata Sky">Tata Sky</option>
-                    <option value="Dish TV">Dish TV</option>
-                    <option value="Airtel Digital TV">Airtel Digital TV</option>
-                    <option value="Sun Direct">Sun Direct</option>
+                    <option value="">Select Operator</option>
+                    {operators.map((operator) => (
+                      <option key={operator.code} value={operator.code}>
+                        {operator.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
-
                 <div style={styles.formGroup}>
                   <label style={styles.label}>Recharge Amount</label>
                   <input
                     type="text"
-                    placeholder="Enter amount"
-                    value={amount}
-                    onChange={handleAmountChange}
+                    placeholder="Enter Amount"
+                    value={formData.amount}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, "");
+                      setFormData((prev) => ({ ...prev, amount: val }));
+                    }}
                     style={styles.input}
                   />
-
                   <div style={styles.quickAmounts}>
                     {quickAmounts.map((amt) => (
                       <button
+                        type="button"
                         key={amt}
                         onClick={() => setAmount(amt.toString())}
-                        style={styles.quickAmountBtn}
+                        style={styles.quickBtn}
                       >
                         ₹{amt}
                       </button>
                     ))}
                   </div>
                 </div>
-
                 <button
                   onClick={handleRecharge}
                   disabled={loading}
@@ -256,7 +396,6 @@ export default function DTHRecharge() {
                     </>
                   )}
                 </button>
-
                 {result && (
                   <div
                     style={{
@@ -272,7 +411,6 @@ export default function DTHRecharge() {
               </div>
             </div>
           </div>
-
           {/* Transaction History */}
           <div style={styles.transactionSection}>
             <div style={styles.card}>
@@ -283,7 +421,6 @@ export default function DTHRecharge() {
                   <p style={styles.cardSubtitle}>Your last 5 recharges</p>
                 </div>
               </div>
-
               <div style={styles.cardBody}>
                 {transactions.length === 0 ? (
                   <div style={styles.emptyState}>
@@ -322,7 +459,6 @@ export default function DTHRecharge() {
           </div>
         </div>
       </div>
-
       {/* Footer */}
       <footer style={styles.footer}>
         <p style={styles.footerText}>
@@ -333,7 +469,6 @@ export default function DTHRecharge() {
     </div>
   );
 }
-
 // === STYLES ===
 const styles = {
   container: {
@@ -617,18 +752,19 @@ const styles = {
     boxSizing: "border-box",
     transition: "all 0.3s ease",
   },
-  select: {
-    width: "100%",
-    padding: "14px 16px",
-    background: "rgba(255, 255, 255, 0.05)",
-    border: "1px solid rgba(255, 255, 255, 0.1)",
-    borderRadius: "12px",
-    fontSize: "15px",
-    color: "gray",
-    boxSizing: "border-box",
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-  },
+  /* Jab dropdown open ho, options ka color black */
+  // select: {
+  //   width: "100%",
+  //   padding: "14px 16px",
+  //   background: "rgba(255, 255, 255, 0.05)",
+  //   border: "1px solid rgba(255, 255, 255, 0.1)",
+  //   borderRadius: "12px",
+  //   fontSize: "15px",
+  //   color: "white",
+  //   boxSizing: "border-box",
+  //   cursor: "pointer",
+  //   transition: "all 0.3s ease",
+  // },
   quickAmounts: {
     display: "flex",
     flexWrap: "wrap",
@@ -793,3 +929,4 @@ const styles = {
     },
   },
 };
+
