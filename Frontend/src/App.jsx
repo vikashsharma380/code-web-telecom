@@ -13,6 +13,7 @@ import FASTagRecharge from "./Components/FASTagRecharge";
 import GasRecharge from "./Components/GasRecharge";
 import DataCardRecharge from "./Components/DataCardRecharge";
 import Dashboard from "./Components/Dashboard";
+import WebSolutions from "./Components/WebSolutions";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/GasRecharge" element={<GasRecharge />} />
         <Route path="/DataCardRecharge" element={<DataCardRecharge />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/web-solutions" element={<WebSolutions />} />
       </Routes>
     </>
   );
