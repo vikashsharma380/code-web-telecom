@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Smartphone, Zap, Clock, TrendingUp } from "lucide-react";
 import styles from "../styles";
+import Nav from "../../hero/nav";
+import Hero from "../../hero/Hero";
+import Tab from "../../hero/Tab";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -136,61 +139,14 @@ export default function PostpaidRecharge() {
   // === RETURN JSX ===
   return (
     <div style={styles.container}>
-      {/* Navbar */}
-      <nav style={styles.navbar}>
-        <div style={styles.navContent}>
-          <div style={styles.logoSection}>
-            <div style={styles.logoIcon}>
-              <Smartphone size={24} />
-            </div>
-            <div>
-              <div style={styles.logoText}>CodeWeb Telecom</div>
-              <div style={styles.logoSubtext}>Postpaid Bill Payment</div>
-            </div>
-          </div>
-          <div style={styles.userSection}>
-            <div style={styles.balanceBadge}>
-              <span style={styles.balanceLabel}>Balance</span>
-              <div style={styles.balanceAmount}>
-                {balanceLoading ? "Loading..." : `₹${balance.toFixed(2)}`}
-              </div>
-            </div>
-            <div style={styles.avatar}>V</div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <div style={styles.hero}>
-        <div style={styles.heroContent}>
-          <div style={styles.heroLeft}>
-            <div style={styles.welcomeBadge}>
-              <Zap size={16} />
-              <span>Welcome back, Vikash!</span>
-            </div>
-            <h1 style={styles.heroTitle}>Postpaid Recharge</h1>
-            <p style={styles.heroSubtitle}>
-              Pay your postpaid mobile bills instantly and securely
-            </p>
-            <div style={styles.statsGrid}>
-              <div style={styles.statCard}>
-                <TrendingUp size={20} />
-                <div>
-                  <div style={styles.statValue}>30,000+</div>
-                  <div style={styles.statLabel}>Bills Processed</div>
-                </div>
-              </div>
-              <div style={styles.statCard}>
-                <Clock size={20} />
-                <div>
-                  <div style={styles.statValue}>3 Sec</div>
-                  <div style={styles.statLabel}>Avg. Processing Time</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+       {/* Navbar */}
+          <Nav/>
+     
+           {/* Hero Section */}
+         <Hero/>
+     
+           {/* Tabs */}
+          <Tab/>
 
       {/* Form Section */}
       <div style={styles.mainContent}>
