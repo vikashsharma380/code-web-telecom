@@ -15,6 +15,8 @@ import Dashboard from "./Components/Dashboard";
 import WebSolutions from "./Components/WebSolutions";
 import InsuranceRecharge from "./Components/InsuranceRecharge";
 import PostpaidRecharge from "./Components/PostpaidRecharge";
+import GooglePlayRecharge from "./Components/GooglePlayRecharge";
+import WaterBillRecharge from "./Components/WaterBillRecharge";
 
 function App() {
   return (
@@ -34,6 +36,8 @@ function App() {
         <Route path="/web-solutions" element={<WebSolutions />} />
         <Route path="/InsuranceRecharge" element={<InsuranceRecharge />} />
         <Route path="/PostpaidRecharge" element={<PostpaidRecharge />} />
+        <Route path="/GooglePlayRecharge" element={<GooglePlayRecharge />} />
+        <Route path="/WaterBillRecharge" element={<WaterBillRecharge />} />
       </Routes>
     </>
   );

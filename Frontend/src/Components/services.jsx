@@ -68,6 +68,7 @@ const services = [
   {
     id: "water",
     name: "Water Bill",
+    type: "water",
     icon: Droplet,
     color: "#06B6D4",
     description:
@@ -109,17 +110,20 @@ const services = [
     ],
   },
   {
-    id: "googleplay",
-    name: "Google Play Recharge",
-    icon: Gamepad2,
-    color: "#8B5CF6",
-    description:
-      "Top up your Google Play balance for apps, games, and entertainment",
+    id: 9,
+    name: "Google Play",
+    type: "googleplay",
+    description: "Recharge your Google Play balance instantly",
+    icon: Smartphone, // Use any existing icon like Smartphone
+    color: "#34A853", // Google green
     features: [
-      "Instant Credit",
-      "Multiple Denominations",
-      "Secure Payment",
-      "Gift Options",
+      "Instant",
+      "Secure",
+      "Digital",
+      "Multiple Amount Options",
+      "No Hidden Fees",
+      "24/7 Availability",
+      "Safe & Reliable",
     ],
   },
   {
