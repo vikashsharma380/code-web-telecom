@@ -4,7 +4,6 @@ import CodeWebTelecom from "./CodeWebFrontend";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import MobileRecharge from "./Components/MobileRecharge";
-
 import { useParams } from "react-router-dom";
 import ServicePage from "./pages/ServicePage";
 import DTHRecharge from "./Components/DTHRecharge";
@@ -14,6 +13,8 @@ import GasRecharge from "./Components/GasRecharge";
 import DataCardRecharge from "./Components/DataCardRecharge";
 import Dashboard from "./Components/Dashboard";
 import WebSolutions from "./Components/WebSolutions";
+import InsuranceRecharge from "./Components/InsuranceRecharge";
+import PostpaidRecharge from "./Components/PostpaidRecharge";
 
 function App() {
   return (
@@ -31,6 +32,8 @@ function App() {
         <Route path="/DataCardRecharge" element={<DataCardRecharge />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/web-solutions" element={<WebSolutions />} />
+        <Route path="/InsuranceRecharge" element={<InsuranceRecharge />} />
+        <Route path="/PostpaidRecharge" element={<PostpaidRecharge />} />
       </Routes>
     </>
   );

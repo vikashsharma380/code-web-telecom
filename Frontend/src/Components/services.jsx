@@ -21,8 +21,8 @@ import {
   Mail,
   ChevronDown,
   Play,
+  Smartphone,
 } from "lucide-react";
-// import logo from "./assets/logo.jpeg";
 
 const services = [
   {
@@ -135,6 +135,37 @@ const services = [
       "Various Plans",
       "Instant Activation",
       "Best Offers",
+    ],
+  },
+  // ✅ New Insurance Service
+  {
+    id: "insurance",
+    name: "Insurance Payment",
+    type: "InsuranceRecharge",
+    icon: Shield,
+    color: "#3B82F6",
+    description:
+      "Pay your insurance premium securely and instantly for all leading providers.",
+    features: [
+      "LIC, HDFC, ICICI, SBI, Max Life",
+      "Instant Confirmation",
+      "Secure Payment Gateway",
+      "No Extra Charges",
+    ],
+  },
+  {
+    id: "postpaid",
+    name: "Postpaid Recharge",
+    type: "PostpaidRecharge",
+    icon: Smartphone,
+    color: "#10B981",
+    description:
+      "Recharge your postpaid mobile instantly and stay connected without interruption.",
+    features: [
+      "All Major Operators Supported",
+      "Instant Bill Payment",
+      "Secure Transactions",
+      "Auto Reminder for Due Bills",
     ],
   },
 ];

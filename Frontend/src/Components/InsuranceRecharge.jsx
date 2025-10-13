@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import "./CSS/rechargeForm.css";
+import { ShieldCheck, Clock, TrendingUp } from "lucide-react";
+import styles from "../styles";
 
 export default function InsuranceRecharge() {
   const [formData, setFormData] = useState({
@@ -15,7 +16,6 @@ export default function InsuranceRecharge() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name === "amount") {
       if (value === "" || (/^\d+$/.test(value) && parseInt(value) > 0)) {
         setFormData({ ...formData, [name]: value });
@@ -48,100 +48,108 @@ export default function InsuranceRecharge() {
   };
 
   return (
-    <div className="recharge-page">
-      <div className="recharge-container">
-        <div className="recharge-header">
-          <h2>INSURANCE PREMIUM PAYMENT</h2>
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <div style={styles.header}>
+          <ShieldCheck size={36} color="#4f46e5" />
+          <h2 style={styles.title}>INSURANCE PREMIUM PAYMENT</h2>
         </div>
 
-        <div className="recharge-content">
-          <div className="recharge-form-section">
-            <form onSubmit={handleRecharge}>
-              <div className="form-group">
-                <label>Policy Number :</label>
-                <input
-                  type="text"
-                  name="number"
-                  placeholder="Please Enter Policy Number*"
-                  value={formData.number}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Select Insurance Provider :</label>
-                <select
-                  name="operatorcode"
-                  value={formData.operatorcode}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Insurance Provider*</option>
-                  <option value="INS01">LIC of India</option>
-                  <option value="INS02">HDFC Life Insurance</option>
-                  <option value="INS03">ICICI Prudential Life</option>
-                  <option value="INS04">SBI Life Insurance</option>
-                  <option value="INS05">Max Life Insurance</option>
-                  <option value="INS06">Bajaj Allianz Life</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Amount :</label>
-                <input
-                  type="text"
-                  name="amount"
-                  placeholder="Amount"
-                  value={formData.amount}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <button type="submit" className="recharge-btn" disabled={loading}>
-                {loading ? "Processing..." : "Pay Premium"}
-              </button>
-            </form>
+        <form onSubmit={handleRecharge} style={styles.form}>
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>Policy Number</label>
+            <input
+              type="text"
+              name="number"
+              placeholder="Enter Policy Number*"
+              value={formData.number}
+              onChange={handleChange}
+              style={styles.input}
+              required
+            />
           </div>
-        </div>
+
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>Select Insurance Provider</label>
+            <select
+              name="operatorcode"
+              value={formData.operatorcode}
+              onChange={handleChange}
+              style={styles.select}
+              required
+            >
+              <option value="">Select Insurance Provider*</option>
+              <option value="INS01">LIC of India</option>
+              <option value="INS02">HDFC Life Insurance</option>
+              <option value="INS03">ICICI Prudential Life</option>
+              <option value="INS04">SBI Life Insurance</option>
+              <option value="INS05">Max Life Insurance</option>
+              <option value="INS06">Bajaj Allianz Life</option>
+            </select>
+          </div>
+
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>Amount</label>
+            <input
+              type="text"
+              name="amount"
+              placeholder="Enter Amount"
+              value={formData.amount}
+              onChange={handleChange}
+              style={styles.input}
+              required
+            />
+          </div>
+
+          <button type="submit" style={styles.button} disabled={loading}>
+            {loading ? "Processing..." : "Pay Premium"}
+          </button>
+        </form>
 
         {result && (
-          <div className="result-section">
+          <div style={styles.resultContainer}>
             {result.error ? (
-              <p className="result-error">Error: {result.error}</p>
+              <p style={styles.errorText}>Error: {result.error}</p>
             ) : (
-              <p className="result-success">Payment processed successfully!</p>
+              <p style={styles.successText}>Payment processed successfully!</p>
             )}
-            <div className="result-data">{JSON.stringify(result, null, 2)}</div>
+            <pre style={styles.resultBox}>
+              {JSON.stringify(result, null, 2)}
+            </pre>
           </div>
         )}
 
-        <div className="transaction-section">
-          <h3>Last 5 Transaction</h3>
-          <table className="transaction-table">
+        <div style={styles.transactions}>
+          <div style={styles.transHeader}>
+            <Clock size={20} color="#4f46e5" />
+            <h3 style={styles.subTitle}>Last 5 Transactions</h3>
+          </div>
+
+          <table style={styles.table}>
             <thead>
               <tr>
-                <th>TXID</th>
-                <th>Operator</th>
-                <th>Number</th>
-                <th>Operator Id</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Date</th>
+                <th style={styles.th}>TXID</th>
+                <th style={styles.th}>Operator</th>
+                <th style={styles.th}>Number</th>
+                <th style={styles.th}>Operator ID</th>
+                <th style={styles.th}>Amount</th>
+                <th style={styles.th}>Status</th>
+                <th style={styles.th}>Date</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td
-                  colspan="7"
-                  style={{ textAlign: "center", padding: "20px" }}
-                >
+                <td colSpan="7" style={styles.noData}>
                   No transactions yet
                 </td>
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <div style={styles.footerNote}>
+          <TrendingUp size={18} color="#22c55e" />
+          <span>Secure & Fast Insurance Premium Payments</span>
         </div>
       </div>
     </div>

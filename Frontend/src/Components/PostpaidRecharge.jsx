@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Smartphone, Zap, Clock, TrendingUp } from "lucide-react";
 import styles from "../styles";
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-export default function MobileRecharge() {
+
+export default function PostpaidRecharge() {
   const [formData, setFormData] = useState({
     number: "",
     operatorcode: "",
@@ -12,23 +14,21 @@ export default function MobileRecharge() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
-  const [detecting, setDetecting] = useState(false);
-  const [activeTab, setActiveTab] = useState("recharge");
+  const [activeTab, setActiveTab] = useState("postpaid");
   const [balance, setBalance] = useState(0);
   const [balanceLoading, setBalanceLoading] = useState(false);
+
   const rechargeUser = {
     username: "500032",
     pwd: "k0ly9gts",
   };
+
   // === FETCH BALANCE ===
   const fetchBalance = async () => {
     setBalanceLoading(true);
     try {
       const query = new URLSearchParams(rechargeUser).toString();
-      const res = await fetch(`${API_URL}/api/balance?${query}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
+      const res = await fetch(`${API_URL}/api/balance?${query}`);
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
       setBalance(data.balance || 0);
@@ -43,59 +43,16 @@ export default function MobileRecharge() {
   useEffect(() => {
     fetchBalance();
   }, []);
-  // === OPERATOR AUTO-DETECT ===
-  useEffect(() => {
-    const detectOperator = async () => {
-      if (formData.number.length === 10) {
-        setDetecting(true);
-        try {
-          const res = await fetch(
-            `${API_URL}/api/lookup?number=${formData.number}`
-          );
-          if (!res.ok) throw new Error(`Server returned ${res.status}`);
-          const data = await res.json();
-          if (data.operatorcode)
-            setFormData((prev) => ({
-              ...prev,
-              operatorcode: data.operatorcode,
-            }));
-          if (data.circlecode)
-            setFormData((prev) => ({ ...prev, circlecode: data.circlecode }));
-        } catch (error) {
-          console.warn("Auto-detect failed, use dropdown manually", error);
-        } finally {
-          setDetecting(false);
-        }
-      }
-    };
-    detectOperator();
-  }, [formData.number]);
+
   // === OPERATORS & CIRCLES ===
   const operators = [
-    { code: "A", name: "Airtel" },
-    { code: "V", name: "Vodafone" },
-    { code: "BT", name: "BSNL - TOPUP" },
-    { code: "RC", name: "RELIANCE - JIO" },
-    { code: "I", name: "Idea" },
-    { code: "BR", name: "BSNL - STV" },
-    { code: "GLF", name: "Google Play" },
-    { code: "AXF", name: "Axis Bank Fastag" },
-    { code: "BBF", name: "Bank Of Baroda - Fastag" },
-    { code: "EFF", name: "Equitas Fastag Recharge" },
-    { code: "FDF", name: "Federal Bank - Fastag" },
-    { code: "HDF", name: "Hdfc Bank - Fastag" },
-    { code: "ICF", name: "Icici Bank Fastag" },
-    { code: "IBF", name: "Idbi Bank Fastag" },
-    { code: "IFF", name: "Idfc First Bank- Fastag" },
-    { code: "IHMCF", name: "Indian Highways Management Company Ltd Fastag" },
-    { code: "INDF", name: "Indusind Bank Fastag" },
-    { code: "JKF", name: "Jammu And Kashmir Bank Fastag" },
-    { code: "KMF", name: "Kotak Mahindra Bank - Fastag" },
-    { code: "PTF", name: "Paytm Payments Bank Fastag" },
-    { code: "SBF", name: "Sbi Bank Fastag" },
-    { code: "HPSEBL", name: "HP" },
-    { code: "Hpgas", name: "Hp Gas" },
+    { code: "AP", name: "Airtel Postpaid" },
+    { code: "VP", name: "Vodafone Postpaid" },
+    { code: "IP", name: "Idea Postpaid" },
+    { code: "JP", name: "Jio Postpaid" },
+    { code: "BP", name: "BSNL Postpaid" },
   ];
+
   const circles = [
     { code: "13", name: "Andhra Pradesh" },
     { code: "24", name: "Assam" },
@@ -115,28 +72,16 @@ export default function MobileRecharge() {
     { code: "11", name: "Uttar Pradesh West" },
     { code: "3", name: "Mumbai" },
     { code: "5", name: "Delhi" },
-    { code: "7", name: "CHENNAI" },
-    { code: "6", name: "Kolkata" },
-    { code: "8", name: "Tamil Nadu" },
-    { code: "1", name: "Punjab" },
-    { code: "18", name: "Rajasthan" },
-    { code: "26", name: "NORTH EAST" },
   ];
-  const quickAmounts = [49, 99, 199, 299, 499, 999];
+
+  const quickAmounts = [199, 299, 399, 499, 599, 999];
+
   // === FORM HANDLERS ===
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  const handleAmountChange = (e) => {
-    const value = e.target.value;
-    if (value === "" || /^\d+$/.test(value)) {
-      setFormData({ ...formData, amount: value });
-    }
-  };
-  const handleQuickAmount = (amt) => {
-    setFormData({ ...formData, amount: amt.toString() });
-  };
+
   const handleRecharge = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -158,17 +103,16 @@ export default function MobileRecharge() {
       });
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
-      console.log("✅ Recharge API response:", data);
       if (data.status === "Success") {
         setResult({
           type: "success",
-          message: `Recharge Successful! TXID: ${data.txid}`,
+          message: `Postpaid Bill Payment Successful! TXID: ${data.txid}`,
         });
-        fetchBalance(); // refresh balance
+        fetchBalance();
       } else {
         setResult({
           type: "error",
-          message: `Recharge Failed: ${data.opid || "Unknown"}`,
+          message: `Payment Failed: ${data.opid || "Unknown"}`,
         });
       }
       setTransactions([
@@ -194,10 +138,11 @@ export default function MobileRecharge() {
       setTimeout(() => setResult(null), 5000);
     }
   };
+
   // === RETURN JSX ===
   return (
     <div style={styles.container}>
-      {/* NAVBAR & BALANCE */}
+      {/* Navbar */}
       <nav style={styles.navbar}>
         <div style={styles.navContent}>
           <div style={styles.logoSection}>
@@ -206,22 +151,8 @@ export default function MobileRecharge() {
             </div>
             <div>
               <div style={styles.logoText}>CodeWeb Telecom</div>
-              <div style={styles.logoSubtext}>Digital Recharge Partner</div>
+              <div style={styles.logoSubtext}>Postpaid Bill Payment</div>
             </div>
-          </div>
-          <div style={styles.navLinks}>
-            <a href="#" style={styles.navLink}>
-              Dashboard
-            </a>
-            <a href="#" style={styles.navLink}>
-              Reports
-            </a>
-            <a href="#" style={styles.navLink}>
-              Account
-            </a>
-            <a href="#" style={styles.navLink}>
-              Support
-            </a>
           </div>
           <div style={styles.userSection}>
             <div style={styles.balanceBadge}>
@@ -234,6 +165,7 @@ export default function MobileRecharge() {
           </div>
         </div>
       </nav>
+
       {/* Hero Section */}
       <div style={styles.hero}>
         <div style={styles.heroContent}>
@@ -242,67 +174,42 @@ export default function MobileRecharge() {
               <Zap size={16} />
               <span>Welcome back, Vikash!</span>
             </div>
-            <h1 style={styles.heroTitle}>Instant Recharge</h1>
+            <h1 style={styles.heroTitle}>Postpaid Recharge</h1>
             <p style={styles.heroSubtitle}>
-              Fast, secure, and reliable mobile recharge for all operators
+              Pay your postpaid mobile bills instantly and securely
             </p>
             <div style={styles.statsGrid}>
               <div style={styles.statCard}>
                 <TrendingUp size={20} />
                 <div>
-                  <div style={styles.statValue}>50,000+</div>
-                  <div style={styles.statLabel}>Users Trust Us</div>
+                  <div style={styles.statValue}>30,000+</div>
+                  <div style={styles.statLabel}>Bills Processed</div>
                 </div>
               </div>
               <div style={styles.statCard}>
                 <Clock size={20} />
                 <div>
-                  <div style={styles.statValue}>2 Sec</div>
-                  <div style={styles.statLabel}>Avg. Processing</div>
+                  <div style={styles.statValue}>3 Sec</div>
+                  <div style={styles.statLabel}>Avg. Processing Time</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      {/* Tab Section */}
-      <div style={styles.tabSection}>
-        <div style={styles.tabsContainer}>
-          {[
-            "Mobile",
-            "DTH",
-            "Data Card",
-            "Postpaid",
-            "Electricity",
-            "Gas",
-            "Insurance",
-            "Transfer",
-          ].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab.toLowerCase())}
-              style={{
-                ...styles.tabBtn,
-                ...(activeTab === tab.toLowerCase() ? styles.tabBtnActive : {}),
-              }}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-      </div>
-      {/* Main Content */}
+
+      {/* Form Section */}
       <div style={styles.mainContent}>
         <div style={styles.contentGrid}>
-          {/* Recharge Form */}
+          {/* Form */}
           <div style={styles.formSection}>
             <div style={styles.card}>
               <div style={styles.cardHeader}>
                 <Smartphone size={24} />
                 <div>
-                  <h2 style={styles.cardTitle}>Mobile Recharge</h2>
+                  <h2 style={styles.cardTitle}>Postpaid Recharge</h2>
                   <p style={styles.cardSubtitle}>
-                    Recharge for all mobile operators
+                    Pay your mobile bill in seconds
                   </p>
                 </div>
               </div>
@@ -313,18 +220,14 @@ export default function MobileRecharge() {
                     <input
                       type="tel"
                       name="number"
-                      placeholder="Enter 10-digit mobile number"
+                      placeholder="Enter your postpaid number"
                       value={formData.number}
                       onChange={handleChange}
                       maxLength="10"
                       style={styles.input}
                     />
-                    {detecting && (
-                      <div style={styles.detectingText}>
-                        Detecting operator...
-                      </div>
-                    )}
                   </div>
+
                   <div style={styles.formGroup}>
                     <label style={styles.label}>Select Operator</label>
                     <select
@@ -333,7 +236,7 @@ export default function MobileRecharge() {
                       onChange={handleChange}
                       style={styles.select}
                     >
-                      <option value="">Choose your mobile operator</option>
+                      <option value="">Choose your operator</option>
                       {operators.map((op) => (
                         <option key={op.code} value={op.code}>
                           {op.name}
@@ -341,8 +244,9 @@ export default function MobileRecharge() {
                       ))}
                     </select>
                   </div>
+
                   <div style={styles.formGroup}>
-                    <label style={styles.label}>Circle Code</label>
+                    <label style={styles.label}>Circle</label>
                     <select
                       name="circlecode"
                       value={formData.circlecode}
@@ -357,12 +261,13 @@ export default function MobileRecharge() {
                       ))}
                     </select>
                   </div>
+
                   <div style={styles.formGroup}>
-                    <label style={styles.label}>Recharge Amount</label>
+                    <label style={styles.label}>Bill Amount</label>
                     <input
                       type="text"
                       name="amount"
-                      placeholder="Enter amount"
+                      placeholder="Enter bill amount"
                       value={formData.amount}
                       onChange={handleChange}
                       style={styles.input}
@@ -382,6 +287,7 @@ export default function MobileRecharge() {
                       ))}
                     </div>
                   </div>
+
                   <button
                     type="submit"
                     disabled={loading}
@@ -395,10 +301,11 @@ export default function MobileRecharge() {
                     ) : (
                       <>
                         <Zap size={20} />
-                        Recharge Now
+                        Pay Bill Now
                       </>
                     )}
                   </button>
+
                   {result && (
                     <div
                       style={{
@@ -415,14 +322,15 @@ export default function MobileRecharge() {
               </div>
             </div>
           </div>
-          {/* Transaction History */}
+
+          {/* Transactions */}
           <div style={styles.transactionSection}>
             <div style={styles.card}>
               <div style={styles.cardHeader}>
                 <Clock size={24} />
                 <div>
                   <h2 style={styles.cardTitle}>Recent Transactions</h2>
-                  <p style={styles.cardSubtitle}>Your last 5 recharges</p>
+                  <p style={styles.cardSubtitle}>Last 5 postpaid bills</p>
                 </div>
               </div>
               <div style={styles.cardBody}>
@@ -431,7 +339,7 @@ export default function MobileRecharge() {
                     <div style={styles.emptyIcon}>📱</div>
                     <p style={styles.emptyText}>No transactions yet</p>
                     <p style={styles.emptySubtext}>
-                      Your mobile recharge history will appear here
+                      Your postpaid recharge history will appear here
                     </p>
                   </div>
                 ) : (
@@ -463,6 +371,7 @@ export default function MobileRecharge() {
           </div>
         </div>
       </div>
+
       {/* Footer */}
       <footer style={styles.footer}>
         <p style={styles.footerText}>
