@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Smartphone, Zap, TrendingUp, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
-import styles from "../styles";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
+import Nav from "../../hero/nav";
+import Hero from "../../hero/Hero";
+import Tab from "../../hero/Tab";
+import styles from "../styles";
 export default function DataCardRecharge() {
   const [dataCardNumber, setDataCardNumber] = useState("");
   const [operator, setOperator] = useState("");
   const [amount, setAmount] = useState("");
-
   const [formData, setFormData] = useState({
     consumerNumber: "",
     operatorcode: "",
@@ -31,123 +32,14 @@ export default function DataCardRecharge() {
   const quickAmounts = [100, 200, 500, 1000, 2000];
 
   const operators = [
-    { code: "BSES", name: "BSES Rajdhani Power Limited - Delhi" },
-    { code: "BSESY", name: "BSES Yamuna Power Limited - Delhi" },
-    { code: "TPD", name: "Tata Power Delhi Limited - Delhi" },
-    { code: "REL", name: "Reliance Energy Limited" },
-    { code: "NBE", name: "North Bihar Electricity" },
-    { code: "SBE", name: "South Bihar Electricity" },
-    { code: "BEST", name: "BEST Electricity" },
-    { code: "AJV", name: "Ajmer Vidyut Vitran Nigam - RAJASTHAN" },
-    { code: "BESCOM", name: "BESCOM - BENGALURU" },
-    { code: "CESC", name: "CESC - WEST BENGAL" },
-    { code: "CSEB", name: "CSEB - CHHATTISGARH" },
-    { code: "JVV", name: "Jaipur Vidyut Vitran Nigam - RAJASTHAN" },
-    { code: "JDVV", name: "Jodhpur Vidyut Vitran Nigam - RAJASTHAN" },
-    { code: "MKV1", name: "Madhya Kshetra Vitaran - MADHYA PRADESH" },
-    { code: "MSEDC", name: "MSEDC - MAHARASHTRA" },
-    { code: "NP", name: "Noida Power - NOIDA" },
-    { code: "PKV", name: "Paschim Kshetra Vitaran - MADHYA PRADESH" },
-    { code: "SPA", name: "Southern Power - ANDHRA PRADESH" },
-    { code: "SPT", name: "Southern Power - TELANGANA" },
-    { code: "TRP", name: "Torrent Power" },
-    { code: "APDCLN", name: "APDCL (Non-RAPDR) - ASSAM" },
-    { code: "APEPDCL", name: "APEPDCL - ANDHRA PRADESH" },
-    { code: "APDCLR", name: "Assam Power Distribution Company Ltd (RAPDR)" },
-    { code: "BHES", name: "Bharatpur Electricity Services Ltd" },
-    { code: "BESL", name: "Bikaner Electricity Supply Limited" },
-    { code: "BMESTU", name: "Brihan Mumbai Electricity Supply and Transport" },
-    {
-      code: "APCPDCL",
-      name: "Central Power Distribution Company of Andhra Pradesh Ltd",
-    },
-    {
-      code: "CESCOM",
-      name: "Chamundeshwari Electricity Supply Corporation Ltd.",
-    },
-    {
-      code: "CSPDCL",
-      name: "Chhattisgarh State Power Distribution Company Ltd.",
-    },
-    { code: "DGVCL", name: "Dakshin Gujarat Vij Company Ltd" },
-    { code: "DHBVN", name: "Dakshin Haryana Bijli Vitran Nigam" },
-    { code: "ARPDOP", name: "Department of Power Arunachal Pradesh" },
-    { code: "NDOP", name: "Department of Power, Nagaland" },
-    { code: "DDCL", name: "DNHPower Distribution Company Limited" },
-    { code: "GPCL", name: "Gift Power Company Limited" },
-    { code: "GOAELC", name: "Goa Electricity" },
-    { code: "PGPED", name: "Government of Puducherry Electricity Department" },
-    { code: "GG", name: "Gujarat Gas" },
-    { code: "HPSEBL", name: "Himachal Pradesh State Electricity Board Ltd" },
-    { code: "HESCOM", name: "Hubli Electricity Supply Company Ltd." },
-    { code: "IPWB", name: "India Power - WEST BENGAL" },
-    { code: "IPCL", name: "India Power Corporation Limited" },
-    { code: "IG", name: "Indraprastha Gas" },
-    { code: "JKPDD", name: "Jammu & Kashmir power Development department" },
-    {
-      code: "JUSCL",
-      name: "Jamshedpur Utilities and Services Company Limited",
-    },
-    { code: "JBVNL", name: "JBVNL - JHARKHAND" },
-    { code: "KDHPCPL", name: "Kannan Devan Hills Power" },
-    { code: "KESCO", name: "Kanpur Electricity Supply Company" },
-    { code: "KEDL", name: "KEDL - KOTA" },
-    { code: "KSEB", name: "Kerala State Electricity Board Ltd." },
-    { code: "LED", name: "Lakshadweep Electricity Department" },
-    { code: "MGVCL", name: "Madhya Gujarat Vij Company Ltd" },
-    { code: "MPPKVVCLMR", name: "MP Madhya Kshetra Vidyut Vitaran-RURAL" },
-    { code: "MPPKVVCL", name: "MP Poorv Kshetra Vidyut Vitaran-URBAN" },
-    { code: "MG", name: "Mahanagar Gas" },
-    {
-      code: "MESCOMR",
-      name: "Mangalore Electricity Supply Co. Ltd (MESCOM) - RAPDR",
-    },
-    {
-      code: "MESCOMNR",
-      name: "Mangalore Electricity Supply Co. Ltd (Non) - RAPDR",
-    },
-    {
-      code: "MSPDCLPR",
-      name: "Manipur State Power Distribution Company Limited (Prepaid)",
-    },
-    { code: "MEPDCL", name: "MEPDCL - MEGHALAYA" },
-    { code: "MKV2", name: "MP Madhya Kshetra Vidyut Vitaran -Urban" },
-    {
-      code: "MPPKVVCLPU",
-      name: "MP Poorv Kshetra Vidyut Vitaran - Jabalpur/Rular",
-    },
-    { code: "MCG", name: "Municipal Corporation of Gurugram" },
-    { code: "MVV", name: "Muzaffarpur Vidyut Vitran" },
-    { code: "NESCO", name: "NESCO Odisha" },
-    { code: "NDMC", name: "New Delhi Municipal Council (NDMC)" },
-    { code: "NDPL", name: "North Delhi Power Limited" },
-    { code: "PGVCL", name: "Paschim Gujarat Vij Company Ltd" },
-    { code: "PMF", name: "Paul Merchants" },
-    { code: "MPED", name: "Power & Electricity Department - Mizoram" },
-    { code: "PSPCL", name: "Punjab State Power Corporation Limited" },
-    { code: "SPR", name: "Sikkim Power Rural" },
-    { code: "SPU", name: "Sikkim Power Urban" },
-    { code: "SNDL", name: "SNDL Power - NAGPUR" },
-    { code: "SOUTHCO", name: "SOUTHCO Odisha" },
-    { code: "TNEB", name: "TNEB - TAMIL NADU" },
-    { code: "TORRENTAHM", name: "Torrent Power Ahmedabad" },
-    { code: "TORRENTBHI", name: "Torrent Power Bhivandi" },
-    { code: "TORRENTDAH", name: "Torrent Power Dahej" },
-    { code: "TORRENTSHI", name: "Torrent Power SHIL" },
-    { code: "TORRENTSUR", name: "Torrent Power Surat" },
-    { code: "TPADL", name: "TP Ajmer Distribution Ltd" },
-    { code: "TPCODL", name: "TP Central Odisha Distribution Ltd" },
-    { code: "TSECL", name: "Tripura State Electricity Corporation Ltd" },
-    { code: "TSNPDCL", name: "TSNPDCL Telangana northern power" },
-    { code: "UPPCLU", name: "UPPCL (URBAN) - UTTAR PRADESH" },
-    { code: "UPPCLR", name: "Uttar Pradesh Power Corporation Limited(Rural)" },
-    { code: "UKPCL", name: "Uttarakhand Power Corporation Limited" },
-    { code: "UGVCL", name: "Uttar Gujarat Vij Company Ltd" },
-    { code: "UHBV", name: "Uttar Haryana Bijli Vitran Nigam" },
-    { code: "WBSEDCL", name: "WBSEDCL - WEST BENGAL" },
-    { code: "WESCO", name: "Western Electricity Supply Co. Of Orissa Ltd" },
+    { code: "RNET", name: "Reliance NetConnect 1X" },
+    { code: "RNET3", name: "Reliance NetConnect 3G" },
+    { code: "RNETP", name: "Reliance NetConnect+" },
+    { code: "TPW", name: "Tata Photon Whiz" },
+    { code: "TPP", name: "Tata Photon+" },
+    { code: "MTM", name: "MTS Mblaze" },
+    { code: "MTBR", name: "MTS Mbrowse" },
   ];
-
   const rechargeUser = {
     username: "500032",
     pwd: "k0ly9gts",
@@ -276,106 +168,13 @@ export default function DataCardRecharge() {
       <div style={styles.bgPattern}></div>
 
       {/* Navbar */}
-      <nav style={styles.navbar}>
-        <div style={styles.navContent}>
-          <div style={styles.logoSection}>
-            <div style={styles.logoIcon}>
-              <Smartphone size={24} />
-            </div>
-            <div>
-              <div style={styles.logoText}>CodeWeb Telecom</div>
-              <div style={styles.logoSubtext}>Digital Recharge Partner</div>
-            </div>
-          </div>
-
-          <div style={styles.navLinks}>
-            {/* <a href="#" style={styles.navLink}>
-              Dashboard
-            </a> */}{" "}
-            <Link to="/dashboard" style={styles.navLink}>
-              Dashboard
-            </Link>
-            <a href="#" style={styles.navLink}>
-              Reports
-            </a>
-            <a href="#" style={styles.navLink}>
-              Account
-            </a>
-            <a href="#" style={styles.navLink}>
-              Support
-            </a>
-          </div>
-
-          <div style={styles.userSection}>
-            <div style={styles.balanceBadge}>
-              <span style={styles.balanceLabel}>Balance</span>
-              <span style={styles.balanceAmount}>₹0.00</span>
-            </div>
-            <div style={styles.avatar}>V</div>
-          </div>
-        </div>
-      </nav>
+      <Nav />
 
       {/* Hero */}
-      <div style={styles.hero}>
-        <div style={styles.heroContent}>
-          <div style={styles.heroLeft}>
-            <div style={styles.welcomeBadge}>
-              <Zap size={16} />
-              <span>Welcome back, Vikash!</span>
-            </div>
-            <h1 style={styles.heroTitle}>Data Card Recharge</h1>
-            <p style={styles.heroSubtitle}>
-              Fast, secure, and reliable Data Card recharge for all operators
-            </p>
-
-            <div style={styles.statsGrid}>
-              <div style={styles.statCard}>
-                <TrendingUp size={20} />
-                <div>
-                  <div style={styles.statValue}>50,000+</div>
-                  <div style={styles.statLabel}>Users Trust Us</div>
-                </div>
-              </div>
-              <div style={styles.statCard}>
-                <Clock size={20} />
-                <div>
-                  <div style={styles.statValue}>2 Sec</div>
-                  <div style={styles.statLabel}>Avg. Processing</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Hero />
 
       {/* Tabs */}
-      <div style={styles.tabSection}>
-        <div style={styles.tabsContainer}>
-          {[
-            "Mobile",
-            "DTH",
-            "Data Card",
-            "Postpaid",
-            "Electricity",
-            "Gas",
-            "Insurance",
-            "Transfer",
-          ].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab.toLowerCase())}
-              style={{
-                ...styles.tabBtn,
-                ...(activeTab === tab.toLowerCase() ? styles.tabBtnActive : {}),
-              }}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-      </div>
-
+      <Tab />
       {/* Main Content */}
       <div style={styles.mainContent}>
         <div style={styles.contentGrid}>
@@ -396,9 +195,16 @@ export default function DataCardRecharge() {
                   <label style={styles.label}>Data Card Number</label>
                   <input
                     type="text"
-                    placeholder="Enter your Data Card number"
-                    value={dataCardNumber}
-                    onChange={(e) => setDataCardNumber(e.target.value)}
+                    placeholder="Enter Consumer Number"
+                    value={formData.consumerNumber}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === "" || /^\d+$/.test(val))
+                        setFormData((prev) => ({
+                          ...prev,
+                          consumerNumber: val,
+                        }));
+                    }}
                     style={styles.input}
                   />
                 </div>
@@ -406,14 +212,29 @@ export default function DataCardRecharge() {
                 <div style={styles.formGroup}>
                   <label style={styles.label}>Operator</label>
                   <select
-                    value={operator}
-                    onChange={(e) => setOperator(e.target.value)}
-                    style={styles.select}
+                    name="operatorcode"
+                    value={formData.operatorcode}
+                    onChange={handleChange}
+                    className="selectBox"
+                    style={{
+                      width: "100%",
+                      padding: "14px 16px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      borderRadius: "12px",
+                      fontSize: "15px",
+                      color: "black",
+                      boxSizing: "border-box",
+                      cursor: "pointer",
+                      transition: "all 0.3s ease",
+                    }}
                   >
-                    <option value="">Select operator</option>
-                    <option value="Jio">Jio</option>
-                    <option value="Airtel">Airtel</option>
-                    <option value="BSNL">BSNL</option>
+                    <option value="">Select Operator</option>
+                    {operators.map((operator) => (
+                      <option key={operator.code} value={operator.code}>
+                        {operator.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -421,19 +242,32 @@ export default function DataCardRecharge() {
                   <label style={styles.label}>Amount</label>
                   <input
                     type="text"
-                    placeholder="Enter amount"
-                    value={amount}
-                    onChange={handleChange}
+                    placeholder="Enter Amount"
+                    value={formData.amount}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (
+                        val === "" ||
+                        (/^\d+$/.test(val) && parseInt(val) > 0)
+                      )
+                        setFormData((prev) => ({ ...prev, amount: val }));
+                    }}
                     style={styles.input}
                   />
+
                   <div style={styles.quickAmounts}>
-                    {quickAmounts.map((a) => (
+                    {quickAmounts.map((amt) => (
                       <button
-                        key={a}
-                        onClick={() => setAmount(a.toString())}
+                        key={amt}
+                        onClick={() =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            amount: amt.toString(),
+                          }))
+                        }
                         style={styles.quickAmountBtn}
                       >
-                        ₹{a}
+                        ₹{amt}
                       </button>
                     ))}
                   </div>

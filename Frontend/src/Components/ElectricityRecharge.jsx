@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import styles from "../styles";
 import Nav from "../../hero/nav";
-import Hero from "../../hero/hero";
+import Hero from "../../hero/Hero";
 import Tab from "../../hero/Tab";
 
 export default function ElectricityRecharge() {

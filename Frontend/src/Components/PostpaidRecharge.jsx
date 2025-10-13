@@ -46,33 +46,18 @@ export default function PostpaidRecharge() {
 
   // === OPERATORS & CIRCLES ===
   const operators = [
-    { code: "AP", name: "Airtel Postpaid" },
-    { code: "VP", name: "Vodafone Postpaid" },
-    { code: "IP", name: "Idea Postpaid" },
-    { code: "JP", name: "Jio Postpaid" },
-    { code: "BP", name: "BSNL Postpaid" },
-  ];
+  { code: "PAT", name: "Airtel Postpaid" },
+  { code: "IP", name: "Idea Postpaid" },
+  { code: "VP", name: "Vodafone Postpaid" },
+  { code: "DP", name: "Tata Docomo Postpaid" },
+  { code: "BP", name: "BSNL Postpaid" },
+  { code: "LBS", name: "BSNL Landline" },
+  { code: "LMT", name: "MTNL Delhi Landline" },
+  { code: "LAT", name: "Airtel Landline" },
+  { code: "JPP", name: "Jio Postpaid" },
+];
 
-  const circles = [
-    { code: "13", name: "Andhra Pradesh" },
-    { code: "24", name: "Assam" },
-    { code: "17", name: "Bihar" },
-    { code: "27", name: "Chhattisgarh" },
-    { code: "12", name: "Gujarat" },
-    { code: "20", name: "Haryana" },
-    { code: "21", name: "Himachal Pradesh" },
-    { code: "25", name: "Jammu And Kashmir" },
-    { code: "22", name: "Jharkhand" },
-    { code: "9", name: "Karnataka" },
-    { code: "14", name: "Kerala" },
-    { code: "16", name: "Madhya Pradesh" },
-    { code: "4", name: "Maharashtra" },
-    { code: "2", name: "West Bengal" },
-    { code: "10", name: "Uttar Pradesh East" },
-    { code: "11", name: "Uttar Pradesh West" },
-    { code: "3", name: "Mumbai" },
-    { code: "5", name: "Delhi" },
-  ];
+
 
   const quickAmounts = [199, 299, 399, 499, 599, 999];
 
@@ -83,61 +68,70 @@ export default function PostpaidRecharge() {
   };
 
   const handleRecharge = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setResult(null);
-    try {
-      const { number, operatorcode, circlecode, amount } = formData;
-      if (!number || !operatorcode || !circlecode || !amount)
-        throw new Error("All fields are required");
-      const res = await fetch(`${API_URL}/api/recharge`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...rechargeUser,
-          number,
-          operatorcode,
-          circlecode,
-          amount,
-        }),
-      });
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
-      const data = await res.json();
-      if (data.status === "Success") {
-        setResult({
-          type: "success",
-          message: `Postpaid Bill Payment Successful! TXID: ${data.txid}`,
-        });
-        fetchBalance();
-      } else {
-        setResult({
-          type: "error",
-          message: `Payment Failed: ${data.opid || "Unknown"}`,
-        });
-      }
-      setTransactions([
-        {
-          txid: data.txid || Math.random(),
-          operator: operatorcode,
-          number,
-          amount,
-          status: data.status,
-          date: new Date().toLocaleString(),
-        },
-        ...transactions,
-      ]);
-      setFormData({ number: "", operatorcode: "", circlecode: "", amount: "" });
-    } catch (error) {
-      console.error("Recharge failed:", error);
-      setResult({
-        type: "error",
-        message: error.message || "API connection failed",
-      });
-    } finally {
-      setLoading(false);
-      setTimeout(() => setResult(null), 5000);
-    }
-  };
+     e.preventDefault();
+     setLoading(true);
+     setResult(null);
+     try {
+       const { consumerNumber, operatorcode: operator, amount } = formData;
+       console.log("🚀 Form Data:", { consumerNumber, operator, amount });
+       if (!consumerNumber || !operator || !amount) {
+         throw new Error("All fields are required");
+       }
+       const payload = {
+         ...rechargeUser, // includes username & pwd
+         number: consumerNumber,
+         operatorcode: operator,
+         circlecode: "1", // circlecode is not used for DTH
+         amount,
+         // circlecode is intentionally omitted
+       };
+       console.log("🚀 Sending Payload:", payload);
+       const res = await fetch(`${API_URL}/api/fastagrecharge`, {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify(payload),
+       });
+       if (!res.ok) throw new Error(`Server returned ${res.status}`);
+       const data = await res.json();
+       console.log("✅ Recharge API response:", data);
+       if (data.status === "Success") {
+         setResult({
+           type: "success",
+           message: `Recharge Successful! TXID: ${data.txid}`,
+         });
+         fetchBalance(); // refresh balance
+       } else {
+         setResult({
+           type: "error",
+           message: `Recharge Failed: ${data.opid || "Unknown"}`,
+         });
+       }
+       // Add to transaction history
+       setTransactions([
+         {
+           txid: data.txid || Math.random(),
+           operator,
+           number: consumerNumber,
+           amount,
+           status: data.status,
+           date: new Date().toLocaleString(),
+         },
+         ...transactions,
+       ]);
+       // Reset form
+       setFormData({ consumerNumber: "", operatorcode: "", amount: "" });
+     } catch (error) {
+       console.error("Recharge failed:", error);
+       setResult({
+         type: "error",
+         message: error.message || "API connection failed",
+       });
+     } finally {
+       setLoading(false);
+       setTimeout(() => setResult(null), 5000);
+     }
+   };
+ 
 
   // === RETURN JSX ===
   return (
@@ -218,14 +212,15 @@ export default function PostpaidRecharge() {
                   <div style={styles.formGroup}>
                     <label style={styles.label}>Mobile Number</label>
                     <input
-                      type="tel"
-                      name="number"
-                      placeholder="Enter your postpaid number"
-                      value={formData.number}
-                      onChange={handleChange}
-                      maxLength="10"
-                      style={styles.input}
-                    />
+  type="text"
+  placeholder="Enter Mobile / Landline Number"
+  value={formData.consumerNumber || ""}
+  onChange={(e) =>
+    setFormData({ ...formData, consumerNumber: e.target.value })
+  }
+  style={styles.input}
+/>
+
                   </div>
 
                   <div style={styles.formGroup}>
@@ -245,22 +240,7 @@ export default function PostpaidRecharge() {
                     </select>
                   </div>
 
-                  <div style={styles.formGroup}>
-                    <label style={styles.label}>Circle</label>
-                    <select
-                      name="circlecode"
-                      value={formData.circlecode}
-                      onChange={handleChange}
-                      style={styles.select}
-                    >
-                      <option value="">Choose your circle</option>
-                      {circles.map((c) => (
-                        <option key={c.code} value={c.code}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  
 
                   <div style={styles.formGroup}>
                     <label style={styles.label}>Bill Amount</label>
