@@ -18,9 +18,7 @@ export default function FASTagRecharge() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  // const [vehicleNumber, setVehicleNumber] = useState("");
-
-  // const [amount, setAmount] = useState("");
+  
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [transactions, setTransactions] = useState([]);
