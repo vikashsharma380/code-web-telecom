@@ -35,6 +35,9 @@ export default function ServicesGrid() {
       case "DataCardRecharge":
         navigate("/DataCardRecharge");
         break;
+      case "Insurance":
+        navigate("/InsuranceRecharge");
+        break;
       default:
         console.error("Unknown service type:", serviceType);
     }
