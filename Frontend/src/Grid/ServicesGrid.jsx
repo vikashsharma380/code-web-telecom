@@ -41,6 +41,12 @@ export default function ServicesGrid() {
       case "PostpaidRecharge":
         navigate("/PostpaidRecharge");
         break;
+      case "googleplay":
+        navigate("/GooglePlayRecharge");
+        break;
+      case "water":
+        navigate("/WaterBillRecharge");
+        break;
       default:
         console.error("Unknown service type:", serviceType);
     }

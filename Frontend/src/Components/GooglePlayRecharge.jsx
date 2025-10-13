@@ -7,49 +7,43 @@ import Nav from "../../hero/nav";
 import Hero from "../../hero/hero";
 import Tab from "../../hero/Tab";
 import styles from "../styles";
-export default function GasRecharge() {
-  const [consumerNumber, setConsumerNumber] = useState("");
+
+export default function GooglePlayRecharge() {
+  const [email, setEmail] = useState("");
   const [amount, setAmount] = useState("");
-  const [provider, setProvider] = useState("");
+  const [provider, setProvider] = useState("GooglePlay");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [transactions, setTransactions] = useState([]);
-  const [activeTab, setActiveTab] = useState("gas");
+  const [activeTab, setActiveTab] = useState("googleplay");
 
   const quickAmounts = [100, 200, 500, 1000, 2000];
 
   const [formData, setFormData] = useState({
-    consumerNumber: "",
-    operatorcode: "",
+    email: "",
+    operatorcode: "GPLAY",
     amount: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "amount") {
+      if (value === "" || (/^\d+$/.test(value) && parseInt(value) > 0)) {
+        setFormData((prev) => ({ ...prev, [name]: value }));
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const [balance, setBalance] = useState(0);
   const [balanceLoading, setBalanceLoading] = useState(false);
-  const [detecting, setDetecting] = useState(false);
-
-  const operators = [
-    { code: "MG", name: "Mahanagar Gas" },
-    { code: "AG", name: "Adani Gas" },
-    { code: "GG", name: "Gujarat Gas" },
-    { code: "IG", name: "Indraprastha Gas" },
-  ];
 
   const rechargeUser = {
     username: "500032",
     pwd: "k0ly9gts",
   };
-  const payload = {
-    number: formData.number,
-    operatorcode: formData.operator,
-    amount: formData.amount,
-  };
-  // === FETCH BALANCE ===
+
   const fetchBalance = async () => {
     setBalanceLoading(true);
     try {
@@ -65,91 +59,64 @@ export default function GasRecharge() {
       setBalanceLoading(false);
     }
   };
+
   useEffect(() => {
     fetchBalance();
   }, []);
-  // === OPERATOR AUTO-DETECT ===
-  useEffect(() => {
-    const detectOperator = async () => {
-      if (formData.consumerNumber && formData.consumerNumber.length === 10) {
-        setDetecting(true);
-        try {
-          const res = await fetch(
-            `${API_URL}/api/lookup?number=${formData.consumerNumber}`
-          );
-          if (!res.ok) throw new Error(`Server returned ${res.status}`);
-          const data = await res.json();
-          if (data.operatorcode)
-            setFormData((prev) => ({
-              ...prev,
-              operatorcode: data.operatorcode,
-            }));
-          if (data.circlecode)
-            setFormData((prev) => ({ ...prev, circlecode: data.circlecode }));
-        } catch (error) {
-          console.warn("Auto-detect failed, use dropdown manually", error);
-        } finally {
-          setDetecting(false);
-        }
-      }
-    };
-    detectOperator();
-  }, [formData.consumerNumber]);
-  // === OPERATORS & CIRCLES ===
 
   const handleRecharge = async (e) => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
+
     try {
-      const { consumerNumber, operatorcode: operator, amount } = formData;
-      console.log("🚀 Form Data:", { consumerNumber, operator, amount });
-      if (!consumerNumber || !operator || !amount) {
+      const { email, operatorcode: operator, amount } = formData;
+      if (!email || !operator || !amount) {
         throw new Error("All fields are required");
       }
+
       const payload = {
-        ...rechargeUser, // includes username & pwd
-        number: consumerNumber,
+        ...rechargeUser,
+        number: email,
         operatorcode: operator,
-        circlecode: "1", // circlecode is not used for DTH
         amount,
-        // circlecode is intentionally omitted
       };
-      console.log("🚀 Sending Payload:", payload);
-      const res = await fetch(`${API_URL}/api/gasrecharge`, {
+
+      const res = await fetch(`${API_URL}/api/googleplay`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
-      console.log("✅ Recharge API response:", data);
+
       if (data.status === "Success") {
         setResult({
           type: "success",
-          message: `Recharge Successful! TXID: ${data.txid}`,
+          message: `Purchase Successful! TXID: ${data.txid}`,
         });
-        fetchBalance(); // refresh balance
+        fetchBalance();
       } else {
         setResult({
           type: "error",
-          message: `Recharge Failed: ${data.opid || "Unknown"}`,
+          message: `Purchase Failed: ${data.opid || "Unknown"}`,
         });
       }
-      // Add to transaction history
+
       setTransactions([
         {
           txid: data.txid || Math.random(),
           operator,
-          number: consumerNumber,
+          number: email,
           amount,
           status: data.status,
           date: new Date().toLocaleString(),
         },
         ...transactions,
       ]);
-      // Reset form
-      setFormData({ consumerNumber: "", operatorcode: "", amount: "" });
+
+      setFormData({ email: "", operatorcode: "GPLAY", amount: "" });
     } catch (error) {
       console.error("Recharge failed:", error);
       setResult({
@@ -168,90 +135,55 @@ export default function GasRecharge() {
       <Nav />
       {/* Hero */}
       <Hero />
-
       {/* Tabs */}
       <Tab />
 
       {/* Main Content */}
       <div style={styles.mainContent}>
         <div style={styles.contentGrid}>
-          {/* Recharge Form */}
+          {/* Google Play Recharge Form */}
           <div style={styles.formSection}>
             <div style={styles.card}>
               <div style={styles.cardHeader}>
                 <CreditCard size={24} />
                 <div>
-                  <h2 style={styles.cardTitle}>Gas Bill Payment</h2>
-                  <p style={styles.cardSubtitle}>All Gas Providers Supported</p>
+                  <h2 style={styles.cardTitle}>Google Play Gift Card</h2>
+                  <p style={styles.cardSubtitle}>Instant Google Play Top-Up</p>
                 </div>
               </div>
 
               <div style={styles.cardBody}>
                 <div style={styles.formGroup}>
-                  <label style={styles.label}>Consumer Number</label>
+                  <label style={styles.label}>Google Account Email</label>
                   <input
-                    type="text"
-                    placeholder="Enter Consumer Number"
-                    value={formData.consumerNumber}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      if (val === "" || /^\d+$/.test(val))
-                        setFormData({ ...formData, consumerNumber: val });
-                    }}
+                    type="email"
+                    placeholder="Enter Google Account Email"
+                    value={formData.email}
+                    name="email"
+                    onChange={handleChange}
                     style={styles.input}
                   />
                 </div>
 
                 <div style={styles.formGroup}>
-                  <label style={styles.label}>Select Gas Provider</label>
-                  <select
-                    value={formData.operatorcode}
-                    onChange={(e) =>
-                      setFormData({ ...formData, operatorcode: e.target.value })
-                    }
-                    style={styles.select}
-                  >
-                    <option value="">Select Provider</option>
-                    {operators.map((operator) => (
-                      <option key={operator.code} value={operator.code}>
-                        {operator.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div style={styles.formGroup}>
-                  <label style={styles.label}>Amount</label>
+                  <label style={styles.label}>Select Amount</label>
                   <input
                     type="text"
                     placeholder="Enter Amount"
+                    name="amount"
                     value={formData.amount}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      if (
-                        val === "" ||
-                        (/^\d+$/.test(val) && parseInt(val) > 0)
-                      ) {
-                        setFormData((prev) => ({
-                          ...prev,
-                          amount: val,
-                        }));
-                      }
-                    }}
+                    onChange={handleChange}
                     style={styles.input}
                   />
-
                   <div style={styles.quickAmounts}>
                     {quickAmounts.map((amt) => (
                       <button
                         key={amt}
                         onClick={() =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            amount: amt.toString(),
-                          }))
+                          setFormData({ ...formData, amount: amt.toString() })
                         }
                         style={styles.quickAmountBtn}
+                        type="button"
                       >
                         ₹{amt}
                       </button>
@@ -270,7 +202,7 @@ export default function GasRecharge() {
                   {loading ? (
                     <div style={styles.loadingSpinner}></div>
                   ) : (
-                    <>Pay Bill</>
+                    <>Buy Gift Card</>
                   )}
                 </button>
 
@@ -298,7 +230,7 @@ export default function GasRecharge() {
                 <div>
                   <h2 style={styles.cardTitle}>Recent Transactions</h2>
                   <p style={styles.cardSubtitle}>
-                    Your last 5 Gas bill payments
+                    Last 5 Google Play Purchases
                   </p>
                 </div>
               </div>
@@ -306,7 +238,7 @@ export default function GasRecharge() {
               <div style={styles.cardBody}>
                 {transactions.length === 0 ? (
                   <div style={styles.emptyState}>
-                    <div style={styles.emptyIcon}>🔥</div>
+                    <div style={styles.emptyIcon}>🎮</div>
                     <p style={styles.emptyText}>No transactions yet</p>
                   </div>
                 ) : (

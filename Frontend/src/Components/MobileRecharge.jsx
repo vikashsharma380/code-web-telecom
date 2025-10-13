@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Smartphone, Zap, Clock, TrendingUp } from "lucide-react";
 import styles from "../styles";
+import Nav from "../../hero/nav";
+import Hero from "../../hero/hero";
+import Tab from "../../hero/Tab";
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 export default function MobileRecharge() {
   const [formData, setFormData] = useState({
@@ -9,6 +13,8 @@ export default function MobileRecharge() {
     circlecode: "",
     amount: "",
   });
+
+  const MP_API_KEY = "6fda75354f70927c5d45a3a4dca7f6ce";
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -47,13 +53,11 @@ export default function MobileRecharge() {
   useEffect(() => {
     const detectOperator = async () => {
       if (formData.number.length === 10) {
-        setDetecting(true);
         try {
-          const res = await fetch(
-            `${API_URL}/api/lookup?number=${formData.number}`
-          );
-          if (!res.ok) throw new Error(`Server returned ${res.status}`);
-          const data = await res.json();
+         
+        const res = await fetch(`http://localhost:5000/api/operator/${number}`);
+const data = await res.json();
+console.log("Auto-detect response:", data);
           if (data.operatorcode)
             setFormData((prev) => ({
               ...prev,
@@ -61,15 +65,14 @@ export default function MobileRecharge() {
             }));
           if (data.circlecode)
             setFormData((prev) => ({ ...prev, circlecode: data.circlecode }));
-        } catch (error) {
-          console.warn("Auto-detect failed, use dropdown manually", error);
-        } finally {
-          setDetecting(false);
+        } catch (err) {
+          console.warn("Operator auto-detect failed:", err);
         }
       }
     };
     detectOperator();
   }, [formData.number]);
+
   // === OPERATORS & CIRCLES ===
   const operators = [
     { code: "A", name: "Airtel" },
@@ -198,99 +201,11 @@ export default function MobileRecharge() {
   return (
     <div style={styles.container}>
       {/* NAVBAR & BALANCE */}
-      <nav style={styles.navbar}>
-        <div style={styles.navContent}>
-          <div style={styles.logoSection}>
-            <div style={styles.logoIcon}>
-              <Smartphone size={24} />
-            </div>
-            <div>
-              <div style={styles.logoText}>CodeWeb Telecom</div>
-              <div style={styles.logoSubtext}>Digital Recharge Partner</div>
-            </div>
-          </div>
-          <div style={styles.navLinks}>
-            <a href="#" style={styles.navLink}>
-              Dashboard
-            </a>
-            <a href="#" style={styles.navLink}>
-              Reports
-            </a>
-            <a href="#" style={styles.navLink}>
-              Account
-            </a>
-            <a href="#" style={styles.navLink}>
-              Support
-            </a>
-          </div>
-          <div style={styles.userSection}>
-            <div style={styles.balanceBadge}>
-              <span style={styles.balanceLabel}>Balance</span>
-              <div style={styles.balanceAmount}>
-                {balanceLoading ? "Loading..." : `₹${balance.toFixed(2)}`}
-              </div>
-            </div>
-            <div style={styles.avatar}>V</div>
-          </div>
-        </div>
-      </nav>
+      <Nav />
       {/* Hero Section */}
-      <div style={styles.hero}>
-        <div style={styles.heroContent}>
-          <div style={styles.heroLeft}>
-            <div style={styles.welcomeBadge}>
-              <Zap size={16} />
-              <span>Welcome back, Vikash!</span>
-            </div>
-            <h1 style={styles.heroTitle}>Instant Recharge</h1>
-            <p style={styles.heroSubtitle}>
-              Fast, secure, and reliable mobile recharge for all operators
-            </p>
-            <div style={styles.statsGrid}>
-              <div style={styles.statCard}>
-                <TrendingUp size={20} />
-                <div>
-                  <div style={styles.statValue}>50,000+</div>
-                  <div style={styles.statLabel}>Users Trust Us</div>
-                </div>
-              </div>
-              <div style={styles.statCard}>
-                <Clock size={20} />
-                <div>
-                  <div style={styles.statValue}>2 Sec</div>
-                  <div style={styles.statLabel}>Avg. Processing</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Hero />
       {/* Tab Section */}
-      <div style={styles.tabSection}>
-        <div style={styles.tabsContainer}>
-          {[
-            "Mobile",
-            "DTH",
-            "Data Card",
-            "Postpaid",
-            "Electricity",
-            "Gas",
-            "Insurance",
-            "Transfer",
-          ].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab.toLowerCase())}
-              style={{
-                ...styles.tabBtn,
-                ...(activeTab === tab.toLowerCase() ? styles.tabBtnActive : {}),
-              }}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-      </div>
+      <Tab />
       {/* Main Content */}
       <div style={styles.mainContent}>
         <div style={styles.contentGrid}>
