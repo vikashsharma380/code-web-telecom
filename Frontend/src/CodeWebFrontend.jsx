@@ -5,7 +5,7 @@ import upcomingServices from "./Components/upcomingServices";
 import benefits from "./Components/benefits";
 import testimonials from "./Components/testimonials";
 import pricingPlans from "./Components/pricingplans";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import {
   Menu,
@@ -200,23 +200,49 @@ const CodeWebTelecomWebsite = () => {
               alignItems: "center",
             }}
           >
-            {["Home", "Services", "About", "Pricing", "Contact"].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                style={{
-                  textDecoration: "none",
-                  color: "#333",
-                  fontWeight: "500",
-                  fontSize: "15px",
-                  transition: "color 0.3s ease",
-                }}
-                onMouseEnter={(e) => (e.target.style.color = "#667eea")}
-                onMouseLeave={(e) => (e.target.style.color = "#333")}
-              >
-                {item}
-              </a>
-            ))}
+            {[
+              "Home",
+              "Services",
+              "Web Solutions",
+              "About",
+              "Pricing",
+              "Contact",
+            ].map((item) =>
+              item === "Web Solutions" ? (
+                <Link
+                  key={item}
+                  to="/web-solutions"
+                  style={{
+                    textDecoration: "none",
+                    color: "#333",
+                    fontWeight: "500",
+                    fontSize: "15px",
+                    transition: "color 0.3s ease",
+                  }}
+                  onMouseEnter={(e) => (e.target.style.color = "#667eea")}
+                  onMouseLeave={(e) => (e.target.style.color = "#333")}
+                >
+                  {item}
+                </Link>
+              ) : (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  style={{
+                    textDecoration: "none",
+                    color: "#333",
+                    fontWeight: "500",
+                    fontSize: "15px",
+                    transition: "color 0.3s ease",
+                  }}
+                  onMouseEnter={(e) => (e.target.style.color = "#667eea")}
+                  onMouseLeave={(e) => (e.target.style.color = "#333")}
+                >
+                  {item}
+                </a>
+              )
+            )}
+
             <button
               style={{
                 background: "linear-gradient(135deg, #667eea, #764ba2)",
@@ -269,24 +295,51 @@ const CodeWebTelecomWebsite = () => {
               animation: "fadeIn 0.3s ease",
             }}
           >
-            {["Home", "Services", "About", "Pricing", "Contact"].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                onClick={() => setMobileMenuOpen(false)}
-                style={{
-                  display: "block",
-                  padding: "12px 0",
-                  textDecoration: "none",
-                  color: "#333",
-                  fontWeight: "500",
-                  fontSize: "16px",
-                  borderBottom: "1px solid #f0f0f0",
-                }}
-              >
-                {item}
-              </a>
-            ))}
+            {[
+              "Home",
+              "Services",
+              "Web Solutions",
+              "About",
+              "Pricing",
+              "Contact",
+            ].map((item) =>
+              item === "Web Solutions" ? (
+                <Link
+                  key={item}
+                  to="/web-solutions"
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    display: "block",
+                    padding: "12px 0",
+                    textDecoration: "none",
+                    color: "#333",
+                    fontWeight: "500",
+                    fontSize: "16px",
+                    borderBottom: "1px solid #f0f0f0",
+                  }}
+                >
+                  {item}
+                </Link>
+              ) : (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    display: "block",
+                    padding: "12px 0",
+                    textDecoration: "none",
+                    color: "#333",
+                    fontWeight: "500",
+                    fontSize: "16px",
+                    borderBottom: "1px solid #f0f0f0",
+                  }}
+                >
+                  {item}
+                </a>
+              )
+            )}
+
             <button
               style={{
                 background: "linear-gradient(135deg, #667eea, #764ba2)",
