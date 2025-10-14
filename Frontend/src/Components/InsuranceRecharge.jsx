@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ShieldCheck, Clock, TrendingUp, Zap } from "lucide-react";
 import styles from "../styles";
+import Nav from "../../hero/nav";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -131,44 +132,7 @@ export default function InsuranceRecharge() {
   return (
     <div style={styles.container}>
       {/* NAVBAR & BALANCE */}
-      <nav style={styles.navbar}>
-        <div style={styles.navContent}>
-          <div style={styles.logoSection}>
-            <div style={styles.logoIcon}>
-              <ShieldCheck size={24} />
-            </div>
-            <div>
-              <div style={styles.logoText}>CodeWeb Telecom</div>
-              <div style={styles.logoSubtext}>Insurance Partner</div>
-            </div>
-          </div>
-
-          <div style={styles.navLinks}>
-            <a href="#" style={styles.navLink}>
-              Dashboard
-            </a>
-            <a href="#" style={styles.navLink}>
-              Reports
-            </a>
-            <a href="#" style={styles.navLink}>
-              Account
-            </a>
-            <a href="#" style={styles.navLink}>
-              Support
-            </a>
-          </div>
-
-          <div style={styles.userSection}>
-            <div style={styles.balanceBadge}>
-              <span style={styles.balanceLabel}>Balance</span>
-              <div style={styles.balanceAmount}>
-                {balanceLoading ? "Loading..." : `₹${balance.toFixed(2)}`}
-              </div>
-            </div>
-            <div style={styles.avatar}>V</div>
-          </div>
-        </div>
-      </nav>
+     <Nav/> 
 
       {/* Hero Section */}
       <div style={styles.hero}>
