@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
 import {
   Smartphone,
   Zap,
@@ -9,6 +9,11 @@ import {
   Wallet,
 } from "lucide-react";
 import Nav from "../../hero/nav";
+  const rechargeUser = {
+    username: "500032",
+    pwd: "k0ly9gts",
+  };
+
 
 export default function Dashboard() {
   const stats = [
@@ -24,6 +29,27 @@ export default function Dashboard() {
 
   const [balance, setBalance] = React.useState(0);
   const [balanceLoading, setBalanceLoading] = React.useState(true);
+
+   const fetchBalance = async () => {
+      setBalanceLoading(true);
+      try {
+        const query = new URLSearchParams(rechargeUser).toString();
+        const res = await fetch(`http://localhost:5000/api/balance?${query}`);
+        if (!res.ok) throw new Error(`Server returned ${res.status}`);
+        const data = await res.json();
+        setBalance(data.balance || 0);
+      } catch (err) {
+        console.error("Balance fetch failed:", err);
+        setBalance(0);
+      } finally {
+        setBalanceLoading(false);
+      }
+    };
+  
+    useEffect(() => {
+      fetchBalance();
+    }, []);
+  
   return (
     <div style={styles.container}>
       {/* Animated Background */}
