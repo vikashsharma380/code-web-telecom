@@ -11,9 +11,9 @@ export default function Hero({ title, subtitle }) {
               <Zap size={16} />
               <span>Welcome back, Vikash!</span>
             </div>
-            <h1 style={styles.heroTitle}>FASTag Recharge</h1>
+            <h1 style={styles.heroTitle}>{title}</h1>
             <p style={styles.heroSubtitle}>
-              Recharge your FASTag quickly and securely
+              {subtitle}
             </p>
 
           <div style={styles.statsGrid}>
