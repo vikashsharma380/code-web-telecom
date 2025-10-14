@@ -4,15 +4,17 @@ import styles from "../src/styles";
 
 export default function Hero({ title, subtitle }) {
   return (
-    <div style={styles.hero}>
-      <div style={styles.heroContent}>
-        <div style={styles.heroLeft}>
-          <div style={styles.welcomeBadge}>
-            <Zap size={16} />
-            <span>Welcome back, Vikash!</span>
-          </div>
-          <h1 style={styles.heroTitle}>{title}</h1>
-          <p style={styles.heroSubtitle}>{subtitle}</p>
+  <div style={styles.hero}>
+        <div style={styles.heroContent}>
+          <div style={styles.heroLeft}>
+            <div style={styles.welcomeBadge}>
+              <Zap size={16} />
+              <span>Welcome back, Vikash!</span>
+            </div>
+            <h1 style={styles.heroTitle}>FASTag Recharge</h1>
+            <p style={styles.heroSubtitle}>
+              Recharge your FASTag quickly and securely
+            </p>
 
           <div style={styles.statsGrid}>
             <div style={styles.statCard}>
