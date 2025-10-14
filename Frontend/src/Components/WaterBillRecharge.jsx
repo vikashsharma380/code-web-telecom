@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Smartphone, Zap, Clock, TrendingUp } from "lucide-react";
 import styles from "../styles";
+import Nav from "../../hero/nav";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -121,28 +122,8 @@ export default function WaterBillRecharge() {
   return (
     <div style={styles.container}>
       {/* Navbar */}
-      <nav style={styles.navbar}>
-        <div style={styles.navContent}>
-          <div style={styles.logoSection}>
-            <div style={styles.logoIcon}>
-              <Smartphone size={24} />
-            </div>
-            <div>
-              <div style={styles.logoText}>CodeWeb Telecom</div>
-              <div style={styles.logoSubtext}>Water Bill Payment</div>
-            </div>
-          </div>
-          <div style={styles.userSection}>
-            <div style={styles.balanceBadge}>
-              <span style={styles.balanceLabel}>Balance</span>
-              <div style={styles.balanceAmount}>
-                {balanceLoading ? "Loading..." : `₹${balance.toFixed(2)}`}
-              </div>
-            </div>
-            <div style={styles.avatar}>V</div>
-          </div>
-        </div>
-      </nav>
+      <Nav 
+      />
 
       {/* Hero */}
       <div style={styles.hero}>
