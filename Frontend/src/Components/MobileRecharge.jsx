@@ -54,10 +54,11 @@ export default function MobileRecharge() {
     const detectOperator = async () => {
       if (formData.number.length === 10) {
         try {
-         
-        const res = await fetch(`http://localhost:5000/api/operator/${number}`);
-const data = await res.json();
-console.log("Auto-detect response:", data);
+          const res = await fetch(
+            `http://localhost:5000/api/operator/${number}`
+          );
+          const data = await res.json();
+          console.log("Auto-detect response:", data);
           if (data.operatorcode)
             setFormData((prev) => ({
               ...prev,
@@ -141,20 +142,19 @@ console.log("Auto-detect response:", data);
     setFormData({ ...formData, amount: amt.toString() });
   };
 
-
   const fetchTransactions = async () => {
-  try {
-    const res = await fetch(`${API_URL}/api/transactions`);
-    const data = await res.json();
-    setTransactions(data); // load from backend
-  } catch (err) {
-    console.error("Failed to fetch transactions:", err);
-  }
-};
+    try {
+      const res = await fetch(`${API_URL}/api/transactions`);
+      const data = await res.json();
+      setTransactions(data); // load from backend
+    } catch (err) {
+      console.error("Failed to fetch transactions:", err);
+    }
+  };
 
-useEffect(() => {
-  fetchTransactions();
-}, []);
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
 
   const handleRecharge = async (e) => {
     e.preventDefault();
@@ -219,10 +219,9 @@ useEffect(() => {
       {/* NAVBAR & BALANCE */}
       <Nav />
       {/* Hero Section */}
-      <Hero 
-      
-      title="Instant Mobile Recharge"
-      subtitle="Fast, secure, and reliable mobile recharges for all operators"
+      <Hero
+        title="Instant Mobile Recharge"
+        subtitle="Fast, secure, and reliable mobile recharges for all operators"
       />
       {/* Tab Section */}
       <Tab />

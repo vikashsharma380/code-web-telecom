@@ -149,7 +149,8 @@ export default function PostpaidRecharge() {
          />
      
            {/* Tabs */}
-          <Tab/>
+          <Tab activeTab={activeTab} setActiveTab={setActiveTab}
+/>
 
       {/* Form Section */}
       <div style={styles.mainContent}>

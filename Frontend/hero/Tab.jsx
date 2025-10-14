@@ -13,6 +13,10 @@ export default function Tab({ activeTab, setActiveTab }) {
           "Gas",
           "Insurance",
           "FASTag",
+          "Google Play",
+          "Water Bill",
+          "Landline",
+          "more",
         ].map((tab) => (
           <button
             key={tab}
