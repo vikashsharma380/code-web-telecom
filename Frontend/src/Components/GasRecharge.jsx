@@ -167,7 +167,10 @@ export default function GasRecharge() {
       {/* Navbar */}
       <Nav />
       {/* Hero */}
-      <Hero />
+      <Hero
+        title="Instant Gas Recharge"
+        subtitle="Fast, secure, and reliable gas recharges for all providers"
+      />
 
       {/* Tabs */}
       <Tab />

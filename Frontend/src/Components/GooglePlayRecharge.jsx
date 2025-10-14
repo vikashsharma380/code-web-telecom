@@ -134,7 +134,14 @@ export default function GooglePlayRecharge() {
       {/* Navbar */}
       <Nav />
       {/* Hero */}
-      <Hero />
+      <Hero
+      
+        title="Instant Google Play Recharge"
+        subtitle="Fast, secure, and reliable Google Play recharges for all accounts"
+      
+      
+      
+      />
       {/* Tabs */}
       <Tab />
 

@@ -183,7 +183,10 @@ export default function FASTagRecharge() {
       <Nav />
 
       {/* Hero */}
-      <Hero />
+      <Hero
+        title="Instant FASTag Recharge"
+        subtitle="Fast, secure, and reliable FASTag recharges for all banks"
+      />
 
       {/* Tabs */}
       <Tab />

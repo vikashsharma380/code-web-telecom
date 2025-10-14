@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Smartphone, Zap, Clock, TrendingUp } from "lucide-react";
 import styles from "../styles";
 import Nav from "../../hero/nav";
-import Hero from "../../hero/Hero";
+import Hero from "../../hero/hero";
 import Tab from "../../hero/Tab";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -143,7 +143,10 @@ export default function PostpaidRecharge() {
           <Nav/>
      
            {/* Hero Section */}
-         <Hero/>
+         <Hero      
+           title="Instant Postpaid Recharge"
+           subtitle="Fast, secure, and reliable postpaid recharges for all accounts"
+         />
      
            {/* Tabs */}
           <Tab/>

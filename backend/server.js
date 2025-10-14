@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require("uuid");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
-
+const Transaction = require("../backend/models/Transaction");
 dotenv.config();
 const app = express();
 // app.use(cors());
@@ -40,6 +40,12 @@ app.use(cors({
   },
   credentials: true,
 }));
+
+app.get("/api/transactions", async (req, res) => {
+  const transactions = await Transaction.find().sort({ date: -1 }).limit(10);
+  res.json(transactions);
+});
+
 
 // ----------------- Recharge API -----------------
 
@@ -115,7 +121,20 @@ app.post("/api/recharge", async (req, res) => {
     const response = await axios.get(url);
 
     console.log("✅ Recharge API response:", response.data);
-    res.json(response.data);
+    // res.json(response.data);
+    
+const data = response.data; // <-- use this
+
+    // save transaction
+    await Transaction.create({
+      txid: data.txid,
+      operator: req.body.operatorcode,
+      number: req.body.number,
+      amount: req.body.amount,
+      status: data.status,
+    });
+
+    res.json(data);
 
   } catch (error) {
     // ✅ Error handling block

@@ -3,7 +3,7 @@ import { Smartphone, Zap, TrendingUp, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import Nav from "../../hero/nav";
-import Hero from "../../hero/Hero";
+import Hero from "../../hero/hero";
 import Tab from "../../hero/Tab";
 import styles from "../styles";
 export default function DataCardRecharge() {
@@ -171,7 +171,10 @@ export default function DataCardRecharge() {
       <Nav />
 
       {/* Hero */}
-      <Hero />
+      <Hero 
+      title="Instant Data Card Recharge"
+      subtitle="Fast, secure, and reliable data card recharges for all operators"
+      />
 
       {/* Tabs */}
       <Tab />

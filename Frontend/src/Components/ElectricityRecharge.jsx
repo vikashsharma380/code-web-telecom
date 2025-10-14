@@ -261,7 +261,10 @@ export default function ElectricityRecharge() {
      <Nav/>
 
       {/* Hero Section */}
-    <Hero/>
+    <Hero
+      title="Instant Electricity Recharge"
+      subtitle="Fast, secure, and reliable electricity recharges for all operators"
+    />
 
       {/* Tabs */}
      <Tab/>

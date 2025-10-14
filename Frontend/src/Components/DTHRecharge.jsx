@@ -3,6 +3,9 @@ import { Smartphone, Zap, Clock, TrendingUp } from "lucide-react";
 import styles from "../styles";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import Nav from "../../hero/nav";
+import Hero from "../../hero/hero";
+import Tab from "../../hero/Tab";
 export default function DTHRecharge() {
   const [formData, setFormData] = useState({
     dthNumber: "",
@@ -200,99 +203,14 @@ export default function DTHRecharge() {
       {/* Animated Background */}
       <div style={styles.bgPattern}></div>
       {/* Navigation Bar */}
-      <nav style={styles.navbar}>
-        <div style={styles.navContent}>
-          <div style={styles.logoSection}>
-            <div style={styles.logoIcon}>
-              <Smartphone size={24} />
-            </div>
-            <div>
-              <div style={styles.logoText}>CodeWeb Telecom</div>
-              <div style={styles.logoSubtext}>Digital Recharge Partner</div>
-            </div>
-          </div>
-          <div style={styles.navLinks}>
-            <a href="#" style={styles.navLink}>
-              Dashboard
-            </a>
-            <a href="#" style={styles.navLink}>
-              Reports
-            </a>
-            <a href="#" style={styles.navLink}>
-              Account
-            </a>
-            <a href="#" style={styles.navLink}>
-              Support
-            </a>
-          </div>
-          <div style={styles.userSection}>
-            <div style={styles.balanceBadge}>
-              <span style={styles.balanceLabel}>Balance</span>
-              <span style={styles.balanceAmount}>
-                {balanceLoading ? "..." : `₹${balance.toFixed(2)}`}
-              </span>
-            </div>
-            <div style={styles.avatar}>V</div>
-          </div>
-        </div>
-      </nav>
+      <Nav />
       {/* Hero Section */}
-      <div style={styles.hero}>
-        <div style={styles.heroContent}>
-          <div style={styles.heroLeft}>
-            <div style={styles.welcomeBadge}>
-              <Zap size={16} />
-              <span>Welcome back, Vikash!</span>
-            </div>
-            <h1 style={styles.heroTitle}>Instant Recharge</h1>
-            <p style={styles.heroSubtitle}>
-              Fast, secure, and reliable DTH recharge for all operators
-            </p>
-            <div style={styles.statsGrid}>
-              <div style={styles.statCard}>
-                <TrendingUp size={20} />
-                <div>
-                  <div style={styles.statValue}>50,000+</div>
-                  <div style={styles.statLabel}>Users Trust Us</div>
-                </div>
-              </div>
-              <div style={styles.statCard}>
-                <Clock size={20} />
-                <div>
-                  <div style={styles.statValue}>2 Sec</div>
-                  <div style={styles.statLabel}>Avg. Processing</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Hero
+        title="Instant DTH Recharge"
+        subtitle="Fast, secure, and reliable DTH recharges for all operators"
+      />
       {/* Tab Section */}
-      <div style={styles.tabSection}>
-        <div style={styles.tabsContainer}>
-          {[
-            "Mobile",
-            "DTH",
-            "Data Card",
-            "Postpaid",
-            "Electricity",
-            "Gas",
-            "Insurance",
-            "Transfer",
-          ].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab.toLowerCase())}
-              style={{
-                ...styles.tabBtn,
-                ...(activeTab === tab.toLowerCase() ? styles.tabBtnActive : {}),
-              }}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-      </div>
+      <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
       {/* Main Content */}
       <div style={styles.mainContent}>
         <div style={styles.contentGrid}>

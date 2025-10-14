@@ -140,6 +140,22 @@ console.log("Auto-detect response:", data);
   const handleQuickAmount = (amt) => {
     setFormData({ ...formData, amount: amt.toString() });
   };
+
+
+  const fetchTransactions = async () => {
+  try {
+    const res = await fetch(`${API_URL}/api/transactions`);
+    const data = await res.json();
+    setTransactions(data); // load from backend
+  } catch (err) {
+    console.error("Failed to fetch transactions:", err);
+  }
+};
+
+useEffect(() => {
+  fetchTransactions();
+}, []);
+
   const handleRecharge = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -203,7 +219,11 @@ console.log("Auto-detect response:", data);
       {/* NAVBAR & BALANCE */}
       <Nav />
       {/* Hero Section */}
-      <Hero />
+      <Hero 
+      
+      title="Instant Mobile Recharge"
+      subtitle="Fast, secure, and reliable mobile recharges for all operators"
+      />
       {/* Tab Section */}
       <Tab />
       {/* Main Content */}
