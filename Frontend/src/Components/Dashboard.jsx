@@ -8,6 +8,7 @@ import {
   BarChart3,
   Wallet,
 } from "lucide-react";
+import Nav from "../../hero/nav";
 
 export default function Dashboard() {
   const stats = [
@@ -21,48 +22,15 @@ export default function Dashboard() {
     { label: "Revert", value: 0 },
   ];
 
+  const [balance, setBalance] = React.useState(0);
+  const [balanceLoading, setBalanceLoading] = React.useState(true);
   return (
     <div style={styles.container}>
       {/* Animated Background */}
       <div style={styles.bgPattern}></div>
 
       {/* Navigation Bar */}
-      <nav style={styles.navbar}>
-        <div style={styles.navContent}>
-          <div style={styles.logoSection}>
-            <div style={styles.logoIcon}>
-              <Smartphone size={24} />
-            </div>
-            <div>
-              <div style={styles.logoText}>CodeWeb Telecom</div>
-              <div style={styles.logoSubtext}>Digital Recharge Partner</div>
-            </div>
-          </div>
-
-          <div style={styles.navLinks}>
-            <Link to="/dashboard" style={styles.navLink}>
-              Dashboard
-            </Link>
-            <Link to="/" style={styles.navLink}>
-              Reports
-            </Link>
-            <a href="#" style={styles.navLink}>
-              Account
-            </a>
-            <a href="#" style={styles.navLink}>
-              Support
-            </a>
-          </div>
-
-          <div style={styles.userSection}>
-            <div style={styles.balanceBadge}>
-              <span style={styles.balanceLabel}>Balance</span>
-              <span style={styles.balanceAmount}>₹0.00</span>
-            </div>
-            <div style={styles.avatar}>V</div>
-          </div>
-        </div>
-      </nav>
+   <Nav />
 
       {/* Hero Section */}
       <div style={styles.hero}>
@@ -82,7 +50,9 @@ export default function Dashboard() {
                 <BarChart3 size={20} />
                 <div>
                   <div style={styles.statValue}>Balance</div>
-                  <div style={styles.statLabel}>₹ 0.00</div>
+                  <span style={styles.balanceAmount}>
+              {balanceLoading ? "Loading..." : `₹${balance.toFixed(2)}`}
+            </span>
                 </div>
               </div>
               <div style={styles.statCard}>
