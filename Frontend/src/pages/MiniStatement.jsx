@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import Nav from "../../hero/nav";
 const MiniStatement = () => {
   const [transactions] = useState([
     {
@@ -177,93 +177,98 @@ const MiniStatement = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.bgPattern} />
-      <div style={styles.content}>
-        <div style={styles.header}>
-          <h1 style={styles.title}>Mini Statement</h1>
-          <p style={styles.subtitle}>View your recent recharge transactions</p>
-        </div>
-
-        <div style={styles.card}>
-          <div style={styles.cardHeader}>
-            <h2 style={styles.cardTitle}>Recent Transactions</h2>
+    <>
+      <Nav />;
+      <div style={styles.container}>
+        <div style={styles.bgPattern} />
+        <div style={styles.content}>
+          <div style={styles.header}>
+            <h1 style={styles.title}>Mini Statement</h1>
+            <p style={styles.subtitle}>
+              View your recent recharge transactions
+            </p>
           </div>
 
-          {transactions.length === 0 ? (
-            <div style={styles.emptyState}>
-              <div style={styles.emptyIcon}>📊</div>
-              <p style={styles.emptyText}>No transactions yet</p>
-              <p style={styles.emptySubtext}>
-                Your transaction history will appear here
-              </p>
+          <div style={styles.card}>
+            <div style={styles.cardHeader}>
+              <h2 style={styles.cardTitle}>Recent Transactions</h2>
             </div>
-          ) : (
-            <div style={styles.tableWrapper}>
-              <table style={styles.table}>
-                <thead style={styles.thead}>
-                  <tr>
-                    <th style={styles.th}>Recharge ID</th>
-                    <th style={styles.th}>Operator</th>
-                    <th style={styles.th}>Number</th>
-                    <th style={styles.th}>Amount</th>
-                    <th style={styles.th}>Profit</th>
-                    <th style={styles.th}>Balance</th>
-                    <th style={styles.th}>Status</th>
-                    <th style={styles.th}>Operator ID</th>
-                    <th style={styles.th}>Date Time</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transactions.map((txn, index) => (
-                    <tr
-                      key={index}
-                      style={{
-                        ...styles.tr,
-                        background:
-                          index % 2 === 0
-                            ? "rgba(255, 255, 255, 0.02)"
-                            : "transparent",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background =
-                          "rgba(102, 126, 234, 0.1)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background =
-                          index % 2 === 0
-                            ? "rgba(255, 255, 255, 0.02)"
-                            : "transparent";
-                      }}
-                    >
-                      <td style={styles.td}>{txn.id}</td>
-                      <td style={{ ...styles.td, ...styles.operatorCell }}>
-                        {txn.operator}
-                      </td>
-                      <td style={styles.td}>{txn.number}</td>
-                      <td style={{ ...styles.td, ...styles.amountCell }}>
-                        ₹{txn.amount}
-                      </td>
-                      <td style={{ ...styles.td, ...styles.profitCell }}>
-                        ₹{txn.profit}
-                      </td>
-                      <td style={{ ...styles.td, ...styles.balanceCell }}>
-                        ₹{txn.balance}
-                      </td>
-                      <td style={styles.td}>
-                        <span style={styles.statusBadge}>{txn.status}</span>
-                      </td>
-                      <td style={styles.td}>{txn.operatorId}</td>
-                      <td style={styles.td}>{txn.dateTime}</td>
+
+            {transactions.length === 0 ? (
+              <div style={styles.emptyState}>
+                <div style={styles.emptyIcon}>📊</div>
+                <p style={styles.emptyText}>No transactions yet</p>
+                <p style={styles.emptySubtext}>
+                  Your transaction history will appear here
+                </p>
+              </div>
+            ) : (
+              <div style={styles.tableWrapper}>
+                <table style={styles.table}>
+                  <thead style={styles.thead}>
+                    <tr>
+                      <th style={styles.th}>Recharge ID</th>
+                      <th style={styles.th}>Operator</th>
+                      <th style={styles.th}>Number</th>
+                      <th style={styles.th}>Amount</th>
+                      <th style={styles.th}>Profit</th>
+                      <th style={styles.th}>Balance</th>
+                      <th style={styles.th}>Status</th>
+                      <th style={styles.th}>Operator ID</th>
+                      <th style={styles.th}>Date Time</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                  </thead>
+                  <tbody>
+                    {transactions.map((txn, index) => (
+                      <tr
+                        key={index}
+                        style={{
+                          ...styles.tr,
+                          background:
+                            index % 2 === 0
+                              ? "rgba(255, 255, 255, 0.02)"
+                              : "transparent",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background =
+                            "rgba(102, 126, 234, 0.1)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background =
+                            index % 2 === 0
+                              ? "rgba(255, 255, 255, 0.02)"
+                              : "transparent";
+                        }}
+                      >
+                        <td style={styles.td}>{txn.id}</td>
+                        <td style={{ ...styles.td, ...styles.operatorCell }}>
+                          {txn.operator}
+                        </td>
+                        <td style={styles.td}>{txn.number}</td>
+                        <td style={{ ...styles.td, ...styles.amountCell }}>
+                          ₹{txn.amount}
+                        </td>
+                        <td style={{ ...styles.td, ...styles.profitCell }}>
+                          ₹{txn.profit}
+                        </td>
+                        <td style={{ ...styles.td, ...styles.balanceCell }}>
+                          ₹{txn.balance}
+                        </td>
+                        <td style={styles.td}>
+                          <span style={styles.statusBadge}>{txn.status}</span>
+                        </td>
+                        <td style={styles.td}>{txn.operatorId}</td>
+                        <td style={styles.td}>{txn.dateTime}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 };
 

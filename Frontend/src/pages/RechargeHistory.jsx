@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Nav from "../../hero/nav";
 
 const RechargeHistory = () => {
   const [fromDate, setFromDate] = useState("");
@@ -286,141 +287,146 @@ const RechargeHistory = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.bgPattern} />
-      <div style={styles.content}>
-        <div style={styles.header}>
-          <h1 style={styles.title}>Recharge History</h1>
-          <p style={styles.subtitle}>
-            Search and view your recharge transaction history
-          </p>
-        </div>
-
-        <div style={styles.filterCard}>
-          <div style={styles.filterHeader}>
-            <h2 style={styles.filterTitle}>Filter Transactions</h2>
+    <>
+      <Nav />
+      <div style={styles.container}>
+        <div style={styles.bgPattern} />
+        <div style={styles.content}>
+          <div style={styles.header}>
+            <h1 style={styles.title}>Recharge History</h1>
+            <p style={styles.subtitle}>
+              Search and view your recharge transaction history
+            </p>
           </div>
-          <div style={styles.filterForm}>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>From Date:</label>
-              <input
-                type="date"
-                style={styles.input}
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-              />
-            </div>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>To Date:</label>
-              <input
-                type="date"
-                style={styles.input}
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-              />
-            </div>
-            <button
-              style={styles.submitBtn}
-              onClick={handleSubmit}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow =
-                  "0 12px 32px rgba(52, 152, 219, 0.5)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow =
-                  "0 8px 24px rgba(52, 152, 219, 0.4)";
-              }}
-            >
-              Submit
-            </button>
-          </div>
-        </div>
 
-        {showResults && (
-          <div style={styles.card}>
-            <div style={styles.cardHeader}>
-              <h2 style={styles.cardTitle}>
-                Search Results{" "}
-                {filteredTransactions.length > 0 &&
-                  `(${filteredTransactions.length})`}
-              </h2>
+          <div style={styles.filterCard}>
+            <div style={styles.filterHeader}>
+              <h2 style={styles.filterTitle}>Filter Transactions</h2>
             </div>
-
-            {filteredTransactions.length === 0 ? (
-              <div style={styles.emptyState}>
-                <div style={styles.emptyIcon}>🔍</div>
-                <p style={styles.emptyText}>No transactions found</p>
-                <p style={styles.emptySubtext}>Try adjusting your date range</p>
+            <div style={styles.filterForm}>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>From Date:</label>
+                <input
+                  type="date"
+                  style={styles.input}
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                />
               </div>
-            ) : (
-              <div style={styles.tableWrapper}>
-                <table style={styles.table}>
-                  <thead style={styles.thead}>
-                    <tr>
-                      <th style={styles.th}>Recharge ID</th>
-                      <th style={styles.th}>Operator</th>
-                      <th style={styles.th}>Number</th>
-                      <th style={styles.th}>Amount</th>
-                      <th style={styles.th}>Profit</th>
-                      <th style={styles.th}>Balance</th>
-                      <th style={styles.th}>Status</th>
-                      <th style={styles.th}>Operator ID</th>
-                      <th style={styles.th}>Date Time</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredTransactions.map((txn, index) => (
-                      <tr
-                        key={index}
-                        style={{
-                          ...styles.tr,
-                          background:
-                            index % 2 === 0
-                              ? "rgba(255, 255, 255, 0.02)"
-                              : "transparent",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background =
-                            "rgba(102, 126, 234, 0.1)";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background =
-                            index % 2 === 0
-                              ? "rgba(255, 255, 255, 0.02)"
-                              : "transparent";
-                        }}
-                      >
-                        <td style={styles.td}>{txn.id}</td>
-                        <td style={{ ...styles.td, ...styles.operatorCell }}>
-                          {txn.operator}
-                        </td>
-                        <td style={styles.td}>{txn.number}</td>
-                        <td style={{ ...styles.td, ...styles.amountCell }}>
-                          ₹{txn.amount}
-                        </td>
-                        <td style={{ ...styles.td, ...styles.profitCell }}>
-                          ₹{txn.profit}
-                        </td>
-                        <td style={{ ...styles.td, ...styles.balanceCell }}>
-                          ₹{txn.balance}
-                        </td>
-                        <td style={styles.td}>
-                          <span style={styles.statusBadge}>{txn.status}</span>
-                        </td>
-                        <td style={styles.td}>{txn.operatorId}</td>
-                        <td style={styles.td}>{txn.dateTime}</td>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>To Date:</label>
+                <input
+                  type="date"
+                  style={styles.input}
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                />
+              </div>
+              <button
+                style={styles.submitBtn}
+                onClick={handleSubmit}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 12px 32px rgba(52, 152, 219, 0.5)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 24px rgba(52, 152, 219, 0.4)";
+                }}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+
+          {showResults && (
+            <div style={styles.card}>
+              <div style={styles.cardHeader}>
+                <h2 style={styles.cardTitle}>
+                  Search Results{" "}
+                  {filteredTransactions.length > 0 &&
+                    `(${filteredTransactions.length})`}
+                </h2>
+              </div>
+
+              {filteredTransactions.length === 0 ? (
+                <div style={styles.emptyState}>
+                  <div style={styles.emptyIcon}>🔍</div>
+                  <p style={styles.emptyText}>No transactions found</p>
+                  <p style={styles.emptySubtext}>
+                    Try adjusting your date range
+                  </p>
+                </div>
+              ) : (
+                <div style={styles.tableWrapper}>
+                  <table style={styles.table}>
+                    <thead style={styles.thead}>
+                      <tr>
+                        <th style={styles.th}>Recharge ID</th>
+                        <th style={styles.th}>Operator</th>
+                        <th style={styles.th}>Number</th>
+                        <th style={styles.th}>Amount</th>
+                        <th style={styles.th}>Profit</th>
+                        <th style={styles.th}>Balance</th>
+                        <th style={styles.th}>Status</th>
+                        <th style={styles.th}>Operator ID</th>
+                        <th style={styles.th}>Date Time</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
+                    </thead>
+                    <tbody>
+                      {filteredTransactions.map((txn, index) => (
+                        <tr
+                          key={index}
+                          style={{
+                            ...styles.tr,
+                            background:
+                              index % 2 === 0
+                                ? "rgba(255, 255, 255, 0.02)"
+                                : "transparent",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background =
+                              "rgba(102, 126, 234, 0.1)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background =
+                              index % 2 === 0
+                                ? "rgba(255, 255, 255, 0.02)"
+                                : "transparent";
+                          }}
+                        >
+                          <td style={styles.td}>{txn.id}</td>
+                          <td style={{ ...styles.td, ...styles.operatorCell }}>
+                            {txn.operator}
+                          </td>
+                          <td style={styles.td}>{txn.number}</td>
+                          <td style={{ ...styles.td, ...styles.amountCell }}>
+                            ₹{txn.amount}
+                          </td>
+                          <td style={{ ...styles.td, ...styles.profitCell }}>
+                            ₹{txn.profit}
+                          </td>
+                          <td style={{ ...styles.td, ...styles.balanceCell }}>
+                            ₹{txn.balance}
+                          </td>
+                          <td style={styles.td}>
+                            <span style={styles.statusBadge}>{txn.status}</span>
+                          </td>
+                          <td style={styles.td}>{txn.operatorId}</td>
+                          <td style={styles.td}>{txn.dateTime}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>{" "}
+    </>
   );
 };
 

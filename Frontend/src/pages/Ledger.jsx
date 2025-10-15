@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import Nav from "../../hero/nav";
 const Ledger = () => {
   const [transactions] = useState([
     {
@@ -190,93 +190,96 @@ const Ledger = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.bgPattern} />
-      <div style={styles.content}>
-        <div style={styles.header}>
-          <h1 style={styles.title}>Ledger Report</h1>
-          <p style={styles.subtitle}>
-            View your credit and debit transaction summary
-          </p>
-        </div>
-
-        <div style={styles.card}>
-          <div style={styles.cardHeader}>
-            <h2 style={styles.cardTitle}>Credit Debit Summary</h2>
+    <>
+      <Nav />
+      <div style={styles.container}>
+        <div style={styles.bgPattern} />
+        <div style={styles.content}>
+          <div style={styles.header}>
+            <h1 style={styles.title}>Ledger Report</h1>
+            <p style={styles.subtitle}>
+              View your credit and debit transaction summary
+            </p>
           </div>
 
-          {transactions.length === 0 ? (
-            <div style={styles.emptyState}>
-              <div style={styles.emptyIcon}>📊</div>
-              <p style={styles.emptyText}>No ledger entries yet</p>
-              <p style={styles.emptySubtext}>
-                Your transaction ledger will appear here
-              </p>
+          <div style={styles.card}>
+            <div style={styles.cardHeader}>
+              <h2 style={styles.cardTitle}>Credit Debit Summary</h2>
             </div>
-          ) : (
-            <div style={styles.tableWrapper}>
-              <table style={styles.table}>
-                <thead style={styles.thead}>
-                  <tr>
-                    <th style={styles.th}>Billing ID</th>
-                    <th style={styles.th}>Date</th>
-                    <th style={styles.th}>Description</th>
-                    <th style={styles.th}>Credit</th>
-                    <th style={styles.th}>Debit</th>
-                    <th style={styles.th}>Balance</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transactions.map((txn, index) => (
-                    <tr
-                      key={index}
-                      style={{
-                        ...styles.tr,
-                        background:
-                          index % 2 === 0
-                            ? "rgba(255, 255, 255, 0.02)"
-                            : "transparent",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background =
-                          "rgba(102, 126, 234, 0.1)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background =
-                          index % 2 === 0
-                            ? "rgba(255, 255, 255, 0.02)"
-                            : "transparent";
-                      }}
-                    >
-                      <td style={{ ...styles.td, ...styles.billingIdCell }}>
-                        {txn.billingId}
-                      </td>
-                      <td style={styles.td}>{txn.date}</td>
-                      <td style={{ ...styles.td, ...styles.descriptionCell }}>
-                        {txn.description}
-                      </td>
-                      <td style={{ ...styles.td, ...styles.creditCell }}>
-                        {txn.credit > 0
-                          ? `₹${formatAmount(txn.credit)}`
-                          : formatAmount(txn.credit)}
-                      </td>
-                      <td style={{ ...styles.td, ...styles.debitCell }}>
-                        {txn.debit > 0
-                          ? `₹${formatAmount(txn.debit)}`
-                          : formatAmount(txn.debit)}
-                      </td>
-                      <td style={{ ...styles.td, ...styles.balanceCell }}>
-                        {formatAmount(txn.balance)}
-                      </td>
+
+            {transactions.length === 0 ? (
+              <div style={styles.emptyState}>
+                <div style={styles.emptyIcon}>📊</div>
+                <p style={styles.emptyText}>No ledger entries yet</p>
+                <p style={styles.emptySubtext}>
+                  Your transaction ledger will appear here
+                </p>
+              </div>
+            ) : (
+              <div style={styles.tableWrapper}>
+                <table style={styles.table}>
+                  <thead style={styles.thead}>
+                    <tr>
+                      <th style={styles.th}>Billing ID</th>
+                      <th style={styles.th}>Date</th>
+                      <th style={styles.th}>Description</th>
+                      <th style={styles.th}>Credit</th>
+                      <th style={styles.th}>Debit</th>
+                      <th style={styles.th}>Balance</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                  </thead>
+                  <tbody>
+                    {transactions.map((txn, index) => (
+                      <tr
+                        key={index}
+                        style={{
+                          ...styles.tr,
+                          background:
+                            index % 2 === 0
+                              ? "rgba(255, 255, 255, 0.02)"
+                              : "transparent",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background =
+                            "rgba(102, 126, 234, 0.1)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background =
+                            index % 2 === 0
+                              ? "rgba(255, 255, 255, 0.02)"
+                              : "transparent";
+                        }}
+                      >
+                        <td style={{ ...styles.td, ...styles.billingIdCell }}>
+                          {txn.billingId}
+                        </td>
+                        <td style={styles.td}>{txn.date}</td>
+                        <td style={{ ...styles.td, ...styles.descriptionCell }}>
+                          {txn.description}
+                        </td>
+                        <td style={{ ...styles.td, ...styles.creditCell }}>
+                          {txn.credit > 0
+                            ? `₹${formatAmount(txn.credit)}`
+                            : formatAmount(txn.credit)}
+                        </td>
+                        <td style={{ ...styles.td, ...styles.debitCell }}>
+                          {txn.debit > 0
+                            ? `₹${formatAmount(txn.debit)}`
+                            : formatAmount(txn.debit)}
+                        </td>
+                        <td style={{ ...styles.td, ...styles.balanceCell }}>
+                          {formatAmount(txn.balance)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
