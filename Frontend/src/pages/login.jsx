@@ -31,7 +31,7 @@ const handleLogin = async (e) => {
     localStorage.setItem("user", JSON.stringify(user));
 
     alert("Login successful");
-    navigate("/"); // redirect to dashboard/homepage
+    navigate("/admin-dashboard"); // redirect to admin dashboard
   } catch (err) {
     console.error("Login error:", err);
     const msg =

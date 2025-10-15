@@ -300,3 +300,5 @@ const styles = {
     color: "#667eea",
   },
 };
+
+export default styles;
