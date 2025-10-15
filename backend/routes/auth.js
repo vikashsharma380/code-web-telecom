@@ -2,51 +2,49 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const router = express.Router();
-
-router.post("/login", async (req, res) => {
-  const { loginInput, password } = req.body;
-
+const ADMIN_MOBILE = "9266982764";
+router.post("/register", async (req, res) => {
   try {
-    if (!loginInput || !password) {
-      return res.status(400).json({ message: "Please enter User ID/Mobile and Password" });
+    const { name, email, mobile, password } = req.body;
+    console.log("Received signup body:", req.body);
+
+    const existingUser = await User.findOne({ mobile });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
     }
 
-    let user;
-    if (/^\d{10}$/.test(loginInput)) {
-      // mobile is string
-      user = await User.findOne({ mobile: loginInput });
-    } else {
-      // userId is number
-      user = await User.findOne({ userId: Number(loginInput) });
-    }
+    const role = mobile === ADMIN_MOBILE ? "admin" : "user";
 
-    if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-console.log("DB password hash:", user.password);
-console.log("Entered password:", password);
+    const newUser = new User({ name, email, mobile, password, role });
+    console.log("New user before save:", newUser);
 
-    const isMatch = await user.matchPassword(password);
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+    await newUser.save();
 
-    const token = generateToken(user._id);
-
-    res.json({
-      success: true,
-      message: "Login successful",
-      token,
-      user: {
-        userId: user.userId,
-        name: user.name,
-      },
-    });
+    res.status(201).json({ message: "Signup successful", role: newUser.role });
   } catch (err) {
-    console.error("Login Error:", err);
-    res.status(500).json({ message: err.message });
+    console.error("Signup Error:", err); 
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
+router.post("/login", async (req, res) => {
+  try {
+    const { mobile, password } = req.body;
+    const user = await User.findOne({ mobile });
+
+    if (!user) return res.status(400).json({ message: "User not found" });
+
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) return res.status(400).json({ message: "Invalid password" });
+
+    res.json({
+      message: "Login successful",
+      redirectTo: user.role === "admin" ? "/admin-dashboard" : "/MobileRecharge",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+});
+
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
