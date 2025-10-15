@@ -1,4 +1,3 @@
-// server.js
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
@@ -9,10 +8,7 @@ const authRoutes = require("./routes/auth");
 const Transaction = require("../backend/models/Transaction");
 dotenv.config();
 const app = express();
-// app.use(cors());
 app.use(express.json());
-
-// ----------------- MongoDB Connection -----------------
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -22,14 +18,10 @@ mongoose.connect(process.env.MONGO_URI, {
     console.error("MongoDB connection error:", err.message);
     process.exit(1);
   });
-
-
-
 const allowedOrigins = [
   "http://localhost:5173",  // ✅ local frontend
   "https://your-deployed-frontend-domain.com" // ✅ hosted frontend domain
 ];
-
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -40,16 +32,10 @@ app.use(cors({
   },
   credentials: true,
 }));
-
 app.get("/api/transactions", async (req, res) => {
   const transactions = await Transaction.find().sort({ date: -1 }).limit(10);
   res.json(transactions);
 });
-
-
-// ----------------- Recharge API -----------------
-
-
 app.post("/api/dthrecharge", async (req, res) => {
   console.log("Received recharge request:", req.body);
   try {
@@ -94,61 +80,51 @@ app.post("/api/dthrecharge", async (req, res) => {
     });
   }
 });
-
 app.post("/api/recharge", async (req, res) => {
   console.log("Received recharge request:", req.body);
   try {
-    const { username, pwd, circlecode, operatorcode, number, amount, value1, value2 } = req.body;
+    const { circlecode, operatorcode, number, amount, username, pwd } = req.body;
 
-    // ✅ Validation
-    if (!username || !pwd || !circlecode || !operatorcode || !number || !amount) {
+    // Validation
+    if (!circlecode || !operatorcode || !number || !amount || !username || !pwd) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    // ✅ Generate unique order ID
     const orderid = uuidv4();
 
-    // ✅ Build API URL safely
-    let url = `https://codewebtelecom.com/recharge/api?username=${encodeURIComponent(username)}&pwd=${encodeURIComponent(pwd)}&circlecode=${encodeURIComponent(circlecode)}&operatorcode=${encodeURIComponent(operatorcode)}&number=${encodeURIComponent(number)}&amount=${encodeURIComponent(amount)}&orderid=${orderid}&format=json`;
+    // Encode credentials for URL
+    const encodedUser = encodeURIComponent(username);
+    const encodedPwd = encodeURIComponent(pwd);
 
-    if (value1) url += `&value1=${encodeURIComponent(value1)}`;
-    if (value2) url += `&value2=${encodeURIComponent(value2)}`;
+    let url = `http://business.a1topup.com/recharge/api?username=${encodedUser}&pwd=${encodedPwd}&circlecode=${encodeURIComponent(circlecode)}&operatorcode=${encodeURIComponent(operatorcode)}&number=${encodeURIComponent(number)}&amount=${encodeURIComponent(amount)}&orderid=${orderid}&format=json`;
+
+    if (req.body.value1) url += `&value1=${encodeURIComponent(req.body.value1)}`;
+    if (req.body.value2) url += `&value2=${encodeURIComponent(req.body.value2)}`;
 
     console.log("🔗 Recharge API call URL:", url);
-    console.log("📦 Request Body:", req.body);
 
-    // ✅ External API call
+    // External API call
     const response = await axios.get(url);
+    const data = response.data;
 
-    console.log("✅ Recharge API response:", response.data);
-    // res.json(response.data);
-    
-const data = response.data; // <-- use this
+    console.log("✅ Recharge API response:", data);
 
-    // save transaction
+    // Save transaction
     await Transaction.create({
-      txid: data.txid,
-      operator: req.body.operatorcode,
-      number: req.body.number,
-      amount: req.body.amount,
-      status: data.status,
+      txid: data.txid || Math.random(),
+      operator: operatorcode,
+      number,
+      amount,
+      status: data.status || "Pending",
     });
 
     res.json(data);
-
   } catch (error) {
-    // ✅ Error handling block
     console.error("❌ Recharge failed:", error);
-
-    if (error.response) {
-      console.error("📄 API Response Data:", error.response.data);
-      console.error("📊 API Response Status:", error.response.status);
-    }
-
     res.status(500).json({
       error: "Recharge failed",
       details: error.message,
-      apiResponse: error.response ? error.response.data : null
+      apiResponse: error.response ? error.response.data : null,
     });
   }
 });
@@ -197,7 +173,6 @@ app.post("/api/fastagrecharge", async (req, res) => {
     });
   }
 });
-
 app.post("/api/gasrecharge", async (req, res) => {
   console.log("Received recharge request:", req.body);
   try {
@@ -242,29 +217,6 @@ app.post("/api/gasrecharge", async (req, res) => {
     });
   }
 });
-// ----------------- Operator Lookup API -----------------
-app.get("/api/lookup", async (req, res) => {
-  try {
-    const { number } = req.query;
-    if (!number) return res.status(400).json({ error: "Number is required" });
-
-    const lookupUrl = `https://codewebtelecom.com/recharge/api/lookup?number=${number}&format=json`;
-    console.log("Lookup API call URL:", lookupUrl);
-
-    const response = await axios.get(lookupUrl);
-    console.log("Lookup API response:", response.data);
-
-    res.json(response.data);
-  } catch (error) {
-    console.error("Lookup failed:", error.message);
-    res.status(500).json({ error: "Lookup failed", details: error.message });
-  }
-});
-
-
-
-
-
 app.get("/api/balance", async (req, res) => {
   try {
     const { username, pwd } = req.query;
@@ -273,7 +225,7 @@ app.get("/api/balance", async (req, res) => {
       return res.status(400).json({ success: false, error: "Username and password required" });
     }
 
-    const url = `https://codewebtelecom.com/recharge/balance?username=${encodeURIComponent(username)}&pwd=${encodeURIComponent(pwd)}&format=json`;
+    const url = `http://business.a1topup.com/recharge/balance?username=505629&pwd=Ansari@2580&format=json`;
 
     // External API call
     const response = await axios.get(url);
@@ -300,8 +252,6 @@ app.get("/api/balance", async (req, res) => {
     });
   }
 });
-
-
 app.get("/api/status", async (req, res) => {
   try {
     const { username, pwd, orderid } = req.query;
@@ -318,8 +268,6 @@ app.get("/api/status", async (req, res) => {
     res.status(500).json({ error: "Status check failed", details: error.message });
   }
 });
-
-
 app.get("/callback", (req, res) => {
   const { txid, status, opid } = req.query;
   console.log("Callback received:", txid, status, opid);
@@ -329,239 +277,21 @@ app.get("/callback", (req, res) => {
 app.use("/api/auth", authRoutes);
 
 
-// proxy ip address requests
-const API_KEY = "YOUR_API_KEY";
-const API_BASE = "https://www.mplan.in/api";
-
-// ---------------- MOBILE ----------------
-
-// Prepaid Mobile Plans
-app.get("/mobile/prepaid", async (req, res) => {
-  const { tel, operator, circle } = req.query;
-  try {
-    const response = await axios.get(`${API_BASE}/plans.php`, {
-      params: { apikey: API_KEY, tel, operator, circle },
-    });
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Postpaid ROFFER
-app.get("/mobile/roffer", async (req, res) => {
-  const { tel, operator } = req.query;
-  try {
-    const response = await axios.get(`${API_BASE}/plans.php`, {
-      params: { apikey: API_KEY, tel, operator, offer: "roffer" },
-    });
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Prepaid Validity Check
-app.get("/mobile/validity", async (req, res) => {
-  const { tel, operator } = req.query;
-  try {
-    const response = await axios.get(`${API_BASE}/validitycheck.php`, {
-      params: { apikey: API_KEY, tel, operator, offer: "roffer" },
-    });
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ---------------- DTH ----------------
-
-// DTH Customer Info
-app.get("/dth/info", async (req, res) => {
-  const { tel, operator } = req.query;
-  try {
-    const response = await axios.get(`${API_BASE}/Dthinfo.php`, {
-      params: { apikey: API_KEY, tel, operator, offer: "roffer" },
-    });
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// DTH Customer Info with Mobile
-app.get("/dth/info-mobile", async (req, res) => {
-  const { tel, operator } = req.query;
-  try {
-    const response = await axios.get(`${API_BASE}/DthinfoMobile.php`, {
-      params: { apikey: API_KEY, tel, operator, offer: "roffer" },
-    });
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// DTH Plans
-app.get("/dth/plans", async (req, res) => {
-  const { operator } = req.query;
-  try {
-    const response = await axios.get(`${API_BASE}/dthplans.php`, {
-      params: { apikey: API_KEY, operator },
-    });
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// DTH Plans with Channels
-app.get("/dth/plans-channels", async (req, res) => {
-  const { operator } = req.query;
-  try {
-    const response = await axios.get(`${API_BASE}/dth_plans.php`, {
-      params: { apikey: API_KEY, operator },
-    });
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// DTH ROFFER
-app.get("/dth/roffer", async (req, res) => {
-  const { tel, operator } = req.query;
-  try {
-    const response = await axios.get(`${API_BASE}/DthRoffer.php`, {
-      params: { apikey: API_KEY, tel, operator, offer: "roffer" },
-    });
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// DTH Heavy Refresh
-app.get("/dth/heavy", async (req, res) => {
-  const { tel, operator } = req.query;
-  try {
-    const response = await axios.get(`${API_BASE}/Dthheavy.php`, {
-      params: { apikey: API_KEY, tel, operator, offer: "roffer" },
-    });
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ---------------- ELECTRICITY ----------------
-app.get("/electricity/info", async (req, res) => {
-  const { tel, operator } = req.query;
-  try {
-    const response = await axios.get(`${API_BASE}/electricinfo.php`, {
-      params: { apikey: API_KEY, tel, operator, offer: "roffer" },
-    });
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ---------------- GAS ----------------
-app.get("/gas/info", async (req, res) => {
-  const { tel, operator } = req.query;
-  try {
-    const response = await axios.get(`${API_BASE}/Gas.php`, {
-      params: { apikey: API_KEY, tel, operator, offer: "roffer" },
-    });
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ---------------- WATER ----------------
-app.get("/water/info", async (req, res) => {
-  const { tel, operator } = req.query;
-  try {
-    const response = await axios.get(`${API_BASE}/Water.php`, {
-      params: { apikey: API_KEY, tel, operator, offer: "roffer" },
-    });
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ---------------- FASTAG ----------------
-app.get("/fastag/info", async (req, res) => {
-  const { tel, operator } = req.query;
-  try {
-    const response = await axios.get(`${API_BASE}/Fastag.php`, {
-      params: { apikey: API_KEY, tel, operator, offer: "roffer" },
-    });
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ---------------- INSURANCE ----------------
-app.get("/insurance/info", async (req, res) => {
-  const { tel, operator, mob, dob } = req.query;
-  try {
-    const params = { apikey: API_KEY, tel, operator, mob, offer: "roffer" };
-    if (dob) params.dob = dob;
-    const response = await axios.get(`${API_BASE}/insurance.php`, { params });
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ---------------- OPERATOR INFO ----------------
-app.get("/operator/info", async (req, res) => {
-  const { tel } = req.query;
-  try {
-    const response = await axios.get(
-      `http://operatorcheck.mplan.in/api/operatorinfo.php`,
-      { params: { apikey: API_KEY, tel } }
-    );
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ---------------- BSNL ----------------
-app.get("/bsnl/check", async (req, res) => {
-  const { tel, operator, circle, stdcode } = req.query;
-  try {
-    const response = await axios.get(`${API_BASE}/Bsnl.php`, {
-      params: { apikey: API_KEY, tel, operator, offer: "roffer", circle, stdcode },
-    });
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
 
-app.get("/api/operator/:number", async (req, res) => {
-  const number = req.params.number;
-  const API_KEY = "6fda75354f70927c5d45a3a4dca7f6ce";
-  try {
-    const response = await axios.get(
-      `http://operatorcheck.mplan.in/api/operatorinfo.php?apikey=${API_KEY}&tel=${number}`
-    );
-    res.json(response.data);
-  } catch (error) {
-    console.error("Operator API failed:", error.message);
-    res.status(500).json({ error: "API call failed" });
-  }
-});
-// ----------------- Start Server -----------------
+
+
+
+
+
+
+
+
+
+
+
+
+
 const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
-
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

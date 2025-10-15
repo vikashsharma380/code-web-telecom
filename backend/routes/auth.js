@@ -1,38 +1,36 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-
 const router = express.Router();
 
-// Generate JWT Token
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
-};
-
-// ==============================
-// LOGIN (Only userId + password)
-// ==============================
 router.post("/login", async (req, res) => {
-  const { userId, password } = req.body;
+  const { loginInput, password } = req.body;
 
   try {
-    if (!userId || !password) {
-      return res.status(400).json({ message: "Please enter User ID and Password" });
+    if (!loginInput || !password) {
+      return res.status(400).json({ message: "Please enter User ID/Mobile and Password" });
     }
 
-    // Find user by userId
-    const user = await User.findOne({ userId });
+    let user;
+    if (/^\d{10}$/.test(loginInput)) {
+      // mobile is string
+      user = await User.findOne({ mobile: loginInput });
+    } else {
+      // userId is number
+      user = await User.findOne({ userId: Number(loginInput) });
+    }
+
     if (!user) {
-      return res.status(401).json({ message: "Invalid User ID or Password" });
+      return res.status(401).json({ message: "Invalid credentials" });
     }
+console.log("DB password hash:", user.password);
+console.log("Entered password:", password);
 
-    // Compare password
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid User ID or Password" });
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Generate token
     const token = generateToken(user._id);
 
     res.json({
@@ -40,9 +38,8 @@ router.post("/login", async (req, res) => {
       message: "Login successful",
       token,
       user: {
-        name: user.name,
-       
         userId: user.userId,
+        name: user.name,
       },
     });
   } catch (err) {
@@ -50,5 +47,9 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+};
 
 module.exports = router;

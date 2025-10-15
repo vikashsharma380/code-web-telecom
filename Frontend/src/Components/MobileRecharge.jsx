@@ -13,66 +13,24 @@ export default function MobileRecharge() {
     circlecode: "",
     amount: "",
   });
-
-  const MP_API_KEY = "6fda75354f70927c5d45a3a4dca7f6ce";
+ const MP_API_KEY = "6fda75354f70927c5d45a3a4dca7f6ce";
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [detecting, setDetecting] = useState(false);
   const [activeTab, setActiveTab] = useState("recharge");
-  const [balance, setBalance] = useState(0);
-  const [balanceLoading, setBalanceLoading] = useState(false);
-  const rechargeUser = {
-    username: "500032",
-    pwd: "k0ly9gts",
-  };
-  // === FETCH BALANCE ===
-  const fetchBalance = async () => {
-    setBalanceLoading(true);
-    try {
-      const query = new URLSearchParams(rechargeUser).toString();
-      const res = await fetch(`${API_URL}/api/balance?${query}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
-      const data = await res.json();
-      setBalance(data.balance || 0);
-    } catch (error) {
-      console.error("Balance fetch failed:", error);
-      setBalance(0);
-    } finally {
-      setBalanceLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchBalance();
-  }, []);
-  // === OPERATOR AUTO-DETECT ===
-  useEffect(() => {
-    const detectOperator = async () => {
-      if (formData.number.length === 10) {
-        try {
-          const res = await fetch(
-            `http://localhost:5000/api/operator/${number}`
-          );
-          const data = await res.json();
-          console.log("Auto-detect response:", data);
-          if (data.operatorcode)
-            setFormData((prev) => ({
-              ...prev,
-              operatorcode: data.operatorcode,
-            }));
-          if (data.circlecode)
-            setFormData((prev) => ({ ...prev, circlecode: data.circlecode }));
-        } catch (err) {
-          console.warn("Operator auto-detect failed:", err);
-        }
-      }
-    };
-    detectOperator();
-  }, [formData.number]);
+  const [rechargeUser, setRechargeUser] = useState({});
+   useEffect(() => {
+  const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+    const u = JSON.parse(storedUser);
+    setRechargeUser({
+      username: u.userId, 
+      pwd: u.apiPassword, 
+    });
+  }
+}, []);
+ 
 
   // === OPERATORS & CIRCLES ===
   const operators = [
@@ -370,8 +328,8 @@ export default function MobileRecharge() {
                   </div>
                 ) : (
                   <div style={styles.transactionList}>
-                    {transactions.slice(0, 5).map((t) => (
-                      <div key={t.txid} style={styles.transactionItem}>
+                    {transactions.slice(0, 5).map((t, i) => (
+  <div key={`${t.txid}-${t.number}-${i}`} style={styles.transactionItem}>
                         <div style={styles.transactionIcon}>
                           {t.operator.charAt(0)}
                         </div>
