@@ -26,6 +26,7 @@ export default function LoginPage() {
         loginInput: userId,
         password: password,
       });
+       console.log("✅ Login success:", res.data);
 
       const { token, user } = res.data;
       localStorage.setItem("token", token);
@@ -40,7 +41,7 @@ export default function LoginPage() {
         navigate("/MobileRecharge");
       }
     } catch (err) {
-      console.error("Login error:", err);
+      console.error("❌ Login error:", err.response?.data || err.message);
       const msg =
         err.response?.data?.message ||
         err.message ||

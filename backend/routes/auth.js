@@ -27,21 +27,53 @@ router.post("/register", async (req, res) => {
   }
 });
 router.post("/login", async (req, res) => {
-  try {
-    const { mobile, password } = req.body;
-    const user = await User.findOne({ mobile });
+  const { loginInput, password } = req.body;
+  console.log("📩 Login request body:", req.body);
 
-    if (!user) return res.status(400).json({ message: "User not found" });
+  try {
+    if (!loginInput || !password) {
+      return res.status(400).json({ message: "Please enter User ID/Mobile and Password" });
+    }
+
+    let user;
+    
+
+    if (/^\d{10}$/.test(loginInput)) {
+      // mobile is string
+     user = await User.findOne({
+    $or: [{ mobile: loginInput }, { phone: loginInput }],
+  });}
+     else{ // userId is number
+      user = await User.findOne({ userId: Number(loginInput) });
+    }
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+console.log("✅ Found user:", user.mobile || user.userId);
+console.log("DB password hash:", user.password);
+console.log("Entered password:", password);
 
     const isMatch = await user.matchPassword(password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid password" });
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const token = generateToken(user._id);
 
     res.json({
+      success: true,
       message: "Login successful",
-      redirectTo: user.role === "admin" ? "/admin-dashboard" : "/MobileRecharge",
+      token,
+      user: {
+        userId: user.userId,
+        name: user.name,
+        role: user.role,
+      },
     });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+  } catch (err) {
+    console.error("Login Error:", err);
+    res.status(500).json({ message: err.message });
   }
 });
 
