@@ -28,9 +28,15 @@ export default function MobileRecharge() {
       username: u.userId, 
       pwd: u.apiPassword, 
     });
+     console.log("🔹 Recharge User:", {
+      username: u.userId,
+      pwd: u.apiPassword,
+    });
+    
   }
 }, []);
- 
+
+
 
   // === OPERATORS & CIRCLES ===
   const operators = [
@@ -119,14 +125,22 @@ export default function MobileRecharge() {
     setLoading(true);
     setResult(null);
     try {
+      const token = localStorage.getItem("token");
       const { number, operatorcode, circlecode, amount } = formData;
       if (!number || !operatorcode || !circlecode || !amount)
         throw new Error("All fields are required");
+      const username = rechargeUser.username;
+const pwd = rechargeUser.pwd; 
+
       const res = await fetch(`${API_URL}/api/recharge`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}` // ✅ Properly set here
+  },
         body: JSON.stringify({
-          ...rechargeUser,
+          username,
+          pwd,
           number,
           operatorcode,
           circlecode,

@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import CodeWebTelecom from "./CodeWebFrontend";
 import Login from "./pages/login";
@@ -27,6 +28,18 @@ import SearchTransaction from "./pages/SearchTransaction";
 import SearchPlan from "./pages/SearchPlan";
 
 function App() {
+  useEffect(() => {
+    // Browser close hone par token remove
+    const handleUnload = () => {
+      localStorage.removeItem("token");
+    };
+
+    window.addEventListener("beforeunload", handleUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+    };
+  }, []);
   return (
     <>
       <Routes>

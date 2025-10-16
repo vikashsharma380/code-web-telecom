@@ -69,6 +69,7 @@ console.log("Entered password:", password);
         userId: user.userId,
         name: user.name,
         role: user.role,
+        apiPassword: password, 
       },
     });
   } catch (err) {
@@ -79,7 +80,7 @@ console.log("Entered password:", password);
 
 
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
 
 module.exports = router;

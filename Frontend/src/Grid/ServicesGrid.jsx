@@ -6,50 +6,37 @@ export default function ServicesGrid() {
   const [activeService, setActiveService] = useState(null);
   const navigate = useNavigate();
 
+  const getServiceRoute = (serviceType) => {
+  switch (serviceType) {
+    case "mobile": return "/MobileRecharge";
+    case "dth": return "/DTHRecharge";
+    case "electricity": return "/ElectricityRecharge";
+    case "FASTagRecharge": return "/FASTagRecharge";
+    case "GasRecharge": return "/GasRecharge";
+    case "DataCardRecharge": return "/DataCardRecharge";
+    case "InsuranceRecharge": return "/InsuranceRecharge";
+    case "PostpaidRecharge": return "/PostpaidRecharge";
+    case "googleplay": return "/GooglePlayRecharge";
+    case "water": return "/WaterBillRecharge";
+    default: return "/";
+  }
+};
   // Function to handle service click with login check
   const handleServiceClick = (serviceType) => {
-    const token = localStorage.getItem("token"); // JWT ya login token
+      const route = getServiceRoute(serviceType);
+
+    const token = localStorage.getItem("token");
+    console.log("Token:", token);
+
     if (!token) {
       alert("Please login first!");
-      navigate("/login");
-      return;
+       navigate("/login", { state: { from: getServiceRoute(serviceType) } });
+    return;
     }
 
-    // Navigate to the selected service page
-    switch (serviceType) {
-      case "mobile":
-        navigate("/MobileRecharge");
-        break;
-      case "dth":
-        navigate("/DTHRecharge");
-        break;
-      case "electricity":
-        navigate("/ElectricityRecharge");
-        break;
-      case "FASTagRecharge":
-        navigate("/FASTagRecharge");
-        break;
-      case "GasRecharge":
-        navigate("/GasRecharge");
-        break;
-      case "DataCardRecharge":
-        navigate("/DataCardRecharge");
-        break;
-      case "InsuranceRecharge":
-        navigate("/InsuranceRecharge");
-        break;
-      case "PostpaidRecharge":
-        navigate("/PostpaidRecharge");
-        break;
-      case "googleplay":
-        navigate("/GooglePlayRecharge");
-        break;
-      case "water":
-        navigate("/WaterBillRecharge");
-        break;
-      default:
-        console.error("Unknown service type:", serviceType);
-    }
+    navigate(route);
+   
+    
   };
 
   return (
