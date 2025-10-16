@@ -1,5 +1,8 @@
 import React, { useState } from "react";
+import cssStyles from "./cssStyles";
 import styles from "./Styles";
+import Header from "./Header";
+import navItems from "./NavItems";
 const AdminDashboard = () => {
   const [recentPayments] = useState([]);
 
@@ -43,24 +46,27 @@ const AdminDashboard = () => {
           </div>
 
           <nav style={styles.navMenu}>
-            <a href="#dashboard" style={styles.navLink}>
-              DASHBOARD
-            </a>
-            <a href="#customers" style={styles.navLink}>
-              CUSTOMERS
-            </a>
-            <a href="#api" style={styles.navLink}>
-              API PANEL
-            </a>
-            <a href="#setting" style={styles.navLink}>
-              SETTING
-            </a>
-            <a href="#report" style={styles.navLink}>
-              REPORT
-            </a>
-            <a href="#support" style={styles.navLink}>
-              SUPPORT
-            </a>
+            {navItems.map((item, index) => (
+              <div key={index} style={styles.navItem} className="nav-item">
+                <a href={item.href} style={styles.navLink}>
+                  {item.label}
+                </a>
+                {item.dropdown && (
+                  <div style={styles.dropdown} className="dropdown">
+                    {item.dropdown.map((subItem, subIndex) => (
+                      <a
+                        key={subIndex}
+                        href={`#${subItem.toLowerCase().replace(/\s+/g, "-")}`}
+                        style={styles.dropdownItem}
+                        className="dropdown-item"
+                      >
+                        {subItem}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
             <a href="#logout" style={styles.navLink}>
               LOG OUT
             </a>
@@ -68,25 +74,6 @@ const AdminDashboard = () => {
           </nav>
         </div>
       </header>
-
-      {/* Hero Section */}
-      <section style={styles.heroSection}>
-        <div style={styles.heroContent}>
-          <div style={styles.greetingSection}>
-            <h2 style={styles.greeting}>Hi, Admin</h2>
-            <div style={styles.balanceInfo}>
-              <div style={styles.balanceItem}>
-                <span style={styles.balanceLabel}>API Bal:</span>
-                <span style={styles.balanceAmount}>₹516.60</span>
-              </div>
-              <div style={styles.balanceItem}>
-                <span style={styles.balanceLabel}>Utility Bal:</span>
-                <span style={styles.balanceAmount}>₹506.00</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Action Buttons */}
       <div style={styles.actionButtons}>
@@ -248,28 +235,5 @@ const AdminDashboard = () => {
     </div>
   );
 };
-const cssStyles = `
-  .action-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.3);
-    background: #667eea !important;
-    color: white !important;
-  }
-  
-  .stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-  }
-  
-  .table-row:hover {
-    background: #f8f9ff;
-  }
-  
-  .process-btn:hover,
-  .solve-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-  }
-`;
 
 export default AdminDashboard;
