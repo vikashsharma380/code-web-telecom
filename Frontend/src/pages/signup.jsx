@@ -21,11 +21,11 @@ export default function Signup() {
 
     try {
       const res = await axios.post(
-        "https://code-web-telecom.onrender.com/api/auth/register",
+        "http://localhost:5000/api/auth/register",
         {
           name,
           email,
-          phone,
+          mobile: phone, 
           password,
         }
       );

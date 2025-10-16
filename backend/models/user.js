@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String },
   apiUserId: { type: Number },
   apiPassword: { type: String },
+   role: { type: String, enum: ["admin", "user"], default: "user" },
 
   // Additional details
   parentName: { type: String, default: "" },

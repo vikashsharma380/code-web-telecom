@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../../LoginCSS/login.css";
+
 export default function LoginPage() {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
@@ -9,45 +10,51 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-const handleLogin = async (e) => {
-  e.preventDefault();
-  setError("");
-  console.log("Attempting login with:", { userId, password });
 
-  if (!userId || !password) {
-    setError("Please enter User ID/Mobile and Password");
-    return;
-  }
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
 
-  setLoading(true);
-  try {
-    const res = await axios.post("http://localhost:5000/api/auth/login", {
-      loginInput: userId, 
-      password: password
-    });
+    if (!userId || !password) {
+      setError("Please enter User ID/Mobile and Password");
+      return;
+    }
 
-    const { token, user } = res.data;
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
+    setLoading(true);
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        loginInput: userId,
+        password: password,
+      });
+       console.log("✅ Login success:", res.data);
 
-    alert("Login successful");
-    navigate("/admin-dashboard"); // redirect to admin dashboard
-  } catch (err) {
-    console.error("Login error:", err);
-    const msg =
-      err.response?.data?.message ||
-      err.message ||
-      "Login failed - please try again";
-    setError(msg);
-  } finally {
-    setLoading(false);
-  }
-};
+      const { token, user } = res.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
 
+      alert("Login successful");
+
+      // ✅ Role-based navigation
+      if (user.role === "admin") {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/MobileRecharge");
+      }
+    } catch (err) {
+      console.error("❌ Login error:", err.response?.data || err.message);
+      const msg =
+        err.response?.data?.message ||
+        err.message ||
+        "Login failed - please try again";
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
-     <div className="login-container">
+      <div className="login-container">
         <div className="login-content">
           <div className="login-left">
             <div>
@@ -136,6 +143,29 @@ const handleLogin = async (e) => {
                   {loading ? "Logging in..." : "Login"}
                 </button>
               </form>
+
+              {/* ✅ Signup link added below */}
+              <div
+                style={{
+                  textAlign: "center",
+                  marginTop: "20px",
+                  fontSize: "14px",
+                  color: "#4a5568",
+                }}
+              >
+                Don’t have an account?
+                <span
+                  onClick={() => navigate("/signup")}
+                  style={{
+                    color: "#667eea",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    marginLeft: "5px",
+                  }}
+                >
+                  Signup here
+                </span>
+              </div>
             </div>
           </div>
         </div>

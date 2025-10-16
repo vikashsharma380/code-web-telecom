@@ -10,10 +10,13 @@ mongoose.connect(process.env.MONGO_URI, {})
   .catch(err => console.error("MongoDB connection error:", err));
 
 async function resetPassword() {
-  const hash = await bcrypt.hash("k0ly9gts", 10); // new password
-  await User.updateOne({ mobile: "9263128909" }, { password: hash });
-  console.log("Password reset successfully");
-  process.exit();
+  // const hash = await bcrypt.hash("k0ly9gts", 10); // new password
+  // await User.updateOne({ mobile: "9263128909" }, { password: hash });
+  // console.log("Password reset successfully");
+  // process.exit();
+
+bcrypt.hash("Ansari@2580", 10).then(console.log);
+
 }
 
 resetPassword();
