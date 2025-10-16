@@ -26,6 +26,13 @@ import RefundReport from "./pages/RefundReport";
 import MyEarning from "./pages/MyEarning";
 import SearchTransaction from "./pages/SearchTransaction";
 import SearchPlan from "./pages/SearchPlan";
+import UPIGateway from "./pages/UPIGateway";
+import AddAPI from "./pages/AddAPI";
+import SiteEnquiry from "./pages/SiteEnquiry";
+import UpdateNews from "./pages/UpdateNews";
+import BalanceTransfer from "./pages/BalanceTransfer";
+import Register from "./pages/Register";
+import ActionButton from "../Admin/ActionButton";
 
 function App() {
   useEffect(() => {
@@ -67,6 +74,14 @@ function App() {
         <Route path="/my-earning" element={<MyEarning />} />
         <Route path="/search-transaction" element={<SearchTransaction />} />
         <Route path="/search-plan" element={<SearchPlan />} />
+        {/* action buttons */}
+        <Route path="/" element={<ActionButton />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/balance-transfer" element={<BalanceTransfer />} />
+        <Route path="/update-news" element={<UpdateNews />} />
+        <Route path="/site-enquiry" element={<SiteEnquiry />} />
+        <Route path="/add-api" element={<AddAPI />} />
+        <Route path="/upi-gateway" element={<UPIGateway />} />
       </Routes>
     </>
   );
