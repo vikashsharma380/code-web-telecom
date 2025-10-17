@@ -32,69 +32,73 @@ export default function Navbar() {
 // Helper function to match dropdown items to correct routes
 function getRoutePath(label) {
   switch (label.toUpperCase()) {
+    // ✅ CUSTOMERS (nested under admin-dashboard)
     case "REGISTER":
-      return "/admin/register";
+      return "/register";
     case "MANAGE":
-      return "/manage";
+  return "/manage";
+
     case "BALANCE TRANSFER":
-      return "/admin/balance-transfer";
+      return "/balance-transfer";
 
-    // // API PANEL
-    // case "REGISTER API":
-    //   return "/register-api";
-    // case "MANAGE API":
-    //   return "/manage-api";
+    // ✅ API PANEL
+    case "REGISTER API":
+      return "/admin-dashboard/register-api";
+    case "MANAGE API":
+      return "/admin-dashboard/manage-api";
 
-    // // SETTING
-    // case "CHANGE LOGO":
-    //   return "/change-logo";
-    // case "UPDATE CONTACT":
-    //   return "/update-contact";
-    // case "SWITCH API":
-    //   return "/switch-api";
-    // case "API SETTING":
-    //   return "/api-setting";
-    // case "SET COMMISSION":
-    //   return "/set-commission";
-    // case "CREATE COMMISSION PLAN":
-    //   return "/create-commission-plan";
-    // case "ADD BANK NAME":
-    //   return "/add-bank-name";
-    // case "ADD BANK DETAILS":
-    //   return "/add-bank-details";
-    // case "BUSINESS TYPE":
-    //   return "/business-type";
-    // case "EDIT STATE":
-    //   return "/edit-state";
-    // case "UPI SETTING":
-    //   return "/upi-setting";
-    // case "CHANGE PASSWORD":
-    //   return "/change-password";
+    // ✅ SETTING
+    case "CHANGE LOGO":
+      return "/admin-dashboard/change-logo";
+    case "UPDATE CONTACT":
+      return "/admin-dashboard/update-contact";
+    case "SWITCH API":
+      return "/admin-dashboard/switch-api";
+    case "API SETTING":
+      return "/admin-dashboard/api-setting";
+    case "SET COMMISSION":
+      return "/admin-dashboard/set-commission";
+    case "CREATE COMMISSION PLAN":
+      return "/admin-dashboard/create-commission-plan";
+    case "ADD BANK NAME":
+      return "/admin-dashboard/add-bank-name";
+    case "ADD BANK DETAILS":
+      return "/admin-dashboard/add-bank-details";
+    case "BUSINESS TYPE":
+      return "/admin-dashboard/business-type";
+    case "EDIT STATE":
+      return "/admin-dashboard/edit-state";
+    case "UPI SETTING":
+      return "/admin-dashboard/upi-setting";
+    case "CHANGE PASSWORD":
+      return "/admin-dashboard/change-password";
 
-    // // REPORT
-    // case "PENDING RECHARGE":
-    //   return "/pending-recharge";
-    // case "RECHARGE HISTORY":
-    //   return "/recharge-history";
-    // case "CHECK TRANSACTION":
-    //   return "/check-transaction";
-    // case "ACCOUNT REPORT":
-    //   return "/account-report";
-    // case "MASTER DISTRIBUTOR REPORT":
-    //   return "/master-distributor-report";
-    // case "DISTRIBUTOR REPORT":
-    //   return "/distributor-report";
-    // case "RETAILER REPORT":
-    //   return "/retailer-report";
+    // ✅ REPORT
+    case "PENDING RECHARGE":
+      return "/admin-dashboard/pending-recharge";
+    case "RECHARGE HISTORY":
+      return "/admin-dashboard/recharge-history";
+    case "CHECK TRANSACTION":
+      return "/admin-dashboard/check-transaction";
+    case "ACCOUNT REPORT":
+      return "/admin-dashboard/account-report";
+    case "MASTER DISTRIBUTOR REPORT":
+      return "/admin-dashboard/master-distributor-report";
+    case "DISTRIBUTOR REPORT":
+      return "/admin-dashboard/distributor-report";
+    case "RETAILER REPORT":
+      return "/admin-dashboard/retailer-report";
 
-    // // SUPPORT
-    // case "SUPPORT TICKET":
-    //   return "/support-ticket";
-    // case "SET ALERT":
-    //   return "/set-alert";
+    // ✅ SUPPORT
+    case "SUPPORT TICKET":
+      return "/admin-dashboard/support-ticket";
+    case "SET ALERT":
+      return "/admin-dashboard/set-alert";
 
-    // Default (in case something’s missing)
+    // ✅ Default fallback
     default:
       return "/";
   }
 }
+
+

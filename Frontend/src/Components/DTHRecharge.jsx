@@ -1,165 +1,136 @@
 import React, { useState, useEffect } from "react";
-import { Smartphone, Zap, Clock, TrendingUp } from "lucide-react";
+import { Smartphone, Zap, Clock } from "lucide-react";
 import styles from "../styles";
-import axios from "axios";
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import Nav from "../../hero/nav";
 import Hero from "../../hero/hero";
 import Tab from "../../hero/Tab";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export default function DTHRecharge() {
   const [formData, setFormData] = useState({
     dthNumber: "",
     operatorcode: "",
     amount: "",
   });
+
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
-  const [detecting, setDetecting] = useState(false);
-  const [balance, setBalance] = useState(0);
-  const [balanceLoading, setBalanceLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("recharge");
-  const rechargeUser = {
-    username: "500032",
-    pwd: "k0ly9gts",
-  };
-  const payload = {
-    number: formData.number,
-    operatorcode: formData.operator,
-    amount: formData.amount,
-  };
-  // === FETCH BALANCE ===
+  const [rechargeUser, setRechargeUser] = useState({});
+  const [balance, setBalance] = useState(0);
+
+  // ✅ Load User Credentials from LocalStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const u = JSON.parse(storedUser);
+      setRechargeUser({
+        username: u.userId,
+        pwd: u.apiPassword,
+      });
+      console.log("🔹 Recharge User:", {
+        username: u.userId,
+        pwd: u.apiPassword,
+      });
+    }
+  }, []);
+
+  // ✅ Fetch Balance
   const fetchBalance = async () => {
-    setBalanceLoading(true);
     try {
       const query = new URLSearchParams(rechargeUser).toString();
       const res = await fetch(`${API_URL}/api/balance?${query}`);
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
       setBalance(data.balance || 0);
     } catch (error) {
       console.error("Balance fetch failed:", error);
       setBalance(0);
-    } finally {
-      setBalanceLoading(false);
     }
   };
+
   useEffect(() => {
-    fetchBalance();
+    if (rechargeUser.username) fetchBalance();
+  }, [rechargeUser]);
+
+  // ✅ Fetch Transactions (from backend)
+  const fetchTransactions = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/transactions`);
+      const data = await res.json();
+      setTransactions(data);
+    } catch (err) {
+      console.error("Failed to fetch transactions:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions();
   }, []);
-  // === OPERATOR AUTO-DETECT ===
-  useEffect(() => {
-    const detectOperator = async () => {
-      if (formData.dthNumber.length === 10) {
-        setDetecting(true);
-        try {
-          const res = await fetch(
-            `${API_URL}/api/lookup?number=${formData.dthNumber}`
-          );
-          if (!res.ok) throw new Error(`Server returned ${res.status}`);
-          const data = await res.json();
-          if (data.operatorcode)
-            setFormData((prev) => ({
-              ...prev,
-              operatorcode: data.operatorcode,
-            }));
-          if (data.circlecode)
-            setFormData((prev) => ({ ...prev, circlecode: data.circlecode }));
-        } catch (error) {
-          console.warn("Auto-detect failed, use dropdown manually", error);
-        } finally {
-          setDetecting(false);
-        }
-      }
-    };
-    detectOperator();
-  }, [formData.dthNumber]);
-  // === OPERATORS & CIRCLES ===
-  const operators = [
-    { code: "A", name: "Airtel" },
-    { code: "V", name: "Vodafone" },
-    { code: "BT", name: "BSNL - TOPUP" },
-    { code: "RC", name: "RELIANCE - JIO" },
-    { code: "I", name: "Idea" },
-    { code: "BR", name: "BSNL - STV" },
-    { code: "GLF", name: "Google Play" },
-    { code: "AXF", name: "Axis Bank Fastag" },
-    { code: "BBF", name: "Bank Of Baroda - Fastag" },
-    { code: "EFF", name: "Equitas Fastag Recharge" },
-    { code: "FDF", name: "Federal Bank - Fastag" },
-    { code: "HDF", name: "Hdfc Bank - Fastag" },
-    { code: "ICF", name: "Icici Bank Fastag" },
-    { code: "IBF", name: "Idbi Bank Fastag" },
-    { code: "IFF", name: "Idfc First Bank- Fastag" },
-    { code: "IHMCF", name: "Indian Highways Management Company Ltd Fastag" },
-    { code: "INDF", name: "Indusind Bank Fastag" },
-    { code: "JKF", name: "Jammu And Kashmir Bank Fastag" },
-    { code: "KMF", name: "Kotak Mahindra Bank - Fastag" },
-    { code: "PTF", name: "Paytm Payments Bank Fastag" },
-    { code: "SBF", name: "Sbi Bank Fastag" },
-    { code: "HPSEBL", name: "HP" },
-    { code: "Hpgas", name: "Hp Gas" },
-  ];
-  const circles = [
-    { code: "13", name: "Andhra Pradesh" },
-    { code: "24", name: "Assam" },
-    { code: "17", name: "Bihar" },
-    { code: "27", name: "Chhattisgarh" },
-    { code: "12", name: "Gujarat" },
-    { code: "20", name: "Haryana" },
-    { code: "21", name: "Himachal Pradesh" },
-    { code: "25", name: "Jammu And Kashmir" },
-    { code: "22", name: "Jharkhand" },
-    { code: "9", name: "Karnataka" },
-    { code: "14", name: "Kerala" },
-    { code: "16", name: "Madhya Pradesh" },
-    { code: "4", name: "Maharashtra" },
-    { code: "2", name: "West Bengal" },
-    { code: "10", name: "Uttar Pradesh East" },
-    { code: "11", name: "Uttar Pradesh West" },
-    { code: "3", name: "Mumbai" },
-    { code: "5", name: "Delhi" },
-    { code: "7", name: "CHENNAI" },
-    { code: "6", name: "Kolkata" },
-    { code: "8", name: "Tamil Nadu" },
-    { code: "1", name: "Punjab" },
-    { code: "18", name: "Rajasthan" },
-    { code: "26", name: "NORTH EAST" },
-  ];
-  const quickAmounts = [49, 99, 199, 299, 499, 999];
-  // === FORM HANDLERS ===
+
+  // ✅ Operator List
+ const operators = [
+  { code: "ATV", name: "Airtel Digital DTH TV" },
+  { code: "STV", name: "SUNDIRECT DTH TV" },
+  { code: "TTV", name: "TATASKY DTH TV" },
+  { code: "VTV", name: "VIDEOCON DTH TV" },
+  { code: "DTV", name: "DISH TV" },
+];
+
+
+  const quickAmounts = [99, 199, 299, 499, 999, 1499];
+
+  // ✅ Handle Input Changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // === RECHARGE ===
+  const handleQuickAmount = (amt) => {
+    setFormData({ ...formData, amount: amt.toString() });
+  };
+
+  // ✅ DTH Recharge
   const handleRecharge = async (e) => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
+
     try {
-      const { dthNumber, operatorcode: operator, amount } = formData;
-      if (!dthNumber || !operator || !amount) {
+      const token = localStorage.getItem("token");
+      const { dthNumber, operatorcode, amount } = formData;
+      const { username, pwd } = rechargeUser;
+
+      if (!dthNumber || !operatorcode || !amount)
         throw new Error("All fields are required");
-      }
+
       const payload = {
-        ...rechargeUser, // includes username & pwd
+        username,
+        pwd,
         number: dthNumber,
-        operatorcode: operator,
-        circlecode: "1", // circlecode is not used for DTH
+        operatorcode,
         amount,
-        // circlecode is intentionally omitted
+        circlecode: "1",
+        
       };
+
       console.log("🚀 Sending Payload:", payload);
-      const res = await fetch(`${API_URL}/api/dthrecharge`, {
+
+      const res = await fetch(`${API_URL}/api/recharge`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(payload),
       });
+
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
-      console.log("✅ Recharge API response:", data);
+
+      console.log("✅ DTH Recharge API Response:", data);
+
       if (data.status === "Success") {
         setResult({
           type: "success",
@@ -172,19 +143,21 @@ export default function DTHRecharge() {
           message: `Recharge Failed: ${data.opid || "Unknown"}`,
         });
       }
-      // Add to transaction history
-      setTransactions([
+
+      // ✅ Add to Transaction List
+      setTransactions((prev) => [
         {
           txid: data.txid || Math.random(),
-          operator,
+          operator: operatorcode,
           number: dthNumber,
           amount,
           status: data.status,
           date: new Date().toLocaleString(),
         },
-        ...transactions,
+        ...prev,
       ]);
-      // Reset form
+
+      // ✅ Reset Form
       setFormData({ dthNumber: "", operatorcode: "", amount: "" });
     } catch (error) {
       console.error("Recharge failed:", error);
@@ -198,138 +171,118 @@ export default function DTHRecharge() {
     }
   };
 
+  // ✅ UI
   return (
     <div style={styles.container}>
-      {/* Animated Background */}
-      <div style={styles.bgPattern}></div>
-      {/* Navigation Bar */}
       <Nav />
-      {/* Hero Section */}
       <Hero
         title="Instant DTH Recharge"
-        subtitle="Fast, secure, and reliable DTH recharges for all operators"
+        subtitle="Recharge your DTH account instantly and securely"
       />
-      {/* Tab Section */}
       <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
-      {/* Main Content */}
+
       <div style={styles.mainContent}>
         <div style={styles.contentGrid}>
-          {/* Recharge Form */}
+          {/* DTH Recharge Form */}
           <div style={styles.formSection}>
             <div style={styles.card}>
               <div style={styles.cardHeader}>
                 <Smartphone size={24} />
                 <div>
                   <h2 style={styles.cardTitle}>DTH Recharge</h2>
-                  <p style={styles.cardSubtitle}>
-                    Recharge for all DTH providers
-                  </p>
+                  <p style={styles.cardSubtitle}>For all DTH providers</p>
                 </div>
               </div>
               <div style={styles.cardBody}>
-                <div style={styles.formGroup}>
-                  <label style={styles.label}>DTH Number</label>
-                  <input
-                    type="tel"
-                    placeholder="Enter 10-digit DTH number"
-                    name="dthNumber"
-                    value={formData.dthNumber || ""}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        dthNumber: e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 10),
-                      }))
-                    }
-                    style={styles.input}
-                  />
-                </div>
-                <div style={styles.formGroup}>
-                  <label style={styles.label}>Select Operator</label>
-                  <select
-                    name="operatorcode"
-                    value={formData.operatorcode}
-                    onChange={handleChange}
-                    className="selectBox"
+                <form onSubmit={handleRecharge}>
+                  <div style={styles.formGroup}>
+                    <label style={styles.label}>DTH Subscriber ID</label>
+                    <input
+                      type="text"
+                      name="dthNumber"
+                      placeholder="Enter your DTH number"
+                      value={formData.dthNumber}
+                      onChange={handleChange}
+                      style={styles.input}
+                    />
+                  </div>
+
+                  <div style={styles.formGroup}>
+                    <label style={styles.label}>Select Operator</label>
+                    <select
+                      name="operatorcode"
+                      value={formData.operatorcode}
+                      onChange={handleChange}
+                      style={styles.select}
+                    >
+                      <option value="">Choose your DTH operator</option>
+                      {operators.map((op) => (
+                        <option key={op.code} value={op.code}>
+                          {op.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div style={styles.formGroup}>
+                    <label style={styles.label}>Recharge Amount</label>
+                    <input
+                      type="text"
+                      name="amount"
+                      placeholder="Enter amount"
+                      value={formData.amount}
+                      onChange={handleChange}
+                      style={styles.input}
+                    />
+                    <div style={styles.quickAmounts}>
+                      {quickAmounts.map((amt) => (
+                        <button
+                          key={amt}
+                          type="button"
+                          onClick={() => handleQuickAmount(amt)}
+                          style={styles.quickAmountBtn}
+                        >
+                          ₹{amt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
                     style={{
-                      width: "100%",
-                      padding: "14px 16px",
-                      background: "rgba(255, 255, 255, 0.05)",
-                      border: "1px solid rgba(255, 255, 255, 0.1)",
-                      borderRadius: "12px",
-                      fontSize: "15px",
-                      color: "white",
-                      boxSizing: "border-box",
-                      cursor: "pointer",
-                      transition: "all 0.3s ease",
+                      ...styles.rechargeBtn,
+                      ...(loading ? styles.btnDisabled : {}),
                     }}
                   >
-                    <option value="">Select Operator</option>
-                    {operators.map((operator) => (
-                      <option key={operator.code} value={operator.code}>
-                        {operator.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div style={styles.formGroup}>
-                  <label style={styles.label}>Recharge Amount</label>
-                  <input
-                    type="text"
-                    placeholder="Enter Amount"
-                    value={formData.amount}
-                    onChange={(e) => {
-                      const val = e.target.value.replace(/\D/g, "");
-                      setFormData((prev) => ({ ...prev, amount: val }));
-                    }}
-                    style={styles.input}
-                  />
-                  <div style={styles.quickAmounts}>
-                    {quickAmounts.map((amt) => (
-                      <button
-                        type="button"
-                        key={amt}
-                        onClick={() => setAmount(amt.toString())}
-                        style={styles.quickBtn}
-                      >
-                        ₹{amt}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <button
-                  onClick={handleRecharge}
-                  disabled={loading}
-                  style={{
-                    ...styles.rechargeBtn,
-                    ...(loading ? styles.btnDisabled : {}),
-                  }}
-                >
-                  {loading ? (
-                    <div style={styles.loadingSpinner}></div>
-                  ) : (
-                    <>
-                      <Zap size={20} />
-                      Recharge Now
-                    </>
+                    {loading ? (
+                      <div style={styles.loadingSpinner}></div>
+                    ) : (
+                      <>
+                        <Zap size={20} />
+                        Recharge Now
+                      </>
+                    )}
+                  </button>
+
+                  {result && (
+                    <div
+                      style={{
+                        ...styles.resultBox,
+                        ...(result.type === "success"
+                          ? styles.successBox
+                          : styles.errorBox),
+                      }}
+                    >
+                      {result.message}
+                    </div>
                   )}
-                </button>
-                {result && (
-                  <div
-                    style={{
-                      ...styles.resultBox,
-                      ...(result.type === "success"
-                        ? styles.successBox
-                        : styles.errorBox),
-                    }}
-                  >
-                    {result.message}
-                  </div>
-                )}
+                </form>
               </div>
             </div>
           </div>
+
           {/* Transaction History */}
           <div style={styles.transactionSection}>
             <div style={styles.card}>
@@ -337,7 +290,7 @@ export default function DTHRecharge() {
                 <Clock size={24} />
                 <div>
                   <h2 style={styles.cardTitle}>Recent Transactions</h2>
-                  <p style={styles.cardSubtitle}>Your last 5 recharges</p>
+                  <p style={styles.cardSubtitle}>Your last 5 DTH recharges</p>
                 </div>
               </div>
               <div style={styles.cardBody}>
@@ -351,8 +304,11 @@ export default function DTHRecharge() {
                   </div>
                 ) : (
                   <div style={styles.transactionList}>
-                    {transactions.slice(0, 5).map((t) => (
-                      <div key={t.txid} style={styles.transactionItem}>
+                    {transactions.slice(0, 5).map((t, i) => (
+                      <div
+                        key={`${t.txid}-${t.number}-${i}`}
+                        style={styles.transactionItem}
+                      >
                         <div style={styles.transactionIcon}>
                           {t.operator.charAt(0)}
                         </div>
@@ -378,6 +334,7 @@ export default function DTHRecharge() {
           </div>
         </div>
       </div>
+
       {/* Footer */}
       <footer style={styles.footer}>
         <p style={styles.footerText}>

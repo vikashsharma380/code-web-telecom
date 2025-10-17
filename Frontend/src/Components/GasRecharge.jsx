@@ -1,38 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { CreditCard, Clock, Zap, Smartphone } from "lucide-react";
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
-import { Link } from "react-router-dom";
+import { CreditCard, Clock, Zap } from "lucide-react";
+import styles from "../styles";
 import Nav from "../../hero/nav";
 import Hero from "../../hero/hero";
 import Tab from "../../hero/Tab";
-import styles from "../styles";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export default function GasRecharge() {
-  const [consumerNumber, setConsumerNumber] = useState("");
-  const [amount, setAmount] = useState("");
-  const [provider, setProvider] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
-  const [transactions, setTransactions] = useState([]);
-  const [activeTab, setActiveTab] = useState("gas");
-
-  const quickAmounts = [100, 200, 500, 1000, 2000];
-
   const [formData, setFormData] = useState({
     consumerNumber: "",
     operatorcode: "",
     amount: "",
   });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
   const [balance, setBalance] = useState(0);
   const [balanceLoading, setBalanceLoading] = useState(false);
   const [detecting, setDetecting] = useState(false);
+  const [rechargeUser, setRechargeUser] = useState({ username: "", pwd: "" });
 
+  const quickAmounts = [100, 200, 500, 1000, 2000];
   const operators = [
     { code: "MG", name: "Mahanagar Gas" },
     { code: "AG", name: "Adani Gas" },
@@ -40,16 +29,20 @@ export default function GasRecharge() {
     { code: "IG", name: "Indraprastha Gas" },
   ];
 
-  const rechargeUser = {
-    username: "500032",
-    pwd: "k0ly9gts",
-  };
-  const payload = {
-    number: formData.number,
-    operatorcode: formData.operator,
-    amount: formData.amount,
-  };
-  // === FETCH BALANCE ===
+  // Load user credentials from localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const u = JSON.parse(storedUser);
+      setRechargeUser({
+        username: u.userId,
+        pwd: u.apiPassword,
+      });
+      console.log("🔹 Recharge User:", u.userId);
+    }
+  }, []);
+
+  // Fetch balance
   const fetchBalance = async () => {
     setBalanceLoading(true);
     try {
@@ -58,20 +51,22 @@ export default function GasRecharge() {
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
       setBalance(data.balance || 0);
-    } catch (error) {
-      console.error("Balance fetch failed:", error);
+    } catch (err) {
+      console.error("Balance fetch failed:", err);
       setBalance(0);
     } finally {
       setBalanceLoading(false);
     }
   };
+
   useEffect(() => {
     fetchBalance();
-  }, []);
-  // === OPERATOR AUTO-DETECT ===
+  }, [rechargeUser]);
+
+  // Auto-detect operator (if you have API for it)
   useEffect(() => {
     const detectOperator = async () => {
-      if (formData.consumerNumber && formData.consumerNumber.length === 10) {
+      if (formData.consumerNumber.length === 10) {
         setDetecting(true);
         try {
           const res = await fetch(
@@ -80,14 +75,9 @@ export default function GasRecharge() {
           if (!res.ok) throw new Error(`Server returned ${res.status}`);
           const data = await res.json();
           if (data.operatorcode)
-            setFormData((prev) => ({
-              ...prev,
-              operatorcode: data.operatorcode,
-            }));
-          if (data.circlecode)
-            setFormData((prev) => ({ ...prev, circlecode: data.circlecode }));
-        } catch (error) {
-          console.warn("Auto-detect failed, use dropdown manually", error);
+            setFormData((prev) => ({ ...prev, operatorcode: data.operatorcode }));
+        } catch (err) {
+          console.warn("Operator auto-detect failed", err);
         } finally {
           setDetecting(false);
         }
@@ -95,52 +85,64 @@ export default function GasRecharge() {
     };
     detectOperator();
   }, [formData.consumerNumber]);
-  // === OPERATORS & CIRCLES ===
 
+  // Fetch transaction history
+  const fetchTransactions = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/transactions`);
+      const data = await res.json();
+      setTransactions(data);
+    } catch (err) {
+      console.error("Failed to fetch transactions:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+
+  // Handle recharge
   const handleRecharge = async (e) => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
+
     try {
-      const { consumerNumber, operatorcode: operator, amount } = formData;
-      console.log("🚀 Form Data:", { consumerNumber, operator, amount });
-      if (!consumerNumber || !operator || !amount) {
+      const token = localStorage.getItem("token");
+      const { consumerNumber, operatorcode, amount } = formData;
+      if (!consumerNumber || !operatorcode || !amount)
         throw new Error("All fields are required");
-      }
-      const payload = {
-        ...rechargeUser, // includes username & pwd
-        number: consumerNumber,
-        operatorcode: operator,
-        circlecode: "1", // circlecode is not used for DTH
-        amount,
-        // circlecode is intentionally omitted
-      };
-      console.log("🚀 Sending Payload:", payload);
+
       const res = await fetch(`${API_URL}/api/gasrecharge`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          username: rechargeUser.username,
+          pwd: rechargeUser.pwd,
+          number: consumerNumber,
+          operatorcode,
+          amount,
+        }),
       });
+
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
       console.log("✅ Recharge API response:", data);
+
       if (data.status === "Success") {
-        setResult({
-          type: "success",
-          message: `Recharge Successful! TXID: ${data.txid}`,
-        });
-        fetchBalance(); // refresh balance
+        setResult({ type: "success", message: `Recharge Successful! TXID: ${data.txid}` });
+        fetchBalance();
       } else {
-        setResult({
-          type: "error",
-          message: `Recharge Failed: ${data.opid || "Unknown"}`,
-        });
+        setResult({ type: "error", message: `Recharge Failed: ${data.opid || "Unknown"}` });
       }
-      // Add to transaction history
+
       setTransactions([
         {
           txid: data.txid || Math.random(),
-          operator,
+          operator: operatorcode,
           number: consumerNumber,
           amount,
           status: data.status,
@@ -148,14 +150,11 @@ export default function GasRecharge() {
         },
         ...transactions,
       ]);
-      // Reset form
+
       setFormData({ consumerNumber: "", operatorcode: "", amount: "" });
-    } catch (error) {
-      console.error("Recharge failed:", error);
-      setResult({
-        type: "error",
-        message: error.message || "API connection failed",
-      });
+    } catch (err) {
+      console.error("Recharge failed:", err);
+      setResult({ type: "error", message: err.message || "API connection failed" });
     } finally {
       setLoading(false);
       setTimeout(() => setResult(null), 5000);
@@ -164,18 +163,10 @@ export default function GasRecharge() {
 
   return (
     <div style={styles.container}>
-      {/* Navbar */}
       <Nav />
-      {/* Hero */}
-      <Hero
-        title="Instant Gas Recharge"
-        subtitle="Fast, secure, and reliable gas recharges for all providers"
-      />
-
-      {/* Tabs */}
+      <Hero title="Instant Gas Recharge" subtitle="Fast, secure, and reliable gas recharges" />
       <Tab />
 
-      {/* Main Content */}
       <div style={styles.mainContent}>
         <div style={styles.contentGrid}>
           {/* Recharge Form */}
@@ -188,102 +179,76 @@ export default function GasRecharge() {
                   <p style={styles.cardSubtitle}>All Gas Providers Supported</p>
                 </div>
               </div>
-
               <div style={styles.cardBody}>
-                <div style={styles.formGroup}>
-                  <label style={styles.label}>Consumer Number</label>
-                  <input
-                    type="text"
-                    placeholder="Enter Consumer Number"
-                    value={formData.consumerNumber}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      if (val === "" || /^\d+$/.test(val))
-                        setFormData({ ...formData, consumerNumber: val });
-                    }}
-                    style={styles.input}
-                  />
-                </div>
-
-                <div style={styles.formGroup}>
-                  <label style={styles.label}>Select Gas Provider</label>
-                  <select
-                    value={formData.operatorcode}
-                    onChange={(e) =>
-                      setFormData({ ...formData, operatorcode: e.target.value })
-                    }
-                    style={styles.select}
-                  >
-                    <option value="">Select Provider</option>
-                    {operators.map((operator) => (
-                      <option key={operator.code} value={operator.code}>
-                        {operator.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div style={styles.formGroup}>
-                  <label style={styles.label}>Amount</label>
-                  <input
-                    type="text"
-                    placeholder="Enter Amount"
-                    value={formData.amount}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      if (
-                        val === "" ||
-                        (/^\d+$/.test(val) && parseInt(val) > 0)
-                      ) {
-                        setFormData((prev) => ({
-                          ...prev,
-                          amount: val,
-                        }));
-                      }
-                    }}
-                    style={styles.input}
-                  />
-
-                  <div style={styles.quickAmounts}>
-                    {quickAmounts.map((amt) => (
-                      <button
-                        key={amt}
-                        onClick={() =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            amount: amt.toString(),
-                          }))
-                        }
-                        style={styles.quickAmountBtn}
-                      >
-                        ₹{amt}
-                      </button>
-                    ))}
+                <form onSubmit={handleRecharge}>
+                  <div style={styles.formGroup}>
+                    <label style={styles.label}>Consumer Number</label>
+                    <input
+                      type="text"
+                      placeholder="Enter Consumer Number"
+                      value={formData.consumerNumber}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === "" || /^\d+$/.test(val))
+                          setFormData({ ...formData, consumerNumber: val });
+                      }}
+                      style={styles.input}
+                    />
+                    {detecting && <p>Detecting operator...</p>}
                   </div>
-                </div>
 
-                <button
-                  onClick={handleRecharge}
-                  disabled={loading}
-                  style={{
-                    ...styles.rechargeBtn,
-                    ...(loading ? styles.btnDisabled : {}),
-                  }}
-                >
-                  {loading ? (
-                    <div style={styles.loadingSpinner}></div>
-                  ) : (
-                    <>Pay Bill</>
-                  )}
-                </button>
+                  <div style={styles.formGroup}>
+                    <label style={styles.label}>Select Gas Provider</label>
+                    <select
+                      value={formData.operatorcode}
+                      onChange={(e) => setFormData({ ...formData, operatorcode: e.target.value })}
+                      style={styles.select}
+                    >
+                      <option value="">Select Provider</option>
+                      {operators.map((op) => (
+                        <option key={op.code} value={op.code}>
+                          {op.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div style={styles.formGroup}>
+                    <label style={styles.label}>Amount</label>
+                    <input
+                      type="text"
+                      value={formData.amount}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === "" || (/^\d+$/.test(val) && parseInt(val) > 0))
+                          setFormData({ ...formData, amount: val });
+                      }}
+                      style={styles.input}
+                    />
+                    <div style={styles.quickAmounts}>
+                      {quickAmounts.map((amt) => (
+                        <button
+                          key={amt}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, amount: amt.toString() })}
+                          style={styles.quickAmountBtn}
+                        >
+                          ₹{amt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button type="submit" disabled={loading} style={styles.rechargeBtn}>
+                    {loading ? "Processing..." : <><Zap size={20} /> Pay Bill</>}
+                  </button>
+                </form>
 
                 {result && (
                   <div
                     style={{
                       ...styles.resultBox,
-                      ...(result.type === "success"
-                        ? styles.successBox
-                        : styles.errorBox),
+                      ...(result.type === "success" ? styles.successBox : styles.errorBox),
                     }}
                   >
                     {result.message}
@@ -300,41 +265,27 @@ export default function GasRecharge() {
                 <Clock size={24} />
                 <div>
                   <h2 style={styles.cardTitle}>Recent Transactions</h2>
-                  <p style={styles.cardSubtitle}>
-                    Your last 5 Gas bill payments
-                  </p>
+                  <p style={styles.cardSubtitle}>Your last 5 gas bill payments</p>
                 </div>
               </div>
-
               <div style={styles.cardBody}>
                 {transactions.length === 0 ? (
-                  <div style={styles.emptyState}>
-                    <div style={styles.emptyIcon}>🔥</div>
-                    <p style={styles.emptyText}>No transactions yet</p>
-                  </div>
+                  <p>No transactions yet</p>
                 ) : (
-                  <div style={styles.transactionList}>
-                    {transactions.slice(0, 5).map((t) => (
-                      <div key={t.txid} style={styles.transactionItem}>
-                        <div style={styles.transactionIcon}>
-                          {t.operator.charAt(0)}
-                        </div>
-                        <div style={styles.transactionDetails}>
-                          <div style={styles.transactionOperator}>
-                            {t.operator}
-                          </div>
-                          <div style={styles.transactionNumber}>{t.number}</div>
-                          <div style={styles.transactionDate}>{t.date}</div>
-                        </div>
-                        <div style={styles.transactionRight}>
-                          <div style={styles.transactionAmount}>
-                            ₹{t.amount}
-                          </div>
-                          <div style={styles.transactionStatus}>{t.status}</div>
-                        </div>
+                  transactions.slice(0, 5).map((t,i) => (
+                    <div key={`${t.txid || 'tx'}-${t.number}-${i}`} style={styles.transactionItem}>
+                      <div style={styles.transactionIcon}>{t.operator.charAt(0)}</div>
+                      <div style={styles.transactionDetails}>
+                        <div>{t.operator}</div>
+                        <div>{t.number}</div>
+                        <div>{t.date}</div>
                       </div>
-                    ))}
-                  </div>
+                      <div style={styles.transactionRight}>
+                        <div>₹{t.amount}</div>
+                        <div>{t.status}</div>
+                      </div>
+                    </div>
+                  ))
                 )}
               </div>
             </div>
@@ -342,11 +293,9 @@ export default function GasRecharge() {
         </div>
       </div>
 
-      {/* Footer */}
       <footer style={styles.footer}>
         <p style={styles.footerText}>
-          © 2025 <span style={styles.footerBrand}>CodeWeb Telecom</span> - All
-          Rights Reserved
+          © 2025 <span style={styles.footerBrand}>CodeWeb Telecom</span> - All Rights Reserved
         </p>
       </footer>
     </div>
