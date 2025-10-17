@@ -33,6 +33,9 @@ import UpdateNews from "./pages/UpdateNews";
 import BalanceTransfer from "./pages/BalanceTransfer";
 import Register from "./pages/Register";
 import ActionButton from "../Admin/ActionButton";
+import Manage from "../Admin/AdminPages/Manage";
+import AdminRegister from "../Admin/AdminPages/AdminRegister";
+import AdminBalanceTransfer from "../Admin/AdminPages/AdminBalanceTransfer";
 
 function App() {
   useEffect(() => {
@@ -82,6 +85,13 @@ function App() {
         <Route path="/site-enquiry" element={<SiteEnquiry />} />
         <Route path="/add-api" element={<AddAPI />} />
         <Route path="/upi-gateway" element={<UPIGateway />} />
+        {/* CUSTOMERS */}
+        <Route path="/admin/register" element={<AdminRegister />} />
+        <Route path="/manage" element={<Manage />} />
+        <Route
+          path="/admin/balance-transfer"
+          element={<AdminBalanceTransfer />}
+        />
       </Routes>
     </>
   );
