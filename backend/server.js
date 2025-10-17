@@ -38,50 +38,50 @@ app.get("/api/transactions", async (req, res) => {
   const transactions = await Transaction.find().sort({ date: -1 }).limit(10);
   res.json(transactions);
 });
-app.post("/api/dthrecharge", async (req, res) => {
-  console.log("Received recharge request:", req.body);
-  try {
-    const { username, pwd, operatorcode, circlecode, number, amount, value1, value2 } = req.body;
+// app.post("/api/dthrecharge", async (req, res) => {
+//   console.log("Received recharge request:", req.body);
+//   try {
+//     const { username, pwd, operatorcode, circlecode, number, amount, value1, value2 } = req.body;
 
-    // ✅ Validation
-    if (!username || !pwd  || !operatorcode || !circlecode || !number || !amount) {
-      return res.status(400).json({ error: "Missing required fields" });
-    }
+//     // ✅ Validation
+//     if (!username || !pwd  || !operatorcode || !circlecode || !number || !amount) {
+//       return res.status(400).json({ error: "Missing required fields" });
+//     }
 
-    // ✅ Generate unique order ID
-    const orderid = uuidv4();
+//     // ✅ Generate unique order ID
+//     const orderid = uuidv4();
 
-    // ✅ Build API URL safely
-    let url = `https://codewebtelecom.com/recharge/api?username=${encodeURIComponent(username)}&pwd=${encodeURIComponent(pwd)}&circlecode=${encodeURIComponent(circlecode)}&operatorcode=${encodeURIComponent(operatorcode)}&number=${encodeURIComponent(number)}&amount=${encodeURIComponent(amount)}&orderid=${orderid}&format=json`;
+//     // ✅ Build API URL safely
+//     let url = `https://codewebtelecom.com/recharge/api?username=${encodeURIComponent(username)}&pwd=${encodeURIComponent(pwd)}&circlecode=${encodeURIComponent(circlecode)}&operatorcode=${encodeURIComponent(operatorcode)}&number=${encodeURIComponent(number)}&amount=${encodeURIComponent(amount)}&orderid=${orderid}&format=json`;
 
-    if (value1) url += `&value1=${encodeURIComponent(value1)}`;
-    if (value2) url += `&value2=${encodeURIComponent(value2)}`;
+//     if (value1) url += `&value1=${encodeURIComponent(value1)}`;
+//     if (value2) url += `&value2=${encodeURIComponent(value2)}`;
 
-    console.log("🔗 Recharge API call URL:", url);
-    console.log("📦 Request Body:", req.body);
+//     console.log("🔗 Recharge API call URL:", url);
+//     console.log("📦 Request Body:", req.body);
 
-    // ✅ External API call
-    const response = await axios.get(url);
+//     // ✅ External API call
+//     const response = await axios.get(url);
 
-    console.log("✅ Recharge API response:", response.data);
-    res.json(response.data);
+//     console.log("✅ Recharge API response:", response.data);
+//     res.json(response.data);
 
-  } catch (error) {
-    // ✅ Error handling block
-    console.error("❌ Recharge failed:", error);
+//   } catch (error) {
+//     // ✅ Error handling block
+//     console.error("❌ Recharge failed:", error);
 
-    if (error.response) {
-      console.error("📄 API Response Data:", error.response.data);
-      console.error("📊 API Response Status:", error.response.status);
-    }
+//     if (error.response) {
+//       console.error("📄 API Response Data:", error.response.data);
+//       console.error("📊 API Response Status:", error.response.status);
+//     }
 
-    res.status(500).json({
-      error: "Recharge failed",
-      details: error.message,
-      apiResponse: error.response ? error.response.data : null
-    });
-  }
-});
+//     res.status(500).json({
+//       error: "Recharge failed",
+//       details: error.message,
+//       apiResponse: error.response ? error.response.data : null
+//     });
+//   }
+// });
 const rechargeRoutes = require("./routes/recharge");
 app.use("/api", rechargeRoutes); // ✅ ab /api/recharge route kaam karega
 

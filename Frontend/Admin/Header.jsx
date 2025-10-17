@@ -53,7 +53,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./Styles";
 import navItems from "./NavItems";
-
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -63,7 +62,13 @@ const Header = () => {
         <div style={styles.headerContent}>
           {/* Logo Section */}
           <div style={styles.logoSection}>
-            <div style={styles.logo}>W</div>
+            <div style={styles.logo}>
+              <img
+                src={logo}
+                alt="Code Web Telecom Logo"
+                style={{ width: "50px", height: "50px", borderRadius: "12px" }}
+              />
+            </div>
             <div style={styles.brandInfo}>
               <h1 style={styles.brandTitle}>Code Web Telecom</h1>
               <p style={styles.brandSubtitle}>Digital Service Partner</p>

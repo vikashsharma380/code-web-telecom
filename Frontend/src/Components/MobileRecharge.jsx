@@ -110,7 +110,7 @@ export default function MobileRecharge() {
     try {
       const res = await fetch(`${API_URL}/api/transactions`);
       const data = await res.json();
-      setTransactions(data); // load from backend
+      setTransactions(data); 
     } catch (err) {
       console.error("Failed to fetch transactions:", err);
     }

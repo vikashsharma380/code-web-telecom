@@ -4,10 +4,6 @@ import axios from "axios";
 import "../../LoginCSS/login.css";
 import { useLocation, useNavigate } from "react-router-dom";
 
-
-
-
-
 export default function LoginPage() {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
@@ -15,8 +11,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const location = useLocation();
-const navigate = useNavigate();
-
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -33,20 +28,24 @@ const navigate = useNavigate();
         loginInput: userId,
         password: password,
       });
-       console.log("✅ Login success:", res.data);
+      console.log("✅ Login success:", res.data);
 
       const { token, user } = res.data;
       localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify({
-  userId: user.userId,
-  apiPassword: user.apiPassword, 
-}));
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          userId: user.userId,
+          apiPassword: user.apiPassword,
+        })
+      );
 
       alert("Login successful");
 
-     const from = location.state?.from || (user.role === "admin" ? "/admin-dashboard" : "/MobileRecharge");
-navigate(from, { replace: true });
-
+      const from =
+        location.state?.from ||
+        (user.role === "admin" ? "/admin-dashboard" : "/MobileRecharge");
+      navigate(from, { replace: true });
     } catch (err) {
       console.error("❌ Login error:", err.response?.data || err.message);
       const msg =
