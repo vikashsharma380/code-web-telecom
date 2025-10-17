@@ -6,6 +6,8 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 const Transaction = require("../backend/models/Transaction");
+const { verifyToken } = require("./middleware/authMiddleware");
+const router = express.Router();
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -80,54 +82,9 @@ app.post("/api/dthrecharge", async (req, res) => {
     });
   }
 });
-app.post("/api/recharge", async (req, res) => {
-  console.log("Received recharge request:", req.body);
-  try {
-    const { circlecode, operatorcode, number, amount, username, pwd } = req.body;
+const rechargeRoutes = require("./routes/recharge");
+app.use("/api", rechargeRoutes); // ✅ ab /api/recharge route kaam karega
 
-    // Validation
-    if (!circlecode || !operatorcode || !number || !amount || !username || !pwd) {
-      return res.status(400).json({ error: "Missing required fields" });
-    }
-
-    const orderid = uuidv4();
-
-    // Encode credentials for URL
-    const encodedUser = encodeURIComponent(username);
-    const encodedPwd = encodeURIComponent(pwd);
-
-    let url = `http://business.a1topup.com/recharge/api?username=${encodedUser}&pwd=${encodedPwd}&circlecode=${encodeURIComponent(circlecode)}&operatorcode=${encodeURIComponent(operatorcode)}&number=${encodeURIComponent(number)}&amount=${encodeURIComponent(amount)}&orderid=${orderid}&format=json`;
-
-    if (req.body.value1) url += `&value1=${encodeURIComponent(req.body.value1)}`;
-    if (req.body.value2) url += `&value2=${encodeURIComponent(req.body.value2)}`;
-
-    console.log("🔗 Recharge API call URL:", url);
-
-    // External API call
-    const response = await axios.get(url);
-    const data = response.data;
-
-    console.log("✅ Recharge API response:", data);
-
-    // Save transaction
-    await Transaction.create({
-      txid: data.txid || Math.random(),
-      operator: operatorcode,
-      number,
-      amount,
-      status: data.status || "Pending",
-    });
-
-    res.json(data);
-  } catch (error) {
-    console.error("❌ Recharge failed:", error);
-    res.status(500).json({
-      error: "Recharge failed",
-      details: error.message,
-      apiResponse: error.response ? error.response.data : null,
-    });
-  }
-});
 
 app.post("/api/fastagrecharge", async (req, res) => {
   console.log("Received recharge request:", req.body);

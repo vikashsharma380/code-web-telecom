@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+
 import "../../LoginCSS/login.css";
+import { useLocation, useNavigate } from "react-router-dom";
+
+
+
+
 
 export default function LoginPage() {
   const [userId, setUserId] = useState("");
@@ -9,7 +14,9 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const location = useLocation();
+const navigate = useNavigate();
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -30,16 +37,16 @@ export default function LoginPage() {
 
       const { token, user } = res.data;
       localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("user", JSON.stringify({
+  userId: user.userId,
+  apiPassword: user.apiPassword, 
+}));
 
       alert("Login successful");
 
-      // ✅ Role-based navigation
-      if (user.role === "admin") {
-        navigate("/admin-dashboard");
-      } else {
-        navigate("/MobileRecharge");
-      }
+     const from = location.state?.from || (user.role === "admin" ? "/admin-dashboard" : "/MobileRecharge");
+navigate(from, { replace: true });
+
     } catch (err) {
       console.error("❌ Login error:", err.response?.data || err.message);
       const msg =

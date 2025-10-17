@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import CodeWebTelecom from "./CodeWebFrontend";
 import Login from "./pages/login";
@@ -37,6 +38,18 @@ import AdminRegister from "../Admin/AdminPages/AdminRegister";
 import AdminBalanceTransfer from "../Admin/AdminPages/AdminBalanceTransfer";
 
 function App() {
+  useEffect(() => {
+    // Browser close hone par token remove
+    const handleUnload = () => {
+      localStorage.removeItem("token");
+    };
+
+    window.addEventListener("beforeunload", handleUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+    };
+  }, []);
   return (
     <>
       <Routes>
