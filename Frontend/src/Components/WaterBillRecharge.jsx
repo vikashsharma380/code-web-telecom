@@ -2,6 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Smartphone, Zap, Clock, TrendingUp } from "lucide-react";
 import styles from "../styles";
 import Nav from "../../hero/nav";
+import Hero from "../../hero/hero";
+import Tab from "../../hero/Tab";
+import DTHRecharge from "./DTHRecharge"; // adjust the path correctly
+import PostpaidRecharge from "./PostpaidRecharge"; // etc
+import ElectricityRecharge from "./ElectricityRecharge";
+import GasRecharge from "./GasRecharge";
+import FASTagRecharge from "./FASTagRecharge";
+import DataCardRecharge from "./DataCardRecharge";
+import InsuranceRecharge from "./InsuranceRecharge";
+import GooglePlayRecharge from "./GooglePlayRecharge";
+
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -16,7 +27,7 @@ export default function WaterBillRecharge() {
   const [result, setResult] = useState(null);
   const [balance, setBalance] = useState(0);
   const [balanceLoading, setBalanceLoading] = useState(false);
-
+const [activeTab, setActiveTab] = useState("waterbill");
   const rechargeUser = {
     username: "500032",
     pwd: "k0ly9gts",
@@ -134,39 +145,24 @@ useEffect(() => {
       />
 
       {/* Hero */}
-      <div style={styles.hero}>
-        <div style={styles.heroContent}>
-          <div style={styles.heroLeft}>
-            <div style={styles.welcomeBadge}>
-              <Zap size={16} />
-              <span>Welcome back, Vikash!</span>
-            </div>
-            <h1 style={styles.heroTitle}>Water Bill Recharge</h1>
-            <p style={styles.heroSubtitle}>
-              Pay your water bills instantly and securely
-            </p>
-            <div style={styles.statsGrid}>
-              <div style={styles.statCard}>
-                <TrendingUp size={20} />
-                <div>
-                  <div style={styles.statValue}>10,000+</div>
-                  <div style={styles.statLabel}>Bills Processed</div>
-                </div>
-              </div>
-              <div style={styles.statCard}>
-                <Clock size={20} />
-                <div>
-                  <div style={styles.statValue}>3 Sec</div>
-                  <div style={styles.statLabel}>Avg. Processing Time</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+   <Hero />
+
+      {/* Tabs */}
+      <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
+
 
       {/* Form Section */}
       <div style={styles.mainContent}>
+        {activeTab === "dth" && <DTHRecharge />}
+          {activeTab === "datacard" && <DataCardRecharge />}
+          {activeTab === "postpaid" && <PostpaidRecharge />}
+          {activeTab === "electricity" && <ElectricityRecharge />}
+          {activeTab === "gas" && <GasRecharge />}
+          {activeTab === "insurance" && <Insurance />}
+          {activeTab === "fastag" && <FASTagRecharge />}
+          {activeTab === "google play" && <GooglePlayRecharge />}
+          {activeTab === "landline" && <Landline />}
+  {activeTab === "more" && <MoreServices />}
         <div style={styles.contentGrid}>
           {/* Form */}
           <div style={styles.formSection}>

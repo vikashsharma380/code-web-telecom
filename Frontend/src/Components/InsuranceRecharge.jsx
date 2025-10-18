@@ -2,6 +2,18 @@ import React, { useState, useEffect } from "react";
 import { ShieldCheck, Clock, TrendingUp, Zap } from "lucide-react";
 import styles from "../styles";
 import Nav from "../../hero/nav";
+import Tab from "../../hero/Tab";
+import DTHRecharge from "./DTHRecharge"; // adjust the path correctly
+import PostpaidRecharge from "./PostpaidRecharge"; // etc
+import ElectricityRecharge from "./ElectricityRecharge";
+import GasRecharge from "./GasRecharge";
+import FASTagRecharge from "./FASTagRecharge";
+import DataCardRecharge from "./DataCardRecharge";
+
+import GooglePlayRecharge from "./GooglePlayRecharge";
+import WaterBillRecharge from "./WaterBillRecharge";
+
+
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -177,34 +189,22 @@ useEffect(() => {
       </div>
 
       {/* Tab Section */}
-      <div style={styles.tabSection}>
-        <div style={styles.tabsContainer}>
-          {[
-            "Mobile",
-            "DTH",
-            "Data Card",
-            "Postpaid",
-            "Electricity",
-            "Gas",
-            "Insurance",
-            "Transfer",
-          ].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab.toLowerCase())}
-              style={{
-                ...styles.tabBtn,
-                ...(activeTab === tab.toLowerCase() ? styles.tabBtnActive : {}),
-              }}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-      </div>
+     <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Main Content */}
       <div style={styles.mainContent}>
+          {activeTab === "mobile" && <MobileRecharge />}
+  {activeTab === "dth" && <DTHRecharge />}
+  {activeTab === "datacard" && <DataCardRecharge />}
+  {activeTab === "postpaid" && <PostpaidRecharge />}
+  {activeTab === "electricity" && <ElectricityRecharge />}
+  {activeTab === "gas" && <GasRecharge />}
+  
+  {activeTab === "fastag" && <FASTagRecharge />}
+  {activeTab === "google play" && <GooglePlayRecharge />}
+  {activeTab === "water bill" && <WaterBill />}
+  {activeTab === "landline" && <Landline />}
+  {activeTab === "more" && <MoreServices />}
         <div style={styles.contentGrid}>
           {/* Insurance Payment Form */}
           <div style={styles.formSection}>

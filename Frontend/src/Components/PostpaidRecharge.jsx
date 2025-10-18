@@ -4,6 +4,16 @@ import styles from "../styles";
 import Nav from "../../hero/nav";
 import Hero from "../../hero/hero";
 import Tab from "../../hero/Tab";
+import DTHRecharge from "./DTHRecharge"; // adjust the path correctly
+
+import ElectricityRecharge from "./ElectricityRecharge";
+import GasRecharge from "./GasRecharge";
+import FASTagRecharge from "./FASTagRecharge";
+import DataCardRecharge from "./DataCardRecharge";
+import InsuranceRecharge from "./InsuranceRecharge";
+import GooglePlayRecharge from "./GooglePlayRecharge";
+import WaterBillRecharge from "./WaterBillRecharge";
+
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -189,6 +199,18 @@ console.log("Sending recharge request:", {
       <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <div style={styles.mainContent}>
+          {activeTab === "mobile" && <MobileRecharge />}
+          {activeTab === "dth" && <DTHRecharge />}
+          {activeTab === "datacard" && <DataCardRecharge />}
+         
+          {activeTab === "electricity" && <ElectricityRecharge />}
+          {activeTab === "gas" && <GasRecharge />}
+          {activeTab === "insurance" && <Insurance />}
+          {activeTab === "fastag" && <FASTagRecharge />}
+          {activeTab === "google play" && <GooglePlayRecharge />}
+          {activeTab === "water bill" && <WaterBill />}
+          {activeTab === "landline" && <Landline />}
+          {activeTab === "more" && <MoreServices />}
         <div style={styles.contentGrid}>
           {/* Recharge Form */}
           <div style={styles.formSection}>

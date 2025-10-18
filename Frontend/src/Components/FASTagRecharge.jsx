@@ -6,6 +6,16 @@ import styles from "../styles";
 import Tab from "../../hero/Tab";
 import Hero from "../../hero/hero";
 import Nav from "../../hero/nav";
+import DTHRecharge from "./DTHRecharge"; // adjust the path correctly
+import PostpaidRecharge from "./PostpaidRecharge"; // etc
+import ElectricityRecharge from "./ElectricityRecharge";
+import GasRecharge from "./GasRecharge";
+
+import DataCardRecharge from "./DataCardRecharge";
+import InsuranceRecharge from "./InsuranceRecharge";
+import GooglePlayRecharge from "./GooglePlayRecharge";
+import WaterBillRecharge from "./WaterBillRecharge";
+
 
 export default function FASTagRecharge() {
   const [formData, setFormData] = useState({
@@ -199,10 +209,22 @@ export default function FASTagRecharge() {
       />
 
       {/* Tabs */}
-      <Tab />
+ <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Main Content */}
       <div style={styles.mainContent}>
+          {activeTab === "mobile" && <MobileRecharge />}
+  {activeTab === "dth" && <DTHRecharge />}
+  {activeTab === "datacard" && <DataCardRecharge />}
+  {activeTab === "postpaid" && <PostpaidRecharge />}
+  {activeTab === "electricity" && <ElectricityRecharge />}
+  {activeTab === "gas" && <GasRecharge />}
+  {activeTab === "insurance" && <Insurance />}
+ 
+  {activeTab === "google play" && <GooglePlayRecharge />}
+  {activeTab === "water bill" && <WaterBill />}
+  {activeTab === "landline" && <Landline />}
+  {activeTab === "more" && <MoreServices />}
         <div style={styles.contentGrid}>
           {/* Recharge Form */}
           <div style={styles.formSection}>

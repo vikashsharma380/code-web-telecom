@@ -5,6 +5,16 @@ import Nav from "../../hero/nav";
 import Hero from "../../hero/hero";
 import Tab from "../../hero/Tab";
 
+import PostpaidRecharge from "./PostpaidRecharge"; // etc
+import ElectricityRecharge from "./ElectricityRecharge";
+import GasRecharge from "./GasRecharge";
+import FASTagRecharge from "./FASTagRecharge";
+import DataCardRecharge from "./DataCardRecharge";
+import InsuranceRecharge from "./InsuranceRecharge";
+import GooglePlayRecharge from "./GooglePlayRecharge";
+import WaterBillRecharge from "./WaterBillRecharge";
+
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function DTHRecharge() {
@@ -195,6 +205,18 @@ useEffect(() => {
       <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <div style={styles.mainContent}>
+          {activeTab === "mobile" && <MobileRecharge />}
+  
+  {activeTab === "datacard" && <DataCardRecharge />}
+  {activeTab === "postpaid" && <PostpaidRecharge />}
+  {activeTab === "electricity" && <ElectricityRecharge />}
+  {activeTab === "gas" && <GasRecharge />}
+  {activeTab === "insurance" && <Insurance />}
+  {activeTab === "fastag" && <FASTagRecharge />}
+  {activeTab === "google play" && <GooglePlayRecharge />}
+  {activeTab === "water bill" && <WaterBill />}
+  {activeTab === "landline" && <Landline />}
+  {activeTab === "more" && <MoreServices />}
         <div style={styles.contentGrid}>
           {/* DTH Recharge Form */}
           <div style={styles.formSection}>

@@ -4,6 +4,16 @@ import styles from "../styles";
 import Nav from "../../hero/nav";
 import Hero from "../../hero/hero";
 import Tab from "../../hero/Tab";
+import DTHRecharge from "./DTHRecharge"; // adjust the path correctly
+import PostpaidRecharge from "./PostpaidRecharge"; // etc
+
+import GasRecharge from "./GasRecharge";
+import FASTagRecharge from "./FASTagRecharge";
+import DataCardRecharge from "./DataCardRecharge";
+import InsuranceRecharge from "./InsuranceRecharge";
+import GooglePlayRecharge from "./GooglePlayRecharge";
+import WaterBillRecharge from "./WaterBillRecharge";
+
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -13,7 +23,7 @@ export default function ElectricityRecharge() {
     operatorcode: "",
     amount: "",
   });
-
+  const [activeTab, setActiveTab] = useState("electricity");
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -246,9 +256,21 @@ console.log("Sending recharge request:", payload);
     <div style={styles.container}>
       <Nav />
       <Hero title="Instant Electricity Recharge" subtitle="Fast, secure, and reliable electricity recharges for all operators" />
-      <Tab />
+      <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <div style={styles.mainContent}>
+          {activeTab === "mobile" && <MobileRecharge />}
+  {activeTab === "dth" && <DTHRecharge />}
+  {activeTab === "datacard" && <DataCardRecharge />}
+  {activeTab === "postpaid" && <PostpaidRecharge />}
+ 
+  {activeTab === "gas" && <GasRecharge />}
+  {activeTab === "insurance" && <Insurance />}
+  {activeTab === "fastag" && <FASTagRecharge />}
+  {activeTab === "google play" && <GooglePlayRecharge />}
+  {activeTab === "water bill" && <WaterBill />}
+  {activeTab === "landline" && <Landline />}
+  {activeTab === "more" && <MoreServices />}
         <div style={styles.contentGrid}>
           {/* Recharge Form */}
           <div style={styles.formSection}>

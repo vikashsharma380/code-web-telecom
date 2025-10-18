@@ -4,6 +4,17 @@ import styles from "../styles";
 import Nav from "../../hero/nav";
 import Hero from "../../hero/hero";
 import Tab from "../../hero/Tab";
+import axios from "axios";
+import DTHRecharge from "./DTHRecharge"; // adjust the path correctly
+import PostpaidRecharge from "./PostpaidRecharge"; // etc
+import ElectricityRecharge from "./ElectricityRecharge";
+import GasRecharge from "./GasRecharge";
+import FASTagRecharge from "./FASTagRecharge";
+import DataCardRecharge from "./DataCardRecharge";
+import InsuranceRecharge from "./InsuranceRecharge";
+import GooglePlayRecharge from "./GooglePlayRecharge";
+import WaterBillRecharge from "./WaterBillRecharge";
+
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 export default function MobileRecharge() {
@@ -20,6 +31,8 @@ export default function MobileRecharge() {
   const [detecting, setDetecting] = useState(false);
   const [activeTab, setActiveTab] = useState("recharge");
   const [rechargeUser, setRechargeUser] = useState({});
+  const [balance, setBalance] = useState(0);
+
    useEffect(() => {
   const storedUser = localStorage.getItem("user");
   if (storedUser) {
@@ -120,13 +133,15 @@ export default function MobileRecharge() {
     fetchTransactions();
   }, []);
 useEffect(() => {
+  if (rechargeUser.username && rechargeUser.pwd) {
     fetchBalance();
-  }, []);
+  }
+}, [rechargeUser]);
 
-    const fetchBalance = async () => {
+
+const fetchBalance = async () => {
   try {
-    const username = localStorage.getItem("username");
-    const pwd = localStorage.getItem("apiPassword");
+    const { username, pwd } = rechargeUser;
 
     if (!username || !pwd) {
       console.warn("Missing username or password for balance fetch");
@@ -134,12 +149,12 @@ useEffect(() => {
     }
 
     const response = await fetch(
-      `/api/balance?username=${username}&pwd=${pwd}`
+      `${API_URL}/api/balance?username=${encodeURIComponent(username)}&pwd=${encodeURIComponent(pwd)}`
     );
     const data = await response.json();
 
     if (data.success) {
-      setBalance(data.balance); // Balance state update
+      setBalance(data.balance); // Make sure you have `const [balance, setBalance] = useState(0)`
     } else {
       console.error("Balance fetch failed:", data.error);
     }
@@ -147,6 +162,7 @@ useEffect(() => {
     console.error("Error fetching balance:", error);
   }
 };
+
   const handleRecharge = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -226,9 +242,21 @@ const pwd = rechargeUser.pwd;
         subtitle="Fast, secure, and reliable mobile recharges for all operators"
       />
       {/* Tab Section */}
-      <Tab />
+     <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
       {/* Main Content */}
       <div style={styles.mainContent}>
+        {activeTab === "mobile" && <MobileRecharge />}
+  {activeTab === "dth" && <DTHRecharge />}
+  {activeTab === "datacard" && <DataCardRecharge />}
+  {activeTab === "postpaid" && <PostpaidRecharge />}
+  {activeTab === "electricity" && <ElectricityRecharge />}
+  {activeTab === "gas" && <GasRecharge />}
+  {activeTab === "insurance" && <Insurance />}
+  {activeTab === "fastag" && <FASTagRecharge />}
+  {activeTab === "google play" && <GooglePlayRecharge />}
+  {activeTab === "water bill" && <WaterBill />}
+  {activeTab === "landline" && <Landline />}
+  {activeTab === "more" && <MoreServices />}
         <div style={styles.contentGrid}>
           {/* Recharge Form */}
           <div style={styles.formSection}>
