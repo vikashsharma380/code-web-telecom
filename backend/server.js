@@ -21,9 +21,12 @@ mongoose.connect(process.env.MONGO_URI, {
     process.exit(1);
   });
 const allowedOrigins = [
-  "http://localhost:5173",
-  "https://codewebtelecomin.vercel.app" // 👈 your Vercel frontend domain
+  "http://localhost:5173",               // local dev
+  "https://codewebtelecomin.vercel.app", // Vercel default
+  "https://codewebtelecom.in",           // custom domain
+  "https://www.codewebtelecom.in"        // www subdomain (important!)
 ];
+
 
 app.use(cors({
   origin: function (origin, callback) {
