@@ -6,7 +6,7 @@ import navItems from "./NavItems";
 import HeroSection from "./HeroSection";
 import ActionButton from "./ActionButton";
 import StatsCard from "./StatsCard";
-import RecentPayments from "./recentPayments";
+import RecentPayments from "./RecentPayments";
 
 const AdminDashboard = () => {
   const [recentPayments] = useState([]);
