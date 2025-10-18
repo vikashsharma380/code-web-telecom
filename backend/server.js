@@ -241,10 +241,11 @@ app.use("/api/auth", authRoutes);
 const path = require("path");
 
 // Serve static files from Vite build
+// Serve static files from Vite build
 app.use(express.static(path.join(__dirname, "../Frontend/dist")));
 
-// Catch-all route for React router
-app.get('/*', (req, res) => {
+// Catch-all route (must come **after all API routes**)
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, "../Frontend/dist", "index.html"));
 });
 
