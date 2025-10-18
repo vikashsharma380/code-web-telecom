@@ -6,6 +6,16 @@ import styles from "../styles";
 import Tab from "../../hero/Tab";
 import Hero from "../../hero/hero";
 import Nav from "../../hero/nav";
+import DTHRecharge from "./DTHRecharge"; // adjust the path correctly
+import PostpaidRecharge from "./PostpaidRecharge"; // etc
+import ElectricityRecharge from "./ElectricityRecharge";
+import GasRecharge from "./GasRecharge";
+
+import DataCardRecharge from "./DataCardRecharge";
+import InsuranceRecharge from "./InsuranceRecharge";
+import GooglePlayRecharge from "./GooglePlayRecharge";
+import WaterBillRecharge from "./WaterBillRecharge";
+
 
 export default function FASTagRecharge() {
   const [formData, setFormData] = useState({
@@ -65,24 +75,34 @@ export default function FASTagRecharge() {
     amount: formData.amount,
   };
   // === FETCH BALANCE ===
-  const fetchBalance = async () => {
-    setBalanceLoading(true);
-    try {
-      const query = new URLSearchParams(rechargeUser).toString();
-      const res = await fetch(`${API_URL}/api/balance?${query}`);
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
-      const data = await res.json();
-      setBalance(data.balance || 0);
-    } catch (error) {
-      console.error("Balance fetch failed:", error);
-      setBalance(0);
-    } finally {
-      setBalanceLoading(false);
-    }
-  };
-  useEffect(() => {
-    fetchBalance();
-  }, []);
+ useEffect(() => {
+     fetchBalance();
+   }, []);
+ 
+     const fetchBalance = async () => {
+   try {
+     const username = localStorage.getItem("username");
+     const pwd = localStorage.getItem("apiPassword");
+ 
+     if (!username || !pwd) {
+       console.warn("Missing username or password for balance fetch");
+       return;
+     }
+ 
+     const response = await fetch(
+       `/api/balance?username=${username}&pwd=${pwd}`
+     );
+     const data = await response.json();
+ 
+     if (data.success) {
+       setBalance(data.balance); // Balance state update
+     } else {
+       console.error("Balance fetch failed:", data.error);
+     }
+   } catch (error) {
+     console.error("Error fetching balance:", error);
+   }
+ };
   // === OPERATOR AUTO-DETECT ===
   useEffect(() => {
     const detectOperator = async () => {
@@ -189,10 +209,22 @@ export default function FASTagRecharge() {
       />
 
       {/* Tabs */}
-      <Tab />
+ <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Main Content */}
       <div style={styles.mainContent}>
+          {activeTab === "mobile" && <MobileRecharge />}
+  {activeTab === "dth" && <DTHRecharge />}
+  {activeTab === "datacard" && <DataCardRecharge />}
+  {activeTab === "postpaid" && <PostpaidRecharge />}
+  {activeTab === "electricity" && <ElectricityRecharge />}
+  {activeTab === "gas" && <GasRecharge />}
+  {activeTab === "insurance" && <Insurance />}
+ 
+  {activeTab === "google play" && <GooglePlayRecharge />}
+  {activeTab === "water bill" && <WaterBill />}
+  {activeTab === "landline" && <Landline />}
+  {activeTab === "more" && <MoreServices />}
         <div style={styles.contentGrid}>
           {/* Recharge Form */}
           <div style={styles.formSection}>

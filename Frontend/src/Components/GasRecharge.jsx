@@ -4,6 +4,16 @@ import styles from "../styles";
 import Nav from "../../hero/nav";
 import Hero from "../../hero/hero";
 import Tab from "../../hero/Tab";
+import DTHRecharge from "./DTHRecharge"; // adjust the path correctly
+import PostpaidRecharge from "./PostpaidRecharge"; // etc
+import ElectricityRecharge from "./ElectricityRecharge";
+
+import FASTagRecharge from "./FASTagRecharge";
+import DataCardRecharge from "./DataCardRecharge";
+import InsuranceRecharge from "./InsuranceRecharge";
+import GooglePlayRecharge from "./GooglePlayRecharge";
+import WaterBillRecharge from "./WaterBillRecharge";
+
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -20,6 +30,7 @@ export default function GasRecharge() {
   const [balanceLoading, setBalanceLoading] = useState(false);
   const [detecting, setDetecting] = useState(false);
   const [rechargeUser, setRechargeUser] = useState({ username: "", pwd: "" });
+  const [activeTab, setActiveTab] = useState("gas");
 
   const quickAmounts = [100, 200, 500, 1000, 2000];
   const operators = [
@@ -43,25 +54,34 @@ export default function GasRecharge() {
   }, []);
 
   // Fetch balance
-  const fetchBalance = async () => {
-    setBalanceLoading(true);
-    try {
-      const query = new URLSearchParams(rechargeUser).toString();
-      const res = await fetch(`${API_URL}/api/balance?${query}`);
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
-      const data = await res.json();
-      setBalance(data.balance || 0);
-    } catch (err) {
-      console.error("Balance fetch failed:", err);
-      setBalance(0);
-    } finally {
-      setBalanceLoading(false);
-    }
-  };
-
-  useEffect(() => {
+useEffect(() => {
     fetchBalance();
-  }, [rechargeUser]);
+  }, []);
+
+    const fetchBalance = async () => {
+  try {
+    const username = localStorage.getItem("username");
+    const pwd = localStorage.getItem("apiPassword");
+
+    if (!username || !pwd) {
+      console.warn("Missing username or password for balance fetch");
+      return;
+    }
+
+    const response = await fetch(
+      `/api/balance?username=${username}&pwd=${pwd}`
+    );
+    const data = await response.json();
+
+    if (data.success) {
+      setBalance(data.balance); // Balance state update
+    } else {
+      console.error("Balance fetch failed:", data.error);
+    }
+  } catch (error) {
+    console.error("Error fetching balance:", error);
+  }
+};
 
   // Auto-detect operator (if you have API for it)
   useEffect(() => {
@@ -168,6 +188,18 @@ export default function GasRecharge() {
       <Tab />
 
       <div style={styles.mainContent}>
+          {activeTab === "mobile" && <MobileRecharge />}
+  {activeTab === "dth" && <DTHRecharge />}
+  {activeTab === "datacard" && <DataCardRecharge />}
+  {activeTab === "postpaid" && <PostpaidRecharge />}
+  {activeTab === "electricity" && <ElectricityRecharge />}
+  
+  {activeTab === "insurance" && <Insurance />}
+  {activeTab === "fastag" && <FASTagRecharge />}
+  {activeTab === "google play" && <GooglePlayRecharge />}
+  {activeTab === "water bill" && <WaterBill />}
+  {activeTab === "landline" && <Landline />}
+  {activeTab === "more" && <MoreServices />}
         <div style={styles.contentGrid}>
           {/* Recharge Form */}
           <div style={styles.formSection}>

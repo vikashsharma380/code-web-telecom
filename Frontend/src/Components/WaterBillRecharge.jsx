@@ -2,6 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Smartphone, Zap, Clock, TrendingUp } from "lucide-react";
 import styles from "../styles";
 import Nav from "../../hero/nav";
+import Hero from "../../hero/hero";
+import Tab from "../../hero/Tab";
+import DTHRecharge from "./DTHRecharge"; // adjust the path correctly
+import PostpaidRecharge from "./PostpaidRecharge"; // etc
+import ElectricityRecharge from "./ElectricityRecharge";
+import GasRecharge from "./GasRecharge";
+import FASTagRecharge from "./FASTagRecharge";
+import DataCardRecharge from "./DataCardRecharge";
+import InsuranceRecharge from "./InsuranceRecharge";
+import GooglePlayRecharge from "./GooglePlayRecharge";
+
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -16,33 +27,41 @@ export default function WaterBillRecharge() {
   const [result, setResult] = useState(null);
   const [balance, setBalance] = useState(0);
   const [balanceLoading, setBalanceLoading] = useState(false);
-
+const [activeTab, setActiveTab] = useState("waterbill");
   const rechargeUser = {
     username: "500032",
     pwd: "k0ly9gts",
   };
 
   // === FETCH BALANCE ===
-  const fetchBalance = async () => {
-    setBalanceLoading(true);
-    try {
-      const query = new URLSearchParams(rechargeUser).toString();
-      const res = await fetch(`${API_URL}/api/balance?${query}`);
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
-      const data = await res.json();
-      setBalance(data.balance || 0);
-    } catch (error) {
-      console.error("Balance fetch failed:", error);
-      setBalance(0);
-    } finally {
-      setBalanceLoading(false);
-    }
-  };
-
-  useEffect(() => {
+useEffect(() => {
     fetchBalance();
   }, []);
 
+    const fetchBalance = async () => {
+  try {
+    const username = localStorage.getItem("username");
+    const pwd = localStorage.getItem("apiPassword");
+
+    if (!username || !pwd) {
+      console.warn("Missing username or password for balance fetch");
+      return;
+    }
+
+    const response = await fetch(
+      `/api/balance?username=${username}&pwd=${pwd}`
+    );
+    const data = await response.json();
+
+    if (data.success) {
+      setBalance(data.balance); // Balance state update
+    } else {
+      console.error("Balance fetch failed:", data.error);
+    }
+  } catch (error) {
+    console.error("Error fetching balance:", error);
+  }
+};
   // === WATER BOARDS / OPERATORS ===
   const operators = [
     { code: "MWB", name: "Mumbai Water Board" },
@@ -126,39 +145,24 @@ export default function WaterBillRecharge() {
       />
 
       {/* Hero */}
-      <div style={styles.hero}>
-        <div style={styles.heroContent}>
-          <div style={styles.heroLeft}>
-            <div style={styles.welcomeBadge}>
-              <Zap size={16} />
-              <span>Welcome back, Vikash!</span>
-            </div>
-            <h1 style={styles.heroTitle}>Water Bill Recharge</h1>
-            <p style={styles.heroSubtitle}>
-              Pay your water bills instantly and securely
-            </p>
-            <div style={styles.statsGrid}>
-              <div style={styles.statCard}>
-                <TrendingUp size={20} />
-                <div>
-                  <div style={styles.statValue}>10,000+</div>
-                  <div style={styles.statLabel}>Bills Processed</div>
-                </div>
-              </div>
-              <div style={styles.statCard}>
-                <Clock size={20} />
-                <div>
-                  <div style={styles.statValue}>3 Sec</div>
-                  <div style={styles.statLabel}>Avg. Processing Time</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+   <Hero />
+
+      {/* Tabs */}
+      <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
+
 
       {/* Form Section */}
       <div style={styles.mainContent}>
+        {activeTab === "dth" && <DTHRecharge />}
+          {activeTab === "datacard" && <DataCardRecharge />}
+          {activeTab === "postpaid" && <PostpaidRecharge />}
+          {activeTab === "electricity" && <ElectricityRecharge />}
+          {activeTab === "gas" && <GasRecharge />}
+          {activeTab === "insurance" && <Insurance />}
+          {activeTab === "fastag" && <FASTagRecharge />}
+          {activeTab === "google play" && <GooglePlayRecharge />}
+          {activeTab === "landline" && <Landline />}
+  {activeTab === "more" && <MoreServices />}
         <div style={styles.contentGrid}>
           {/* Form */}
           <div style={styles.formSection}>

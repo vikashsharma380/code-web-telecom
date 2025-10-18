@@ -1,32 +1,30 @@
-import React from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "../src/styles";
-export default function Tab({ activeTab, setActiveTab }) {
+export default function Tab() {
+  const navigate = useNavigate();
+  const tabs = [
+    { name: "Mobile", path: "/MobileRecharge" },
+    { name: "DTH", path:"/DTHRecharge" },
+    { name: "Postpaid", path: "/PostpaidRecharge" },
+    { name: "Electricity", path: "/ElectricityRecharge" },
+    { name: "Gas", path:"/GasRecharge" },
+    { name: "Data Card", path: "/DataCardRecharge" },
+    { name: "FASTag", path: "/FASTagRecharge"},
+    { name: "Insurance", path: "/InsuranceRecharge" },
+    { name: "Google Play", path: "/GooglePlayRecharge" },
+    { name: "Water Bill", path: "/WaterBillRecharge" },
+  ];
+
   return (
     <div style={styles.tabSection}>
       <div style={styles.tabsContainer}>
-        {[
-          "Mobile",
-          "DTH",
-          "Data Card",
-          "Postpaid",
-          "Electricity",
-          "Gas",
-          "Insurance",
-          "FASTag",
-          "Google Play",
-          "Water Bill",
-          "Landline",
-          "more",
-        ].map((tab) => (
+        {tabs.map((tab) => (
           <button
-            key={tab}
-            onClick={() => setActiveTab(tab.toLowerCase())}
-            style={{
-              ...styles.tabBtn,
-              ...(activeTab === tab.toLowerCase() ? styles.tabBtnActive : {}),
-            }}
+            key={tab.name}
+            onClick={() => navigate(tab.path)}
+            style={styles.tabBtn}
           >
-            {tab}
+            {tab.name}
           </button>
         ))}
       </div>
