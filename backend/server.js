@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
-const Transaction = require("../backend/models/Transaction");
+const Transaction = require("./models/Transaction");
 const { verifyToken } = require("./middleware/authMiddleware");
 const router = express.Router();
 dotenv.config();
@@ -237,6 +237,16 @@ app.get("/callback", (req, res) => {
   res.send("Callback received");
 });
 app.use("/api/auth", authRoutes);
+
+const path = require("path");
+
+// Serve frontend build files
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
+});
+
 
 
 
