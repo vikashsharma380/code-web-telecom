@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 const Transaction = require("./models/Transaction");
 const { verifyToken } = require("./middleware/authMiddleware");
-const router = express.Router();
+
 dotenv.config();
 const app = express();
 app.use(express.json());
