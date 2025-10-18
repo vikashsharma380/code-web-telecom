@@ -23,26 +23,34 @@ export default function WaterBillRecharge() {
   };
 
   // === FETCH BALANCE ===
-  const fetchBalance = async () => {
-    setBalanceLoading(true);
-    try {
-      const query = new URLSearchParams(rechargeUser).toString();
-      const res = await fetch(`${API_URL}/api/balance?${query}`);
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
-      const data = await res.json();
-      setBalance(data.balance || 0);
-    } catch (error) {
-      console.error("Balance fetch failed:", error);
-      setBalance(0);
-    } finally {
-      setBalanceLoading(false);
-    }
-  };
-
-  useEffect(() => {
+useEffect(() => {
     fetchBalance();
   }, []);
 
+    const fetchBalance = async () => {
+  try {
+    const username = localStorage.getItem("username");
+    const pwd = localStorage.getItem("apiPassword");
+
+    if (!username || !pwd) {
+      console.warn("Missing username or password for balance fetch");
+      return;
+    }
+
+    const response = await fetch(
+      `/api/balance?username=${username}&pwd=${pwd}`
+    );
+    const data = await response.json();
+
+    if (data.success) {
+      setBalance(data.balance); // Balance state update
+    } else {
+      console.error("Balance fetch failed:", data.error);
+    }
+  } catch (error) {
+    console.error("Error fetching balance:", error);
+  }
+};
   // === WATER BOARDS / OPERATORS ===
   const operators = [
     { code: "MWB", name: "Mumbai Water Board" },

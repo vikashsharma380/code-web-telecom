@@ -179,29 +179,33 @@ app.get("/api/balance", async (req, res) => {
     const { username, pwd } = req.query;
 
     if (!username || !pwd) {
-      return res.status(400).json({ success: false, error: "Username and password required" });
+      return res.status(400).json({
+        success: false,
+        error: "Username and password are required",
+      });
     }
 
-    const url = `http://business.a1topup.com/recharge/balance?username=505629&pwd=Ansari@2580&format=json`;
+    // ✅ Dynamic API call (no hardcoding)
+    const url = `https://codewebtelecom.com/recharge/balance?username=${encodeURIComponent(
+      username
+    )}&pwd=${encodeURIComponent(pwd)}&format=json`;
 
     // External API call
     const response = await axios.get(url);
 
-    console.log("💰 Balance API called:");
+    console.log("💰 Balance API called successfully");
     console.log("Frontend sent:", { username });
     console.log("API Response:", response.data);
 
-    // Send structured response to frontend
     res.json({
       success: true,
-      balance: Number(response.data) || 0, // Number conversion
+      balance: Number(response.data) || 0, // convert string to number
     });
-
   } catch (error) {
     console.error("❌ Balance fetch failed:", error.message);
     if (error.response) console.error("API Response:", error.response.data);
 
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       error: "Balance fetch failed",
       details: error.message,
@@ -209,6 +213,7 @@ app.get("/api/balance", async (req, res) => {
     });
   }
 });
+
 app.get("/api/status", async (req, res) => {
   try {
     const { username, pwd, orderid } = req.query;

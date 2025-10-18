@@ -119,7 +119,34 @@ export default function MobileRecharge() {
   useEffect(() => {
     fetchTransactions();
   }, []);
+useEffect(() => {
+    fetchBalance();
+  }, []);
 
+    const fetchBalance = async () => {
+  try {
+    const username = localStorage.getItem("username");
+    const pwd = localStorage.getItem("apiPassword");
+
+    if (!username || !pwd) {
+      console.warn("Missing username or password for balance fetch");
+      return;
+    }
+
+    const response = await fetch(
+      `/api/balance?username=${username}&pwd=${pwd}`
+    );
+    const data = await response.json();
+
+    if (data.success) {
+      setBalance(data.balance); // Balance state update
+    } else {
+      console.error("Balance fetch failed:", data.error);
+    }
+  } catch (error) {
+    console.error("Error fetching balance:", error);
+  }
+};
   const handleRecharge = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -185,6 +212,9 @@ const pwd = rechargeUser.pwd;
       setTimeout(() => setResult(null), 5000);
     }
   };
+
+
+
   // === RETURN JSX ===
   return (
     <div style={styles.container}>
