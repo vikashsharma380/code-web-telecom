@@ -21,9 +21,10 @@ mongoose.connect(process.env.MONGO_URI, {
     process.exit(1);
   });
 const allowedOrigins = [
-  "http://localhost:5173",  // ✅ local frontend
-  "https://your-deployed-frontend-domain.com" // ✅ hosted frontend domain
+  "http://localhost:5173",
+  "https://codewebtelecomin.vercel.app" // 👈 your Vercel frontend domain
 ];
+
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
