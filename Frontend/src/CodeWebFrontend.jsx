@@ -32,7 +32,7 @@ import {
   Play,
 } from "lucide-react";
 import ServicesGrid from "./Grid/ServicesGrid";
-import logo from "../src/assets/logo.jpeg";
+// import logo from "../src/assets/logo.jpeg";
 
 const CodeWebTelecomWebsite = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -165,11 +165,11 @@ const CodeWebTelecomWebsite = () => {
         >
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <img
-      src={logo}
-      alt="Code Web Telecom Logo"
-      style={{ width: "50px", height: "50px", borderRadius: "12px" }}
-    />
+              {/* <img
+                src={require("./assets/logo.jpeg")}
+                alt="Code Web Telecom Logo"
+                style={{ width: "50px", height: "50px", borderRadius: "12px" }}
+              /> */}
               {/* You can keep any text next to it if needed */}
             </div>
 
