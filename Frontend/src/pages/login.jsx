@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+
 import "../../LoginCSS/login.css";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -24,10 +25,14 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
-        loginInput: userId,
-        password: password,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL
+        }/api/auth/login`,
+        {
+          loginInput: userId,
+          password: password,
+        }
+      );
       console.log("✅ Login success:", res.data);
 
       const { token, user } = res.data;

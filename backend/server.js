@@ -5,9 +5,9 @@ const { v4: uuidv4 } = require("uuid");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
-const Transaction = require("../backend/models/Transaction");
+const Transaction = require("./models/Transaction");
 const { verifyToken } = require("./middleware/authMiddleware");
-const router = express.Router();
+
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -21,9 +21,13 @@ mongoose.connect(process.env.MONGO_URI, {
     process.exit(1);
   });
 const allowedOrigins = [
-  "http://localhost:5173",  // ✅ local frontend
-  "https://your-deployed-frontend-domain.com" // ✅ hosted frontend domain
+  "http://localhost:5173",               // local dev
+  "https://codewebtelecomin.vercel.app", // Vercel default
+  "https://codewebtelecom.in",           // custom domain
+  "https://www.codewebtelecom.in"        // www subdomain (important!)
 ];
+
+
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -237,6 +241,18 @@ app.get("/callback", (req, res) => {
   res.send("Callback received");
 });
 app.use("/api/auth", authRoutes);
+
+const path = require("path");
+
+// Serve static files from Vite build
+// Serve static files from Vite build
+app.use(express.static(path.join(__dirname, "../Frontend/dist")));
+
+// Catch-all route (must come **after all API routes**)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, "../Frontend/dist", "index.html"));
+});
+
 
 
 
