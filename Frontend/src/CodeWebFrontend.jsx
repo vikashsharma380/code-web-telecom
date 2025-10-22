@@ -6,6 +6,7 @@ import benefits from "./Components/benefits";
 import testimonials from "./Components/testimonials";
 import pricingPlans from "./Components/pricingplans";
 import { Link, useNavigate } from "react-router-dom";
+import ContactForm from "./Components/contactUs";
 
 import {
   Menu,
@@ -30,6 +31,7 @@ import {
   Mail,
   ChevronDown,
   Play,
+  Contact,
 } from "lucide-react";
 import ServicesGrid from "./Grid/ServicesGrid";
 import logo from "../src/assets/logo.jpeg";
@@ -46,6 +48,18 @@ const CodeWebTelecomWebsite = () => {
     uptime: 0,
   });
   const navigate = useNavigate();
+
+ 
+
+  const handleClick = () => {
+    const token = localStorage.getItem("token"); // check if user is logged in
+    if (token) {
+      navigate("/MobileRecharge"); // ✅ user logged in, go to recharge
+    } else {
+      alert("❌ Please login first!");
+      navigate("/login"); // optionally redirect to login page
+    }
+  }
 
   const handleGetStarted = () => {
     console.log("Get Started clicked");
@@ -479,6 +493,7 @@ const CodeWebTelecomWebsite = () => {
                 onMouseLeave={(e) =>
                   (e.currentTarget.style.transform = "translateY(0)")
                 }
+                 onClick={handleClick}
               >
                 Start Recharging
                 <ChevronRight size={20} />
@@ -1290,164 +1305,7 @@ const CodeWebTelecomWebsite = () => {
             }}
           >
             {/* Contact Form */}
-            <div
-              style={{
-                background: "linear-gradient(135deg, #667eea05, #764ba205)",
-                borderRadius: "24px",
-                padding: "40px",
-                border: "2px solid #667eea15",
-              }}
-            >
-              <form
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "24px",
-                }}
-              >
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      marginBottom: "8px",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: "#333",
-                    }}
-                  >
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter your name"
-                    style={{
-                      width: "100%",
-                      padding: "14px 16px",
-                      borderRadius: "12px",
-                      border: "2px solid #e5e7eb",
-                      fontSize: "16px",
-                      outline: "none",
-                      transition: "border-color 0.3s ease",
-                    }}
-                    onFocus={(e) => (e.target.style.borderColor = "#667eea")}
-                    onBlur={(e) => (e.target.style.borderColor = "#e5e7eb")}
-                  />
-                </div>
-
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      marginBottom: "8px",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: "#333",
-                    }}
-                  >
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    style={{
-                      width: "100%",
-                      padding: "14px 16px",
-                      borderRadius: "12px",
-                      border: "2px solid #e5e7eb",
-                      fontSize: "16px",
-                      outline: "none",
-                      transition: "border-color 0.3s ease",
-                    }}
-                    onFocus={(e) => (e.target.style.borderColor = "#667eea")}
-                    onBlur={(e) => (e.target.style.borderColor = "#e5e7eb")}
-                  />
-                </div>
-
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      marginBottom: "8px",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: "#333",
-                    }}
-                  >
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    placeholder="Enter your phone"
-                    style={{
-                      width: "100%",
-                      padding: "14px 16px",
-                      borderRadius: "12px",
-                      border: "2px solid #e5e7eb",
-                      fontSize: "16px",
-                      outline: "none",
-                      transition: "border-color 0.3s ease",
-                    }}
-                    onFocus={(e) => (e.target.style.borderColor = "#667eea")}
-                    onBlur={(e) => (e.target.style.borderColor = "#e5e7eb")}
-                  />
-                </div>
-
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      marginBottom: "8px",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: "#333",
-                    }}
-                  >
-                    Message
-                  </label>
-                  <textarea
-                    placeholder="Tell us about your requirements..."
-                    rows="5"
-                    style={{
-                      width: "100%",
-                      padding: "14px 16px",
-                      borderRadius: "12px",
-                      border: "2px solid #e5e7eb",
-                      fontSize: "16px",
-                      outline: "none",
-                      resize: "vertical",
-                      fontFamily: "inherit",
-                      transition: "border-color 0.3s ease",
-                    }}
-                    onFocus={(e) => (e.target.style.borderColor = "#667eea")}
-                    onBlur={(e) => (e.target.style.borderColor = "#e5e7eb")}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  style={{
-                    background: "linear-gradient(135deg, #667eea, #764ba2)",
-                    color: "white",
-                    border: "none",
-                    padding: "16px",
-                    borderRadius: "12px",
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                    boxShadow: "0 8px 20px rgba(102, 126, 234, 0.4)",
-                    transition: "transform 0.3s ease",
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.transform = "translateY(-2px)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.transform = "translateY(0)")
-                  }
-                >
-                  Send Message
-                </button>
-              </form>
-            </div>
+            <ContactForm />
 
             {/* Contact Information */}
             <div>

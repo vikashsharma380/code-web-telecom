@@ -33,14 +33,35 @@ const Nav = () => {
     { name: "Logout", path: "/logout" },
   ];
 
-  const handleAddFund = () => {
+const handleAddFund = async () => {
   if (!fundAmount || isNaN(fundAmount) || Number(fundAmount) <= 0) return;
 
-  // Simulate API call or call your backend here
-  setBalance((prev) => prev + Number(fundAmount));
-  setFundAmount("");
-  setShowAddFundModal(false);
+  try {
+    const token = localStorage.getItem("token"); // optional auth
+    const res = await fetch("http://localhost:5000/api/add-fund", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ amount: Number(fundAmount), userId: "user123" }),
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      alert("✅ Fund added successfully!");
+      fetchBalance(); // refresh balance from backend
+      setFundAmount("");
+      setShowAddFundModal(false);
+    } else {
+      alert("❌ Failed: " + data.error);
+    }
+  } catch (err) {
+    console.error(err);
+    alert("❌ Server error: " + err.message);
+  }
 };
+
 
   const fetchBalance = async () => {
     setBalanceLoading(true);
