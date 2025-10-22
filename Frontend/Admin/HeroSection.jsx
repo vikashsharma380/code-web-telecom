@@ -1,6 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Styles";
+
 const HeroSection = () => {
+   const [balances, setBalances] = useState({
+    utilityBalance: 0,
+    apiBalance: 0
+  });
+
+  const fetchBalances = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:5000/api/get-balance"
+      );
+      const data = await res.json();
+      console.log("Fetched data:", data);
+      console.log("API Balance:", data.apiBalance);
+      console.log("Utility Balance:", data.utilityBalance);
+
+    setBalances({
+  utilityBalance: data.utilityBalance,
+  apiBalance: data.apiBalance
+});
+
+    } catch (err) {
+      console.error("Error fetching balances:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchBalances();
+  }, []);
+
   return (
     <div>
       {/* Hero Section */}
@@ -11,11 +41,11 @@ const HeroSection = () => {
             <div style={styles.balanceInfo}>
               <div style={styles.balanceItem}>
                 <span style={styles.balanceLabel}>API Bal:</span>
-                <span style={styles.balanceAmount}>₹516.60</span>
+                <span style={styles.balanceAmount}>₹{balances.apiBalance}</span>
               </div>
               <div style={styles.balanceItem}>
                 <span style={styles.balanceLabel}>Utility Bal:</span>
-                <span style={styles.balanceAmount}>₹506.00</span>
+                <span style={styles.balanceAmount}>₹{balances.utilityBalance}</span>
               </div>
             </div>
           </div>

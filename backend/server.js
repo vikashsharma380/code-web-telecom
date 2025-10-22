@@ -31,16 +31,20 @@ const allowedOrigins = [
 ];
 
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-}));
+// app.use(cors({
+
+//   origin: function (origin, callback) {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("Not allowed by CORS"));
+//     }
+//   },
+//   credentials: true,
+// }));
+
+
+app.use(cors()); 
 app.get("/api/transactions", async (req, res) => {
   const transactions = await Transaction.find().sort({ date: -1 }).limit(10);
   res.json(transactions);
@@ -247,14 +251,7 @@ app.use("/api/auth", authRoutes);
 
 const path = require("path");
 
-// Serve static files from Vite build
-// Serve static files from Vite build
-app.use(express.static(path.join(__dirname, "../Frontend/dist")));
 
-// Catch-all route (must come **after all API routes**)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, "../Frontend/dist", "index.html"));
-});
 
 
 const transporter = nodemailer.createTransport({
@@ -298,10 +295,16 @@ app.post("/api/contact", async (req, res) => {
 const fundRoutes = require("./routes/fund");
 app.use("/api", fundRoutes);
 
+const balanceRoutes = require("./routes/balance");
+app.use("/api", balanceRoutes); // ✅ API routes first
 
+// Serve frontend
+app.use(express.static(path.join(__dirname, "../Frontend/dist")));
 
-
-
+// Catch-all for frontend routing
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../Frontend/dist", "index.html"));
+});
 
 
 
