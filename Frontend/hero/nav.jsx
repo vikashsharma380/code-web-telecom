@@ -35,11 +35,10 @@ const Nav = () => {
  const [amount, setAmount] = useState("");
 const handleAddFund = async () => {
   if (!fundAmount || Number(fundAmount) <= 0) return;
-
   try {
     const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId"); // ✅ yaha fetch kar rahe ho
-    if (!userId) return alert("User ID missing. Please login again.");
+    const userId = localStorage.getItem("userId");
+    if (!userId) return alert("User ID missing. Login again.");
 
     const res = await fetch("http://localhost:5000/api/add-fund", {
       method: "POST",
@@ -53,6 +52,7 @@ const handleAddFund = async () => {
     const data = await res.json();
     if (!data.success) return alert("❌ " + data.error);
 
+    // Open payment gateway
     window.open(data.paymentUrl, "_blank");
     setFundAmount("");
     alert("Payment initiated! After success, balance will update automatically.");
