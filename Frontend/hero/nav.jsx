@@ -11,6 +11,7 @@ const Nav = () => {
   const [showAddFundModal, setShowAddFundModal] = useState(false);
   const [fundAmount, setFundAmount] = useState("");
 
+
   const rechargeUser = {
     username: "500032",
     pwd: "k0ly9gts",
@@ -34,33 +35,55 @@ const Nav = () => {
   ];
  const [amount, setAmount] = useState("");
 const handleAddFund = async () => {
-  if (!fundAmount || Number(fundAmount) <= 0) return;
+  if (!fundAmount || Number(fundAmount) <= 0) {
+    return alert("Please enter a valid amount.");
+  }
+
   try {
     const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
-    if (!userId) return alert("User ID missing. Login again.");
+    const user = JSON.parse(localStorage.getItem("user"));
 
-    const res = await fetch("http://localhost:5000/api/add-fund", {
-      method: "POST",
-      headers: { 
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}` 
-      },
-      body: JSON.stringify({ amount: Number(fundAmount), userId }),
-    });
+    if (!user || !user.userId) {
+      return alert("User ID missing. Please login again.");
+    }
+
+    console.log("User from localStorage:", user);
+    console.log("UserID:", user.userId);
+
+    const body = {
+  userId: user.userId,
+  amount: Number(fundAmount),
+  redirect_url: "http://localhost:5173/dashboard" // public URL
+};
+
+const res = await fetch(`http://localhost:5000/api/add-fund`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  },
+  body: JSON.stringify(body),
+});
+
 
     const data = await res.json();
-    if (!data.success) return alert("❌ " + data.error);
 
-    // Open payment gateway
+    if (!res.ok || !data.success) {
+      console.error("Add Fund Error:", data.error || data);
+      return alert("❌ " + (data.error || "Something went wrong"));
+    }
+
     window.open(data.paymentUrl, "_blank");
     setFundAmount("");
     alert("Payment initiated! After success, balance will update automatically.");
   } catch (err) {
-    console.error(err);
+    console.error("Server error:", err);
     alert("Server error: " + err.message);
   }
 };
+
+
+
 
 
 

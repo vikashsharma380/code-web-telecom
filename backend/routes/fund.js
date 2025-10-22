@@ -8,26 +8,31 @@ require("dotenv").config();
 // Add Fund: Create Payment Order
 router.post("/add-fund", async (req, res) => {
   try {
-    const { amount, userId } = req.body;
+     const { amount, userId, redirectUrl } = req.body;
+   const clientTxnId = `txn_${Date.now()}_${userId}`;
+  
     if (!amount || isNaN(amount) || amount <= 0)
       return res.status(400).json({ success: false, error: "Invalid amount" });
     if (!userId)
       return res.status(400).json({ success: false, error: "User ID missing" });
 
-    const clientTxnId = `txn_${Date.now()}_${userId}`;
-    const body = {
-      key: process.env.UPI_API_KEY,
-      client_txn_id: clientTxnId,
-      amount: String(amount),
-      p_info: "Add Fund",
-      customer_name: "User",
-      customer_email: "user@example.com",
-      customer_mobile: "9876543210", // can be dynamic from user
-      redirect_url: "http://localhost:3000/dashboard",
-      udf1: String(userId).substring(0, 25), // max 25 chars
-      udf2: "",
-      udf3: "",
-    };
+    
+
+const body = {
+  key: process.env.UPI_API_KEY,                 
+  client_txn_id: `txn_${Date.now()}_${userId}`, 
+  amount: String(amount),                       
+  p_info: "Add Fund",                           
+  customer_name: User.name || "User",           
+  customer_email: User.email || "user@example.com",
+  customer_mobile: User.mobile || "9876543210",
+  redirect_url: redirectUrl || "http://localhost:5173/dashboard", // public URL
+  udf1: String(userId).substring(0, 25),
+  udf2: "",
+  udf3: ""
+};
+
+
 
     const response = await axios.post(
       "https://api.ekqr.in/api/create_order",
