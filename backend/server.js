@@ -7,6 +7,9 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 const Transaction = require("./models/Transaction");
 const { verifyToken } = require("./middleware/authMiddleware");
+const nodemailer = require("nodemailer");
+const Contact = require("./models/contact");
+
 
 dotenv.config();
 const app = express();
@@ -254,9 +257,46 @@ app.get('*', (req, res) => {
 });
 
 
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+});
+
+app.post("/api/contact", async (req, res) => {
+  console.log("📩 /api/contact hit with:", req.body);
+  try {
+    const { name, email, phone, message } = req.body;
+    if (!name || !email || !phone || !message)
+      return res.status(400).json({ error: "All fields required" });
+
+    // Mongoose save
+    const contact = new Contact({ name, email, phone, message });
+    await contact.save();
+
+    await transporter.sendMail({
+      from: `"Website Contact" <${process.env.SMTP_USER}>`,
+      to: process.env.ADMIN_EMAIL,
+      subject: `📩 New message from ${name}`,
+      text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\n\nMessage:\n${message}`,
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("❌ Contact form error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 
 
+const fundRoutes = require("./routes/fund");
+app.use("/api", fundRoutes);
 
 
 

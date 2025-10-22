@@ -32,15 +32,39 @@ const Nav = () => {
     { name: "Settings", path: "/settings" },
     { name: "Logout", path: "/logout" },
   ];
+ const [amount, setAmount] = useState("");
+const handleAddFund = async () => {
+  if (!fundAmount || Number(fundAmount) <= 0) return;
+  try {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+    if (!userId) return alert("User ID missing. Login again.");
 
-  const handleAddFund = () => {
-  if (!fundAmount || isNaN(fundAmount) || Number(fundAmount) <= 0) return;
+    const res = await fetch("http://localhost:5000/api/add-fund", {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}` 
+      },
+      body: JSON.stringify({ amount: Number(fundAmount), userId }),
+    });
 
-  // Simulate API call or call your backend here
-  setBalance((prev) => prev + Number(fundAmount));
-  setFundAmount("");
-  setShowAddFundModal(false);
+    const data = await res.json();
+    if (!data.success) return alert("❌ " + data.error);
+
+    // Open payment gateway
+    window.open(data.paymentUrl, "_blank");
+    setFundAmount("");
+    alert("Payment initiated! After success, balance will update automatically.");
+  } catch (err) {
+    console.error(err);
+    alert("Server error: " + err.message);
+  }
 };
+
+
+
+
 
   const fetchBalance = async () => {
     setBalanceLoading(true);
