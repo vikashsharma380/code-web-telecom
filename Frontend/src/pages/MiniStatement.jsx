@@ -1,41 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Nav from "../../hero/nav";
+
 const MiniStatement = () => {
-  const [transactions] = useState([
-    {
-      id: "RCH001",
-      operator: "Airtel",
-      number: "9876543210",
-      amount: 299,
-      profit: 15,
-      balance: 5215,
-      status: "Success",
-      operatorId: "AIR123",
-      dateTime: "2025-10-15 14:30:25",
-    },
-    {
-      id: "RCH002",
-      operator: "Jio",
-      number: "8765432109",
-      amount: 499,
-      profit: 25,
-      balance: 5740,
-      status: "Success",
-      operatorId: "JIO456",
-      dateTime: "2025-10-15 13:15:10",
-    },
-    {
-      id: "RCH003",
-      operator: "Vi",
-      number: "7654321098",
-      amount: 199,
-      profit: 10,
-      balance: 5939,
-      status: "Success",
-      operatorId: "VI789",
-      dateTime: "2025-10-15 11:45:33",
-    },
-  ]);
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const styles = {
     container: {
@@ -176,17 +144,37 @@ const MiniStatement = () => {
     },
   };
 
+  // Fetch transactions from backend
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/transactions" // Replace with your backend endpoint
+        );
+        const data = await response.json();
+        if (data.success) {
+          setTransactions(data.transactions);
+        } else {
+          console.error("Failed to fetch transactions");
+        }
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+      }
+      setLoading(false);
+    };
+
+    fetchTransactions();
+  }, []);
+
   return (
     <>
-      <Nav />;
+      <Nav />
       <div style={styles.container}>
         <div style={styles.bgPattern} />
         <div style={styles.content}>
           <div style={styles.header}>
             <h1 style={styles.title}>Mini Statement</h1>
-            <p style={styles.subtitle}>
-              View your recent recharge transactions
-            </p>
+            <p style={styles.subtitle}>View your recent recharge transactions</p>
           </div>
 
           <div style={styles.card}>
@@ -194,7 +182,12 @@ const MiniStatement = () => {
               <h2 style={styles.cardTitle}>Recent Transactions</h2>
             </div>
 
-            {transactions.length === 0 ? (
+            {loading ? (
+              <div style={styles.emptyState}>
+                <div style={styles.emptyIcon}>⏳</div>
+                <p style={styles.emptyText}>Loading transactions...</p>
+              </div>
+            ) : transactions.length === 0 ? (
               <div style={styles.emptyState}>
                 <div style={styles.emptyIcon}>📊</div>
                 <p style={styles.emptyText}>No transactions yet</p>
@@ -221,7 +214,7 @@ const MiniStatement = () => {
                   <tbody>
                     {transactions.map((txn, index) => (
                       <tr
-                        key={index}
+                        key={txn.id}
                         style={{
                           ...styles.tr,
                           background:
@@ -267,7 +260,7 @@ const MiniStatement = () => {
             )}
           </div>
         </div>
-      </div>{" "}
+      </div>
     </>
   );
 };

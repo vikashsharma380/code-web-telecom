@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Smartphone } from "lucide-react";
 import styles from "../src/styles";
+import logo from "../src/assets/logo.jpeg";
+
 
 const Nav = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -181,6 +183,11 @@ const res = await fetch(`http://localhost:5000/api/add-fund`, {
       <div style={styles.navContent}>
         {/* Logo Section */}
         <div style={styles.logoSection}>
+        <img
+    src={logo}
+    alt="CodeWeb Telecom Logo"
+    style={{ height: "40px", marginRight: "10px" }}
+  />
           <div style={styles.logoIcon}>
             <Smartphone size={24} />
           </div>

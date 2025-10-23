@@ -1,4 +1,6 @@
+
 const navItems = [
+  
   { label: "DASHBOARD", href: "/dashboard" },
   {
     label: "CUSTOMERS",

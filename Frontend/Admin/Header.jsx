@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./Styles";
-import navItems from "./NavItems";
+import  navItems  from "./NavItems";
+
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  console.log(navItems);
+
 
   return (
     <>

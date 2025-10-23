@@ -54,6 +54,8 @@ import ReportDistributorReport from "../Admin/AdminPages/ReportDistributorReport
 import SupportTicket from "../Admin/AdminPages/SupportTicket";
 import SupportSetAlert from "../Admin/AdminPages/SupportSetAlert";
 
+
+
 function App() {
   useEffect(() => {
     // Browser close hone par token remove
@@ -95,7 +97,9 @@ function App() {
         <Route path="/search-transaction" element={<SearchTransaction />} />
         <Route path="/search-plan" element={<SearchPlan />} />
         {/* action buttons */}
-        <Route path="/register" element={<Register />} />
+ 
+        
+    
         <Route path="/balance-transfer" element={<BalanceTransfer />} />
         <Route path="/update-news" element={<UpdateNews />} />
         <Route path="/site-enquiry" element={<SiteEnquiry />} />
