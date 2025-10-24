@@ -161,7 +161,7 @@ useEffect(() => {
           status: data.status || "Failed",
           date: new Date().toLocaleString(),
         },
-        ...prev,
+      ...(Array.isArray(prev) ? prev : []),
       ]);
 
       setFormData({ consumerNumber: "", operatorcode: "", amount: "" });
@@ -298,7 +298,7 @@ useEffect(() => {
                   </div>
                 ) : (
                   <div style={styles.transactionList}>
-                    {transactions.slice(0, 5).map((t, i) => (
+                    {Array.isArray(transactions) &&transactions.slice(0, 5).map((t, i) => (
                       <div key={`${t.txid}-${i}`} style={styles.transactionItem}>
                         <div style={styles.transactionIcon}>{t.operator.charAt(0)}</div>
                         <div style={styles.transactionDetails}>

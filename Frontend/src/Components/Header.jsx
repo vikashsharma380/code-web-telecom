@@ -14,7 +14,11 @@ const Header = () => {
     <header className="header">
       <nav className="nav-container">
         <div className="logo-section">
-          <img src={logo} alt="CodeWeb Telecom Logo" className="logo-img" />
+                 <img
+    src={logo}
+    alt="CodeWeb Telecom Logo"
+    style={{ height: "40px", marginRight: "10px" }}
+  />
           <div>
             <h1 className="logo-text">Code Web Telecom</h1>
             <p className="tagline">Your Digital Service Partner</p>

@@ -4,84 +4,46 @@ import Nav from "../../hero/nav";
 const RechargeHistory = () => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
-  const allTransactions = [
-    {
-      id: "RCH001",
-      operator: "Airtel",
-      number: "9876543210",
-      amount: 299,
-      profit: 15,
-      balance: 5215,
-      status: "Success",
-      operatorId: "AIR123",
-      dateTime: "2025-10-15 14:30:25",
-      date: "2025-10-15",
-    },
-    {
-      id: "RCH002",
-      operator: "Jio",
-      number: "8765432109",
-      amount: 499,
-      profit: 25,
-      balance: 5740,
-      status: "Success",
-      operatorId: "JIO456",
-      dateTime: "2025-10-15 13:15:10",
-      date: "2025-10-15",
-    },
-    {
-      id: "RCH003",
-      operator: "Vi",
-      number: "7654321098",
-      amount: 199,
-      profit: 10,
-      balance: 5939,
-      status: "Success",
-      operatorId: "VI789",
-      dateTime: "2025-10-14 11:45:33",
-      date: "2025-10-14",
-    },
-    {
-      id: "RCH004",
-      operator: "BSNL",
-      number: "9123456789",
-      amount: 399,
-      profit: 20,
-      balance: 6338,
-      status: "Success",
-      operatorId: "BSN101",
-      dateTime: "2025-10-13 09:20:15",
-      date: "2025-10-13",
-    },
-    {
-      id: "RCH005",
-      operator: "Airtel",
-      number: "8912345678",
-      amount: 599,
-      profit: 30,
-      balance: 6937,
-      status: "Success",
-      operatorId: "AIR124",
-      dateTime: "2025-10-12 16:55:42",
-      date: "2025-10-12",
-    },
-  ];
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!fromDate || !toDate) {
       alert("Please select both From Date and To Date");
       return;
     }
 
-    const filtered = allTransactions.filter((txn) => {
-      return txn.date >= fromDate && txn.date <= toDate;
-    });
+    setLoading(true);
 
-    setFilteredTransactions(filtered);
-    setShowResults(true);
+    try {
+    const token = localStorage.getItem("token"); // ya jahan bhi store ho
+
+const response = await fetch(
+  `http://localhost:5000/api/recharges?from=${fromDate}&to=${toDate}`,
+  {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`, // ✅ Add this
+    },
+  }
+);      const data = await response.json();
+console.log(data);
+      if (data.success) {
+        setTransactions(data.transactions || []);
+      } else {
+        setTransactions([]);
+        alert("Failed to fetch transactions");
+      }
+
+      setShowResults(true);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+      alert("Error fetching transactions");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const styles = {
@@ -286,7 +248,7 @@ const RechargeHistory = () => {
     },
   };
 
-  return (
+ return (
     <>
       <Nav />
       <div style={styles.container}>
@@ -325,18 +287,8 @@ const RechargeHistory = () => {
               <button
                 style={styles.submitBtn}
                 onClick={handleSubmit}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 12px 32px rgba(52, 152, 219, 0.5)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow =
-                    "0 8px 24px rgba(52, 152, 219, 0.4)";
-                }}
               >
-                Submit
+                {loading ? "Loading..." : "Submit"}
               </button>
             </div>
           </div>
@@ -346,12 +298,11 @@ const RechargeHistory = () => {
               <div style={styles.cardHeader}>
                 <h2 style={styles.cardTitle}>
                   Search Results{" "}
-                  {filteredTransactions.length > 0 &&
-                    `(${filteredTransactions.length})`}
+                  {transactions.length > 0 && `(${transactions.length})`}
                 </h2>
               </div>
 
-              {filteredTransactions.length === 0 ? (
+              {transactions.length === 0 ? (
                 <div style={styles.emptyState}>
                   <div style={styles.emptyIcon}>🔍</div>
                   <p style={styles.emptyText}>No transactions found</p>
@@ -376,27 +327,8 @@ const RechargeHistory = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredTransactions.map((txn, index) => (
-                        <tr
-                          key={index}
-                          style={{
-                            ...styles.tr,
-                            background:
-                              index % 2 === 0
-                                ? "rgba(255, 255, 255, 0.02)"
-                                : "transparent",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background =
-                              "rgba(102, 126, 234, 0.1)";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background =
-                              index % 2 === 0
-                                ? "rgba(255, 255, 255, 0.02)"
-                                : "transparent";
-                          }}
-                        >
+                      {transactions.map((txn, index) => (
+                        <tr key={txn.id} style={{ ...styles.tr }}>
                           <td style={styles.td}>{txn.id}</td>
                           <td style={{ ...styles.td, ...styles.operatorCell }}>
                             {txn.operator}
@@ -425,9 +357,8 @@ const RechargeHistory = () => {
             </div>
           )}
         </div>
-      </div>{" "}
+      </div>
     </>
   );
 };
-
 export default RechargeHistory;

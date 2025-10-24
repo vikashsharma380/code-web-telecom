@@ -1,12 +1,15 @@
 const mongoose = require("mongoose");
 
-const transactionSchema = new mongoose.Schema({
-  txid: String,
-  operator: String,
-  number: String,
-  amount: Number,
-  status: String,
-  date: { type: Date, default: Date.now },
+const TransactionSchema = new mongoose.Schema({
+  rechargeId: { type: String, required: true },  // RCH001
+  operator: { type: String, required: true },
+  number: { type: String, required: true },
+  amount: { type: Number, required: true },
+  profit: { type: Number, default: 0 },
+  balance: { type: Number, default: 0 },
+  status: { type: String, default: "Pending" },
+  operatorId: { type: String },
+  dateTime: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model("Transaction", transactionSchema);
+module.exports = mongoose.model("Transaction", TransactionSchema);

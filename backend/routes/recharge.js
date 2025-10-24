@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 const axios = require("axios");
 const Transaction = require("../models/Transaction");
 
-// router.post("/recharge", verifyToken, async (req, res) => {
+
 //   try {
 //     const user = req.user;
 //     const { circlecode, operatorcode, number, amount } = req.body;
@@ -93,17 +93,22 @@ const pwd = req.body.pwd;           // frontend se aayega
     console.log("✅ Recharge API response:", data);
 
     // Save transaction
-    await Transaction.create({
-      txid: data.txid || orderid,
-      operator: operatorcode,
-      number,
-      amount,
-      status: data.status || "Pending",
-      role: user.role,
-      userId: user.userId,
-    });
+  await Transaction.create({
+  rechargeId: data.txid || orderid,       // matches frontend
+  operator: operatorcode,
+  operatorId: data.operatorId || operatorcode, // get from API response or use code
+  number,
+  amount,
+  profit: data.profit || 0,               // if API returns profit
+  balance: data.balance || 0,             // if API returns balance
+  status: data.status || "Pending",
+  dateTime: new Date(),                   // store current date/time
+  role: user.role,
+  userId: user.userId,
+});
 
     res.json(data);
+   
   } catch (err) {
     console.error("Recharge failed:", err);
     res.status(500).json({ error: "Recharge failed", details: err.message });

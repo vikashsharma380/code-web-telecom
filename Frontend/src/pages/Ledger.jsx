@@ -1,56 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Nav from "../../hero/nav";
+
 const Ledger = () => {
-  const [transactions] = useState([
-    {
-      billingId: "1546",
-      date: "2025-10-15 09:11:50",
-      description: "Direct Payment By ADMINISTRATOR (Admin) To vikash (Agent)",
-      credit: 0.0,
-      debit: 0.0,
-      balance: 0.0,
-    },
-    {
-      billingId: "1545",
-      date: "2025-10-15 09:11:41",
-      description: "Direct Payment By ADMINISTRATOR (Admin) To vikash (Agent)",
-      credit: 0.0,
-      debit: 0.0,
-      balance: 0.0,
-    },
-    {
-      billingId: "1542",
-      date: "2025-10-14 02:08:40",
-      description: "Direct Payment By ADMINISTRATOR (Admin) To vikash (Agent)",
-      credit: 0.0,
-      debit: 0.0,
-      balance: 0.0,
-    },
-    {
-      billingId: "1531",
-      date: "2025-10-07 02:23:49",
-      description: "Direct Payment By () To vikash (Agent)",
-      credit: 0.0,
-      debit: 0.0,
-      balance: 0.0,
-    },
-    {
-      billingId: "1520",
-      date: "2025-10-05 14:30:25",
-      description: "Recharge Commission for Transaction #RCH001",
-      credit: 15.0,
-      debit: 0.0,
-      balance: 15.0,
-    },
-    {
-      billingId: "1519",
-      date: "2025-10-05 14:30:25",
-      description: "Recharge Payment for Airtel - 9876543210",
-      credit: 0.0,
-      debit: 299.0,
-      balance: -284.0,
-    },
-  ]);
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchTransactions = async () => {
+    try {
+      const token = localStorage.getItem("token"); // JWT token
+      const res = await fetch("http://localhost:5000/api/transactions", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      if (data.success && Array.isArray(data.transactions)) {
+        setTransactions(data.transactions);
+      } else {
+        setTransactions([]);
+      }
+    } catch (err) {
+      console.error("Error fetching transactions:", err);
+      setError("Failed to fetch transactions");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
 
   const styles = {
     container: {
@@ -186,7 +167,8 @@ const Ledger = () => {
   };
 
   const formatAmount = (amount) => {
-    return amount.toFixed(2);
+    if (amount === undefined || amount === null || isNaN(amount)) return "0.00";
+    return Number(amount).toFixed(2);
   };
 
   return (
@@ -251,24 +233,26 @@ const Ledger = () => {
                         }}
                       >
                         <td style={{ ...styles.td, ...styles.billingIdCell }}>
-                          {txn.billingId}
+                          {txn.rechargeId || "-"}
                         </td>
-                        <td style={styles.td}>{txn.date}</td>
+                        <td style={styles.td}>
+                          {new Date(txn.dateTime).toLocaleString()}
+                        </td>
                         <td style={{ ...styles.td, ...styles.descriptionCell }}>
-                          {txn.description}
+                          {`${txn.operator || ""} - ${txn.number || ""}`}
                         </td>
                         <td style={{ ...styles.td, ...styles.creditCell }}>
-                          {txn.credit > 0
-                            ? `₹${formatAmount(txn.credit)}`
-                            : formatAmount(txn.credit)}
+                          {txn.status === "Success"
+                            ? `₹${formatAmount(txn.amount)}`
+                            : "0.00"}
                         </td>
                         <td style={{ ...styles.td, ...styles.debitCell }}>
-                          {txn.debit > 0
-                            ? `₹${formatAmount(txn.debit)}`
-                            : formatAmount(txn.debit)}
+                          {txn.status !== "Success"
+                            ? `₹${formatAmount(txn.amount)}`
+                            : "0.00"}
                         </td>
                         <td style={{ ...styles.td, ...styles.balanceCell }}>
-                          {formatAmount(txn.balance)}
+                          ₹{formatAmount(txn.balance)}
                         </td>
                       </tr>
                     ))}
