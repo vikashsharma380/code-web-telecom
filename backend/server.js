@@ -44,7 +44,7 @@ const allowedOrigins = [
 // }));
 
 
-app.use(cors()); 
+app.use(cors());
 app.get("/api/transactions", async (req, res) => {
   try {
     const transactions = await Transaction.find().sort({ date: -1 }).limit(10);
@@ -195,7 +195,7 @@ app.get("/api/status", async (req, res) => {
 
     const response = await axios.get(url);
     // Correct backend response
- res.json({
+    res.json({
       success: true,
       balance: Number(response.data) || 0, // Number conversion
     });
@@ -263,6 +263,10 @@ app.use("/api", balanceRoutes); // ✅ API routes first
 
 const getRechargesRoute = require("./routes/getRecharges");
 app.use("/api/recharges", getRechargesRoute);
+
+const refundReportRoute = require("./routes/refund");
+app.use("/api", refundReportRoute);
+
 
 // Serve frontend
 app.use(express.static(path.join(__dirname, "../Frontend/dist")));

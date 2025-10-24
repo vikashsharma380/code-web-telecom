@@ -1,38 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const RefundReport = () => {
-  const [refunds] = useState([
-    {
-      rechargeId: "RCH108",
-      date: "2025-10-14 15:30:25",
-      description: "Refund for failed Airtel recharge - 9876543210",
-      refundAmount: 299.0,
-    },
-    {
-      rechargeId: "RCH095",
-      date: "2025-10-12 11:20:15",
-      description: "Refund for cancelled Jio recharge - 8765432109",
-      refundAmount: 499.0,
-    },
-    {
-      rechargeId: "RCH087",
-      date: "2025-10-10 09:45:50",
-      description: "Refund for failed Vi recharge - 7654321098",
-      refundAmount: 199.0,
-    },
-    {
-      rechargeId: "RCH072",
-      date: "2025-10-08 16:15:33",
-      description: "Refund for operator error - BSNL 9123456789",
-      refundAmount: 399.0,
-    },
-    {
-      rechargeId: "RCH065",
-      date: "2025-10-06 13:30:42",
-      description: "Refund for duplicate transaction - Airtel 8912345678",
-      refundAmount: 599.0,
-    },
-  ]);
+  const [refunds, setRefunds] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRefunds = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await fetch("http://localhost:5000/api/refund-report", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json();
+        console.log("Refund data fetched:", data); 
+        if (data.success) {
+          setRefunds(data.refunds);
+        }
+      } catch (error) {
+        console.error("Error fetching refund report:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRefunds();
+  }, []);
 
   const styles = {
     container: {
@@ -193,7 +189,7 @@ const RefundReport = () => {
   };
 
   const totalRefund = refunds.reduce(
-    (sum, refund) => sum + refund.refundAmount,
+    (sum, refund) => sum + (refund.refundAmount || 0),
     0
   );
 
@@ -208,7 +204,7 @@ const RefundReport = () => {
           </p>
         </div>
 
-        {refunds.length > 0 && (
+        {!loading && refunds.length > 0 && (
           <div style={styles.summaryCard}>
             <div style={styles.summaryItem}>
               <span style={styles.summaryLabel}>Total Refunds</span>
@@ -226,7 +222,12 @@ const RefundReport = () => {
             <h2 style={styles.cardTitle}>Refund Report</h2>
           </div>
 
-          {refunds.length === 0 ? (
+          {loading ? (
+            <div style={styles.emptyState}>
+              <div style={styles.emptyIcon}>⏳</div>
+              <p style={styles.emptyText}>Loading refund data...</p>
+            </div>
+          ) : refunds.length === 0 ? (
             <div style={styles.emptyState}>
               <div style={styles.emptyIcon}>💰</div>
               <p style={styles.emptyText}>No refunds found</p>
@@ -270,9 +271,12 @@ const RefundReport = () => {
                       <td style={{ ...styles.td, ...styles.rechargeIdCell }}>
                         {refund.rechargeId}
                       </td>
-                      <td style={styles.td}>{refund.date}</td>
+                      <td style={styles.td}>
+                        {new Date(refund.refundDate).toLocaleString()}
+                      </td>
                       <td style={{ ...styles.td, ...styles.descriptionCell }}>
-                        {refund.description}
+                        {refund.description ||
+                          `Refund for failed ${refund.operator} recharge - ${refund.number}`}
                       </td>
                       <td style={{ ...styles.td, ...styles.refundAmountCell }}>
                         ₹{refund.refundAmount.toFixed(2)}
