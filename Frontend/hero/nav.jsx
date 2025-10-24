@@ -356,7 +356,7 @@ const Nav = () => {
               <button
                 style={{
                   padding: "5px 10px",
-                  background: "#4caf50",
+                  background: "#6709f3ff",
                   color: "#fff",
                   border: "none",
                   borderRadius: "4px",
