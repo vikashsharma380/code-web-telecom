@@ -342,6 +342,10 @@ const Nav = () => {
                 </div>
               )}
             </div>
+
+            <Link to="/logout" style={styles.navLink}>
+              Logout
+            </Link>
           </div>
 
           {/* User Section */}
