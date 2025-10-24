@@ -6,6 +6,7 @@ import styles from "../src/styles";
 const Nav = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
+  const [showSupportDropdown, setShowSupportDropdown] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false); // For avatar menu
   const [balance, setBalance] = useState(0);
   const [balanceLoading, setBalanceLoading] = useState(true);
@@ -31,6 +32,12 @@ const Nav = () => {
     { name: "CHANGE PASSWORD", path: "/change-password" },
     { name: "EDIT PROFILE", path: "/edit-profile" },
     { name: "MY COMMISSION", path: "/my-commission" },
+  ];
+
+  const supportMenuItems = [
+    { name: "SUPPORT TICKET", path: "/support-ticket" },
+    { name: "ADD FUND", path: "/add-fund" },
+    { name: "DOWNLOAD APP", path: "/download-app" },
   ];
 
   const userMenuItems = [
@@ -291,9 +298,50 @@ const Nav = () => {
               )}
             </div>
 
-            <a href="#" style={styles.navLink}>
-              Support
-            </a>
+            <div
+              style={{ position: "relative" }}
+              onMouseEnter={() => setShowSupportDropdown(true)}
+              onMouseLeave={() => setShowSupportDropdown(false)}
+            >
+              <span style={styles.navLink}>Support ▾</span>
+              {showSupportDropdown && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    background: "#fff",
+                    border: "1px solid #ddd",
+                    boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                    borderRadius: "4px",
+                    width: "200px",
+                    zIndex: 100,
+                  }}
+                >
+                  {supportMenuItems.map((item) => (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      style={{
+                        display: "block",
+                        padding: "10px 15px",
+                        textDecoration: "none",
+                        color: "#333",
+                        fontSize: "14px",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.target.style.background = "#f4f4f4")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.target.style.background = "transparent")
+                      }
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* User Section */}
