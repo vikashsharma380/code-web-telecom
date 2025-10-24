@@ -304,7 +304,7 @@ useEffect(() => {
                 {transactions.length === 0 ? (
                   <p>No transactions yet</p>
                 ) : (
-                  transactions.slice(0, 5).map((t,i) => (
+                  Array.isArray(transactions) &&transactions.slice(0, 5).map((t,i) => (
                     <div key={`${t.txid || 'tx'}-${t.number}-${i}`} style={styles.transactionItem}>
                       <div style={styles.transactionIcon}>{t.operator.charAt(0)}</div>
                       <div style={styles.transactionDetails}>

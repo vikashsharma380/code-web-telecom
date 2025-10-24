@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
 
   parentName: { type: String, default: "" },
   state: { type: String, default: "" },
+
   address: { type: String, default: "" },
   alternateNumber: { type: String, default: "" },
   activationDate: { type: Date, default: Date.now },

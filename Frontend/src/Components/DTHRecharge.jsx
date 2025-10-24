@@ -177,7 +177,7 @@ useEffect(() => {
           status: data.status,
           date: new Date().toLocaleString(),
         },
-        ...prev,
+       ...(Array.isArray(prev) ? prev : []),
       ]);
 
       // ✅ Reset Form
@@ -339,7 +339,7 @@ useEffect(() => {
                   </div>
                 ) : (
                   <div style={styles.transactionList}>
-                    {transactions.slice(0, 5).map((t, i) => (
+                    {Array.isArray(transactions) &&transactions.slice(0, 5).map((t, i) => (
                       <div
                         key={`${t.txid}-${t.number}-${i}`}
                         style={styles.transactionItem}

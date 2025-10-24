@@ -183,11 +183,7 @@ const res = await fetch(`http://localhost:5000/api/add-fund`, {
       <div style={styles.navContent}>
         {/* Logo Section */}
         <div style={styles.logoSection}>
-        <img
-    src={logo}
-    alt="CodeWeb Telecom Logo"
-    style={{ height: "40px", marginRight: "10px" }}
-  />
+
           <div style={styles.logoIcon}>
             <Smartphone size={24} />
           </div>
