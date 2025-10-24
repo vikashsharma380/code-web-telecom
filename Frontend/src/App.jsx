@@ -53,8 +53,7 @@ import ReportMasterDistributorReport from "../Admin/AdminPages/ReportMasterDistr
 import ReportDistributorReport from "../Admin/AdminPages/ReportDistributorReport";
 import SupportTicket from "../Admin/AdminPages/SupportTicket";
 import SupportSetAlert from "../Admin/AdminPages/SupportSetAlert";
-
-
+import UserChangePassword from "./Components/UserChangePassword";
 
 function App() {
   useEffect(() => {
@@ -97,9 +96,8 @@ function App() {
         <Route path="/search-transaction" element={<SearchTransaction />} />
         <Route path="/search-plan" element={<SearchPlan />} />
         {/* action buttons */}
- 
-        
-    
+        <Route path="/change-password" element={<UserChangePassword />} />
+
         <Route path="/balance-transfer" element={<BalanceTransfer />} />
         <Route path="/update-news" element={<UpdateNews />} />
         <Route path="/site-enquiry" element={<SiteEnquiry />} />
