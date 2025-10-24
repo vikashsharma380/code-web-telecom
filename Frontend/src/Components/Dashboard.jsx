@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Smartphone,
   Zap,
@@ -7,15 +8,17 @@ import {
   TrendingUp,
   BarChart3,
   Wallet,
+  ArrowLeft,
 } from "lucide-react";
 import Nav from "../../hero/nav";
-  const rechargeUser = {
-    username: "500032",
-    pwd: "k0ly9gts",
-  };
-
+const rechargeUser = {
+  username: "500032",
+  pwd: "k0ly9gts",
+};
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+
   const stats = [
     { label: "Total Success", value: 0 },
     { label: "Total Failure", value: 0 },
@@ -30,33 +33,33 @@ export default function Dashboard() {
   const [balance, setBalance] = React.useState(0);
   const [balanceLoading, setBalanceLoading] = React.useState(true);
 
-   const fetchBalance = async () => {
-      setBalanceLoading(true);
-      try {
-        const query = new URLSearchParams(rechargeUser).toString();
-        const res = await fetch(`http://localhost:5000/api/balance?${query}`);
-        if (!res.ok) throw new Error(`Server returned ${res.status}`);
-        const data = await res.json();
-        setBalance(data.balance || 0);
-      } catch (err) {
-        console.error("Balance fetch failed:", err);
-        setBalance(0);
-      } finally {
-        setBalanceLoading(false);
-      }
-    };
-  
-    useEffect(() => {
-      fetchBalance();
-    }, []);
-  
+  const fetchBalance = async () => {
+    setBalanceLoading(true);
+    try {
+      const query = new URLSearchParams(rechargeUser).toString();
+      const res = await fetch(`http://localhost:5000/api/balance?${query}`);
+      if (!res.ok) throw new Error(`Server returned ${res.status}`);
+      const data = await res.json();
+      setBalance(data.balance || 0);
+    } catch (err) {
+      console.error("Balance fetch failed:", err);
+      setBalance(0);
+    } finally {
+      setBalanceLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBalance();
+  }, []);
+
   return (
     <div style={styles.container}>
       {/* Animated Background */}
       <div style={styles.bgPattern}></div>
 
       {/* Navigation Bar */}
-   <Nav />
+      <Nav />
 
       {/* Hero Section */}
       <div style={styles.hero}>
@@ -77,8 +80,8 @@ export default function Dashboard() {
                 <div>
                   <div style={styles.statValue}>Balance</div>
                   <span style={styles.balanceAmount}>
-              {balanceLoading ? "Loading..." : `₹${balance.toFixed(2)}`}
-            </span>
+                    {balanceLoading ? "Loading..." : `₹${balance.toFixed(2)}`}
+                  </span>
                 </div>
               </div>
               <div style={styles.statCard}>
@@ -89,6 +92,25 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
+
+            {/* Back to Recharge Button */}
+            <button
+              onClick={() => navigate("/MobileRecharge")}
+              style={styles.rechargeButton}
+              onMouseEnter={(e) => {
+                e.target.style.background =
+                  "linear-gradient(135deg, #764ba2 0%, #667eea 100%)";
+                e.target.style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background =
+                  "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+                e.target.style.transform = "translateY(0)";
+              }}
+            >
+              <ArrowLeft size={20} />
+              <span>Back to Recharge</span>
+            </button>
           </div>
         </div>
       </div>
@@ -332,6 +354,7 @@ const styles = {
     display: "flex",
     gap: "16px",
     flexWrap: "wrap",
+    marginBottom: "24px",
   },
   statCard: {
     background: "rgba(255, 255, 255, 0.05)",
@@ -355,6 +378,21 @@ const styles = {
     fontSize: "12px",
     color: "rgba(255, 255, 255, 0.5)",
     marginTop: "2px",
+  },
+  rechargeButton: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "12px",
+    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    color: "white",
+    border: "none",
+    padding: "14px 28px",
+    borderRadius: "12px",
+    fontSize: "16px",
+    fontWeight: "600",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+    boxShadow: "0 8px 24px rgba(102, 126, 234, 0.4)",
   },
   mainContent: {
     padding: "0 32px 60px",
