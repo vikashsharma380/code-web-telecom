@@ -6,83 +6,38 @@ const SearchTransaction = () => {
   const [showResults, setShowResults] = useState(false);
   const [searched, setSearched] = useState(false);
 
-  const allTransactions = [
-    {
-      id: "RCH001",
-      operator: "Airtel",
-      number: "9876543210",
-      amount: 299,
-      profit: 15,
-      balance: 5215,
-      status: "Success",
-      operatorId: "AIR123",
-      dateTime: "2025-10-15 14:30:25",
-    },
-    {
-      id: "RCH002",
-      operator: "Jio",
-      number: "9876543210",
-      amount: 499,
-      profit: 25,
-      balance: 5740,
-      status: "Success",
-      operatorId: "JIO456",
-      dateTime: "2025-10-14 13:15:10",
-    },
-    {
-      id: "RCH003",
-      operator: "Vi",
-      number: "8765432109",
-      amount: 199,
-      profit: 10,
-      balance: 5939,
-      status: "Success",
-      operatorId: "VI789",
-      dateTime: "2025-10-14 11:45:33",
-    },
-    {
-      id: "RCH004",
-      operator: "BSNL",
-      number: "9876543210",
-      amount: 399,
-      profit: 20,
-      balance: 6338,
-      status: "Failed",
-      operatorId: "BSN101",
-      dateTime: "2025-10-13 09:20:15",
-    },
-    {
-      id: "RCH005",
-      operator: "Airtel",
-      number: "7654321098",
-      amount: 599,
-      profit: 30,
-      balance: 6937,
-      status: "Success",
-      operatorId: "AIR124",
-      dateTime: "2025-10-12 16:55:42",
-    },
-  ];
+const handleSubmit = async () => {
+  if (!mobileNumber) {
+    alert("Please enter a mobile number");
+    return;
+  }
 
-  const handleSubmit = () => {
-    if (!mobileNumber) {
-      alert("Please enter a mobile number");
-      return;
+  if (mobileNumber.length !== 10) {
+    alert("Please enter a valid 10-digit mobile number");
+    return;
+  }
+
+  try {
+// Change in SearchTransaction.jsx
+const response = await fetch(`http://localhost:5000/api/search?mobileNumber=${mobileNumber}`);
+
+    const data = await response.json();
+
+    if (data.success) {
+      setSearchResults(data.transactions);
+    } else {
+      setSearchResults([]);
+      alert(data.message || "No transactions found");
     }
 
-    if (mobileNumber.length !== 10) {
-      alert("Please enter a valid 10-digit mobile number");
-      return;
-    }
-
-    const filtered = allTransactions.filter(
-      (txn) => txn.number === mobileNumber
-    );
-
-    setSearchResults(filtered);
     setShowResults(true);
     setSearched(true);
-  };
+  } catch (error) {
+    console.error(error);
+    alert("Error fetching transactions");
+  }
+};
+
 
   const styles = {
     container: {

@@ -154,6 +154,7 @@ function MobileRechargeForm({ rechargeUser }) {
       });
 
       const data = await res.json();
+     console.log(data);
 
       if (data.status === "Success") {
         setResult({

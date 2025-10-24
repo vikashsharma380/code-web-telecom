@@ -266,7 +266,10 @@ app.use("/api/recharges", getRechargesRoute);
 
 const refundReportRoute = require("./routes/refund");
 app.use("/api", refundReportRoute);
-
+const earningsRoutes = require("./routes/earnings");
+app.use("/api", earningsRoutes);
+const transactionsRoutes = require("./routes/transactions");
+app.use("/api", transactionsRoutes);
 
 // Serve frontend
 app.use(express.static(path.join(__dirname, "../Frontend/dist")));
