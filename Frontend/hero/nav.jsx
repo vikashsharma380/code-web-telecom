@@ -95,25 +95,44 @@ const Nav = () => {
       alert("Server error: " + err.message);
     }
   };
-  const fetchBalance = async () => {
-    setBalanceLoading(true);
-    try {
-      const query = new URLSearchParams(rechargeUser).toString();
-      const res = await fetch(`http://localhost:5000/api/balance?${query}`);
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
-      const data = await res.json();
-      setBalance(data.balance || 0);
-    } catch (err) {
-      console.error("Balance fetch failed:", err);
+const fetchBalance = async () => {
+  setBalanceLoading(true);
+  try {
+    const rechargeUserStr = localStorage.getItem("rechargeUser");
+    if (!rechargeUserStr) {
+      console.warn("Recharge credentials missing.");
       setBalance(0);
-    } finally {
-      setBalanceLoading(false);
+      return;
     }
-  };
 
-  useEffect(() => {
+    const rechargeUser = JSON.parse(rechargeUserStr);
+    if (!rechargeUser.username || !rechargeUser.pwd) {
+      console.warn("Recharge credentials incomplete.");
+      setBalance(0);
+      return;
+    }
+
+    const query = new URLSearchParams(rechargeUser).toString();
+    const res = await fetch(`http://localhost:5000/api/balance?${query}`);
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+    const data = await res.json();
+    setBalance(data.balance || 0);
+  } catch (err) {
+    console.error("Balance fetch failed:", err);
+    setBalance(0);
+  } finally {
+    setBalanceLoading(false);
+  }
+};
+
+
+
+useEffect(() => {
+  const rechargeUser = JSON.parse(localStorage.getItem("rechargeUser"));
+  if (rechargeUser?.username && rechargeUser?.pwd) {
     fetchBalance();
-  }, []);
+  }
+}, []);
 
   return (
     <>

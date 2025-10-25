@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-
 import "../../LoginCSS/login.css";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -26,16 +25,16 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL
-        }/api/auth/login`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
         {
           loginInput: userId,
           password: password,
         }
       );
-      console.log("✅ Login success:", res.data);
+      const data = res.data; // ✅ use res.data directly
+      console.log("✅ Login success:", data);
 
-      const { token, user } = res.data;
+      const { token, user } = data;
       localStorage.setItem("token", token);
       localStorage.setItem(
         "user",
@@ -44,8 +43,28 @@ export default function LoginPage() {
           apiPassword: user.apiPassword,
         })
       );
+      localStorage.setItem(
+        "rechargeUser",
+        JSON.stringify({
+          username: user.userId, // or whichever field matches recharge username
+          pwd: user.apiPassword, // match your backend field
+        })
+      );
+
+      const rechargeUser = {
+        username: user.userId,
+        pwd: user.apiPassword,
+      };
+      
+
+      localStorage.setItem("rechargeUser", JSON.stringify(rechargeUser));
 
       alert("Login successful");
+
+      console.log(
+        "Recharge User:",
+        JSON.parse(localStorage.getItem("rechargeUser"))
+      );
 
       const from =
         location.state?.from ||
