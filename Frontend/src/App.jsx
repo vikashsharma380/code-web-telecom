@@ -224,9 +224,6 @@ import BalanceTransfer from "./pages/BalanceTransfer";
 import Register from "./pages/Register";
 
 // Admin Pages
-import CustomersRegister from "../Admin/AdminPages/CustomersRegister";
-import CustomersManage from "../Admin/AdminPages/CustomersManage";
-import CustomersBalanceTransfer from "../Admin/AdminPages/CustomersBalanceTransfer";
 import ApiRegister from "../Admin/AdminPages/ApiRegister";
 import ApiManage from "../Admin/AdminPages/ApiManage";
 import SettingChangeLogo from "../Admin/AdminPages/SettingChangeLogo";
@@ -250,6 +247,7 @@ import AddFund from "./Components/AddFund";
 import UserSupportTicket from "./Components/UserSupportTicket";
 import UserEditProfile from "./Components/UserEditProfile";
 import UserMyCommission from "./Components/UserMyCommission";
+// import CustomersDropdown from "../Admin/CustomersDropdown";
 
 function App() {
   useEffect(() => {
@@ -260,101 +258,99 @@ function App() {
   }, []);
 
   return (
-    <Routes>
-      <Route path="/" element={<CodeWebTelecom />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/MobileRecharge" element={<MobileRecharge />} />
-      <Route path="/DTHRecharge" element={<DTHRecharge />} />
-      <Route path="/ElectricityRecharge" element={<ElectricityRecharge />} />
-      <Route path="/FASTagRecharge" element={<FASTagRecharge />} />
-      <Route path="/GasRecharge" element={<GasRecharge />} />
-      <Route path="/DataCardRecharge" element={<DataCardRecharge />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/web-solutions" element={<WebSolutions />} />
-      <Route path="/InsuranceRecharge" element={<InsuranceRecharge />} />
-      <Route path="/PostpaidRecharge" element={<PostpaidRecharge />} />
-      <Route path="/GooglePlayRecharge" element={<GooglePlayRecharge />} />
-      <Route path="/WaterBillRecharge" element={<WaterBillRecharge />} />
-      <Route path="/admin-dashboard" element={<AdminDashboard />} />
+    <>
+      <Routes>
+        <Route path="/" element={<CodeWebTelecom />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/MobileRecharge" element={<MobileRecharge />} />
+        <Route path="/DTHRecharge" element={<DTHRecharge />} />
+        <Route path="/ElectricityRecharge" element={<ElectricityRecharge />} />
+        <Route path="/FASTagRecharge" element={<FASTagRecharge />} />
+        <Route path="/GasRecharge" element={<GasRecharge />} />
+        <Route path="/DataCardRecharge" element={<DataCardRecharge />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/web-solutions" element={<WebSolutions />} />
+        <Route path="/InsuranceRecharge" element={<InsuranceRecharge />} />
+        <Route path="/PostpaidRecharge" element={<PostpaidRecharge />} />
+        <Route path="/GooglePlayRecharge" element={<GooglePlayRecharge />} />
+        <Route path="/WaterBillRecharge" element={<WaterBillRecharge />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
 
-      {/* Reports */}
-      <Route path="/mini-statement" element={<MiniStatement />} />
-      <Route path="/recharge-history" element={<RechargeHistory />} />
-      <Route path="/ledger" element={<Ledger />} />
-      <Route path="/refund-report" element={<RefundReport />} />
-      <Route path="/my-earning" element={<MyEarning />} />
-      <Route path="/search-transaction" element={<SearchTransaction />} />
-      <Route path="/search-plan" element={<SearchPlan />} />
-      <Route path="/upi-gateway" element={<UPIGateway />} />
-      <Route path="/add-api" element={<AddAPI />} />
-      <Route path="/site-enquiry" element={<SiteEnquiry />} />
-      <Route path="/update-news" element={<UpdateNews />} />
-      <Route path="/balance-transfer" element={<BalanceTransfer />} />
+        {/* Reports */}
+        <Route path="/mini-statement" element={<MiniStatement />} />
+        <Route path="/recharge-history" element={<RechargeHistory />} />
+        <Route path="/ledger" element={<Ledger />} />
+        <Route path="/refund-report" element={<RefundReport />} />
+        <Route path="/my-earning" element={<MyEarning />} />
+        <Route path="/search-transaction" element={<SearchTransaction />} />
+        <Route path="/search-plan" element={<SearchPlan />} />
+        <Route path="/upi-gateway" element={<UPIGateway />} />
+        <Route path="/add-api" element={<AddAPI />} />
+        <Route path="/site-enquiry" element={<SiteEnquiry />} />
+        <Route path="/update-news" element={<UpdateNews />} />
+        <Route path="/balance-transfer" element={<BalanceTransfer />} />
 
-      {/* User */}
-      <Route path="/change-password" element={<UserChangePassword />} />
-      <Route path="/add-fund" element={<AddFund />} />
-      <Route path="/support-ticket" element={<UserSupportTicket />} />
-      <Route path="/edit-profile" element={<UserEditProfile />} />
-      <Route path="/my-commission" element={<UserMyCommission />} />
+        {/* User */}
+        <Route path="/change-password" element={<UserChangePassword />} />
+        <Route path="/add-fund" element={<AddFund />} />
+        <Route path="/support-ticket" element={<UserSupportTicket />} />
+        <Route path="/edit-profile" element={<UserEditProfile />} />
+        <Route path="/my-commission" element={<UserMyCommission />} />
 
-      {/* Customers */}
-      <Route path="/customers/register" element={<CustomersRegister />} />
-      <Route path="/customers/manage" element={<CustomersManage />} />
-      <Route
-        path="/customers/balance-transfer"
-        element={<CustomersBalanceTransfer />}
-      />
+        {/* API Panel */}
+        <Route path="/api/register" element={<ApiRegister />} />
+        <Route path="/api/manage" element={<ApiManage />} />
 
-      {/* API Panel */}
-      <Route path="/api/register" element={<ApiRegister />} />
-      <Route path="/api/manage" element={<ApiManage />} />
+        {/* Setting */}
+        <Route path="/setting/change-logo" element={<SettingChangeLogo />} />
+        <Route
+          path="/setting/update-contact"
+          element={<SettingUpdateContact />}
+        />
+        <Route path="/setting/switch-api" element={<SettingSwitchApi />} />
+        <Route path="/setting/api-setting" element={<SettingApiSetting />} />
+        <Route
+          path="/setting/set-commission"
+          element={<SettingSetCommission />}
+        />
+        <Route
+          path="/setting/create-commission-plan"
+          element={<SettingCreateCommissionPlan />}
+        />
+        <Route
+          path="/setting/add-bank-details"
+          element={<SettingAddBankDetails />}
+        />
+        <Route
+          path="/setting/business-type"
+          element={<SettingBusinessType />}
+        />
+        <Route path="/setting/edit-state" element={<SettingEditState />} />
 
-      {/* Setting */}
-      <Route path="/setting/change-logo" element={<SettingChangeLogo />} />
-      <Route
-        path="/setting/update-contact"
-        element={<SettingUpdateContact />}
-      />
-      <Route path="/setting/switch-api" element={<SettingSwitchApi />} />
-      <Route path="/setting/api-setting" element={<SettingApiSetting />} />
-      <Route
-        path="/setting/set-commission"
-        element={<SettingSetCommission />}
-      />
-      <Route
-        path="/setting/create-commission-plan"
-        element={<SettingCreateCommissionPlan />}
-      />
-      <Route
-        path="/setting/add-bank-details"
-        element={<SettingAddBankDetails />}
-      />
-      <Route path="/setting/business-type" element={<SettingBusinessType />} />
-      <Route path="/setting/edit-state" element={<SettingEditState />} />
+        {/* Report */}
+        <Route
+          path="/report/pending-recharge"
+          element={<ReportPendingRecharge />}
+        />
+        <Route
+          path="/report/recharge-history"
+          element={<ReportRechargeHistory />}
+        />
+        <Route
+          path="/report/master-distributor-report"
+          element={<ReportMasterDistributorReport />}
+        />
+        <Route
+          path="/report/distributor-report"
+          element={<ReportDistributorReport />}
+        />
 
-      {/* Report */}
-      <Route
-        path="/report/pending-recharge"
-        element={<ReportPendingRecharge />}
-      />
-      <Route
-        path="/report/recharge-history"
-        element={<ReportRechargeHistory />}
-      />
-      <Route
-        path="/report/master-distributor-report"
-        element={<ReportMasterDistributorReport />}
-      />
-      <Route
-        path="/report/distributor-report"
-        element={<ReportDistributorReport />}
-      />
-
-      {/* Support */}
-      <Route path="/support/set-alert" element={<SupportSetAlert />} />
-    </Routes>
+        {/* Support */}
+        <Route path="/support/set-alert" element={<SupportSetAlert />} />
+      </Routes>
+      {/* <CustomersDropdown /> */}
+    </>
   );
 }
 

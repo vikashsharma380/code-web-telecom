@@ -56,11 +56,11 @@ import styles from "./Styles";
 
 export default function ActionButton() {
   const navigate = useNavigate();
-  const [hovered, setHovered] = useState(null); // "register" / "balance-transfer"
+  const [hovered, setHovered] = useState(null);
 
   const handleNavigate = (type, path) => {
     navigate(`/${type}/${path}`);
-    setHovered(null); // hide options after click
+    setHovered(null);
   };
 
   const optionStyle = {

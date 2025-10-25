@@ -23,10 +23,18 @@ export default function UserChangePassword() {
       return { strength: 25, text: "Weak", color: "#ef4444" };
     if (password.length < 8)
       return { strength: 50, text: "Fair", color: "#f97316" };
-    if (password.length < 12 && /[A-Z]/.test(password) && /[0-9]/.test(password)) {
+    if (
+      password.length < 12 &&
+      /[A-Z]/.test(password) &&
+      /[0-9]/.test(password)
+    ) {
       return { strength: 75, text: "Good", color: "#eab308" };
     }
-    if (/[A-Z]/.test(password) && /[0-9]/.test(password) && /[!@#$%^&*]/.test(password)) {
+    if (
+      /[A-Z]/.test(password) &&
+      /[0-9]/.test(password) &&
+      /[!@#$%^&*]/.test(password)
+    ) {
       return { strength: 100, text: "Strong", color: "#22c55e" };
     }
     return { strength: 60, text: "Moderate", color: "#3b82f6" };
@@ -224,8 +232,7 @@ export default function UserChangePassword() {
 
           <div className="support-text">
             <p>
-              Need help?{" "}
-              <span className="support-link">Contact Support</span>
+              Need help? <span className="support-link">Contact Support</span>
             </p>
           </div>
         </div>

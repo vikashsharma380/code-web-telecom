@@ -50,7 +50,13 @@ export default function ServicePage() {
       const res = await fetch("http://localhost:5000/api/recharge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ number, amount, operatorcode, circlecode, orderid }),
+        body: JSON.stringify({
+          number,
+          amount,
+          operatorcode,
+          circlecode,
+          orderid,
+        }),
       });
 
       if (!res.ok) {
@@ -164,5 +170,3 @@ export default function ServicePage() {
     </div>
   );
 }
-
-
