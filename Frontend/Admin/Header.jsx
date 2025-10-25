@@ -3,10 +3,22 @@ import { Link } from "react-router-dom";
 import styles from "./Styles";
 import  navItems  from "./NavItems";
 
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   console.log(navItems);
+  const navigate = useNavigate(); // navigate hook
+
+  const handleLogout = () => {
+    // 1. Clear token or user info from localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userRole"); // agar koi role store kiya hai
+
+    // 2. Redirect to login page
+    navigate("/"); // login route ya default page
+  };
 
 
   return (
@@ -55,9 +67,12 @@ const Header = () => {
             ))}
 
             {/* Log Out */}
-            <a href="#logout" style={styles.navLink}>
+            <span
+              onClick={handleLogout}
+              style={{ ...styles.navLink, cursor: "pointer" }}
+            >
               LOG OUT
-            </a>
+            </span>
 
             {/* Mobile Menu Button */}
             <button
