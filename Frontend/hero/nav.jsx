@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { Smartphone } from "lucide-react";
 import styles from "../src/styles";
 
+import { useNavigate } from "react-router-dom";
+
 const Nav = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
@@ -95,44 +97,51 @@ const Nav = () => {
       alert("Server error: " + err.message);
     }
   };
-const fetchBalance = async () => {
-  setBalanceLoading(true);
-  try {
-    const rechargeUserStr = localStorage.getItem("rechargeUser");
-    if (!rechargeUserStr) {
-      console.warn("Recharge credentials missing.");
+  const fetchBalance = async () => {
+    setBalanceLoading(true);
+    try {
+      const rechargeUserStr = localStorage.getItem("rechargeUser");
+      if (!rechargeUserStr) {
+        console.warn("Recharge credentials missing.");
+        setBalance(0);
+        return;
+      }
+
+      const rechargeUser = JSON.parse(rechargeUserStr);
+      if (!rechargeUser.username || !rechargeUser.pwd) {
+        console.warn("Recharge credentials incomplete.");
+        setBalance(0);
+        return;
+      }
+
+      const query = new URLSearchParams(rechargeUser).toString();
+      const res = await fetch(`http://localhost:5000/api/balance?${query}`);
+      if (!res.ok) throw new Error(`Server returned ${res.status}`);
+      const data = await res.json();
+      setBalance(data.balance || 0);
+    } catch (err) {
+      console.error("Balance fetch failed:", err);
       setBalance(0);
-      return;
+    } finally {
+      setBalanceLoading(false);
     }
+  };
 
-    const rechargeUser = JSON.parse(rechargeUserStr);
-    if (!rechargeUser.username || !rechargeUser.pwd) {
-      console.warn("Recharge credentials incomplete.");
-      setBalance(0);
-      return;
+  useEffect(() => {
+    const rechargeUser = JSON.parse(localStorage.getItem("rechargeUser"));
+    if (rechargeUser?.username && rechargeUser?.pwd) {
+      fetchBalance();
     }
+  }, []);
 
-    const query = new URLSearchParams(rechargeUser).toString();
-    const res = await fetch(`http://localhost:5000/api/balance?${query}`);
-    if (!res.ok) throw new Error(`Server returned ${res.status}`);
-    const data = await res.json();
-    setBalance(data.balance || 0);
-  } catch (err) {
-    console.error("Balance fetch failed:", err);
-    setBalance(0);
-  } finally {
-    setBalanceLoading(false);
-  }
-};
+  const navigate = useNavigate();
 
-
-
-useEffect(() => {
-  const rechargeUser = JSON.parse(localStorage.getItem("rechargeUser"));
-  if (rechargeUser?.username && rechargeUser?.pwd) {
-    fetchBalance();
-  }
-}, []);
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("rechargeUser");
+    navigate("/"); // Login page par redirect
+  };
 
   return (
     <>
@@ -361,8 +370,12 @@ useEffect(() => {
                 </div>
               )}
             </div>
-
-            <Link to="/logout" style={styles.navLink}>
+            {/* Logout as Nav Link Style */}
+            <Link
+              to="/" // ye redirect karne ke liye, handleLogout me navigate() call hoga
+              onClick={handleLogout}
+              style={styles.navLink} // yahi style use karo jo baki links me hai
+            >
               Logout
             </Link>
           </div>
