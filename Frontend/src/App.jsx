@@ -248,6 +248,8 @@ import SupportSetAlert from "../Admin/AdminPages/SupportSetAlert";
 import UserChangePassword from "./Components/UserChangePassword";
 import AddFund from "./Components/AddFund";
 import UserSupportTicket from "./Components/UserSupportTicket";
+import UserEditProfile from "./Components/UserEditProfile";
+import UserMyCommission from "./Components/UserMyCommission";
 
 function App() {
   useEffect(() => {
@@ -294,6 +296,8 @@ function App() {
       <Route path="/change-password" element={<UserChangePassword />} />
       <Route path="/add-fund" element={<AddFund />} />
       <Route path="/support-ticket" element={<UserSupportTicket />} />
+      <Route path="/edit-profile" element={<UserEditProfile />} />
+      <Route path="/my-commission" element={<UserMyCommission />} />
 
       {/* Customers */}
       <Route path="/customers/register" element={<CustomersRegister />} />
