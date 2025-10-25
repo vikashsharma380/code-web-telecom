@@ -1,48 +1,62 @@
-import React, { useState } from "react";
-import { Search, Filter, Calendar } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Search, Calendar } from "lucide-react";
 
 export default function SupportTicket() {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [complaints, setComplaints] = useState([
-    {
-      id: 3,
-      date: "2025-08-25",
-      businessName: "Gupta IT Solution",
-      message: "not complete || 7519449209 || 199 || 25-8-2025",
-      userType: "Agent",
-      status: "Solved",
-      response: "share your registered mob no",
-    },
-    {
-      id: 2,
-      date: "2025-06-28",
-      businessName: "Ayush Gupta",
-      message: "n",
-      userType: "Agent",
-      status: "Unsolved",
-      response: "ticket open again",
-    },
-    {
-      id: 1,
-      date: "2025-06-16",
-      businessName: "Gupta IT Solution",
-      message: "not add money || 7519449209 || 10 || 16-6-2025",
-      userType: "Agent",
-      status: "Solved",
-      response: "wait for 10 min",
-    },
-  ]);
+  const [complaints, setComplaints] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleSearch = () => {
-    console.log("Searching from", fromDate, "to", toDate);
+  // ✅ Fetch all tickets from backend
+  const fetchComplaints = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch("http://localhost:5000/api/tickets/all");
+      const data = await res.json();
+      if (data.success) {
+        setComplaints(data.tickets);
+      }
+    } catch (err) {
+      console.error("Error fetching tickets:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleActionChange = (id, action) => {
-    if (action === "Solved" || action === "Unsolved") {
-      setComplaints((prev) =>
-        prev.map((c) => (c.id === id ? { ...c, status: action } : c))
+  useEffect(() => {
+    fetchComplaints();
+  }, []);
+
+  // ✅ Filter by date range
+  const handleSearch = () => {
+    const filtered = complaints.filter((c) => {
+      const date = new Date(c.date);
+      const from = fromDate ? new Date(fromDate) : null;
+      const to = toDate ? new Date(toDate) : null;
+      return (
+        (!from || date >= from) &&
+        (!to || date <= to)
       );
+    });
+    setComplaints(filtered);
+  };
+
+  // ✅ Update complaint status (Solved/Unsolved)
+  const handleActionChange = async (id, newStatus) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/tickets/update/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setComplaints((prev) =>
+          prev.map((c) => (c._id === id ? { ...c, status: newStatus } : c))
+        );
+      }
+    } catch (err) {
+      console.error("Error updating status:", err);
     }
   };
 
@@ -54,6 +68,7 @@ export default function SupportTicket() {
       </div>
 
       <div style={styles.card}>
+        {/* 🔍 Filter Section */}
         <div style={styles.filterSection}>
           <div style={styles.dateInputGroup}>
             <label style={styles.label}>
@@ -87,75 +102,77 @@ export default function SupportTicket() {
           </button>
         </div>
 
+        {/* 🧾 Table Section */}
         <div style={styles.tableContainer}>
-          <table style={styles.table}>
-            <thead>
-              <tr style={styles.tableHeader}>
-                <th style={styles.th}>ID</th>
-                <th style={styles.th}>Complaint Date</th>
-                <th style={styles.th}>Business Name</th>
-                <th style={styles.th}>Message</th>
-                <th style={styles.th}>User Type</th>
-                <th style={styles.th}>Status</th>
-                <th style={styles.th}>Response</th>
-                <th style={styles.th}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {complaints.map((complaint) => (
-                <tr key={complaint.id} style={styles.tableRow}>
-                  <td style={styles.td}>{complaint.id}</td>
-                  <td style={styles.td}>{complaint.date}</td>
-                  <td style={styles.td}>
-                    <div style={styles.businessName}>
-                      {complaint.businessName}
-                    </div>
-                  </td>
-                  <td style={styles.td}>
-                    <div style={styles.message}>{complaint.message}</div>
-                  </td>
-                  <td style={styles.td}>
-                    <span style={styles.badge}>{complaint.userType}</span>
-                  </td>
-                  <td style={styles.td}>
-                    <span
-                      style={{
-                        ...styles.statusBadge,
-                        ...(complaint.status === "Solved"
-                          ? styles.statusSolved
-                          : styles.statusUnsolved),
-                      }}
-                    >
-                      {complaint.status}
-                    </span>
-                  </td>
-                  <td style={styles.td}>
-                    <div style={styles.response}>{complaint.response}</div>
-                  </td>
-                  <td style={styles.td}>
-                    <select
-                      style={styles.select}
-                      onChange={(e) =>
-                        handleActionChange(complaint.id, e.target.value)
-                      }
-                      defaultValue=""
-                    >
-                      <option value="" disabled>
-                        Select
-                      </option>
-                      <option value="Solved">Solved</option>
-                      <option value="Unsolved">Unsolved</option>
-                    </select>
-                  </td>
+          {loading ? (
+            <p style={{ padding: 20 }}>Loading complaints...</p>
+          ) : complaints.length === 0 ? (
+            <p style={{ padding: 20 }}>No complaints found</p>
+          ) : (
+            <table style={styles.table}>
+              <thead>
+                <tr style={styles.tableHeader}>
+                  <th style={styles.th}>ID</th>
+                  <th style={styles.th}>Date</th>
+                  <th style={styles.th}>User</th>
+                  <th style={styles.th}>Subject</th>
+                  <th style={styles.th}>Message</th>
+                  <th style={styles.th}>Status</th>
+                  <th style={styles.th}>Response</th>
+                  <th style={styles.th}>Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {complaints.map((c) => (
+                  <tr key={c._id} style={styles.tableRow}>
+                    <td style={styles.td}>{c._id.slice(-6)}</td>
+                    <td style={styles.td}>
+                      {new Date(c.date).toLocaleDateString()}
+                    </td>
+                    <td style={styles.td}>{c.userId?.name || "User"}</td>
+                    <td style={styles.td}>{c.subject}</td>
+                    <td style={styles.td}>{c.message}</td>
+                    <td style={styles.td}>
+                      <span
+                        style={{
+                          ...styles.statusBadge,
+                          ...(c.status === "Solved"
+                            ? styles.statusSolved
+                            : styles.statusUnsolved),
+                        }}
+                      >
+                        {c.status}
+                      </span>
+                    </td>
+                    <td style={styles.td}>{c.response || "-"}</td>
+                    <td style={styles.td}>
+                      <select
+                        style={styles.select}
+                        onChange={(e) =>
+                          handleActionChange(c._id, e.target.value)
+                        }
+                        defaultValue=""
+                      >
+                        <option value="" disabled>
+                          Select
+                        </option>
+                        <option value="Solved">Solved</option>
+                        <option value="Unsolved">Unsolved</option>
+                      </select>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>
   );
 }
+
+
+
 
 const styles = {
   container: {

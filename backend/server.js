@@ -271,6 +271,9 @@ app.use("/api", earningsRoutes);
 const transactionsRoutes = require("./routes/transactions");
 app.use("/api", transactionsRoutes);
 
+const ticketRoutes = require("./routes/ticketRoutes");
+app.use("/api/tickets", ticketRoutes);
+
 // Serve frontend
 app.use(express.static(path.join(__dirname, "../Frontend/dist")));
 

@@ -6,31 +6,8 @@ export default function UserSupportTicket() {
     message: "",
   });
 
-  const [tickets] = useState([
-    {
-      id: 1,
-      subject: "Payment Issue",
-      message: "Unable to process payment",
-      date: "2025-10-20",
-      response: "We are looking into it",
-      status: "Open",
-    },
-    {
-      id: 2,
-      subject: "Account Access",
-      message: "Cannot login to my account",
-      date: "2025-10-19",
-      response: "Password reset link sent",
-      status: "Resolved",
-    },
-    {
-      id: 3,
-      subject: "Feature Request",
-      message: "Add dark mode feature",
-      date: "2025-10-18",
-      response: "",
-      status: "Pending",
-    },
+  const [tickets, setTickets] = useState([
+  
   ]);
 
   const handleInputChange = (e) => {
@@ -41,16 +18,34 @@ export default function UserSupportTicket() {
     }));
   };
 
+
   const handleSubmit = () => {
-    console.log("Ticket submitted:", formData);
-    alert("Support ticket submitted successfully!");
+    if (!formData.subject || !formData.message) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    const newTicket = {
+      id: tickets.length + 1,
+      subject: formData.subject,
+      message: formData.message,
+      date: new Date().toISOString().split("T")[0],
+      response: "Not yet responded",
+      status: "Open",
+    };
+
+    setTickets((prevTickets) => [newTicket, ...prevTickets]);
     setFormData({ subject: "", message: "" });
+
+    alert("Support ticket submitted successfully!");
   };
 
+  // Reset form
   const handleCancel = () => {
     setFormData({ subject: "", message: "" });
   };
 
+  // Badge color logic
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
       case "open":
@@ -69,7 +64,7 @@ export default function UserSupportTicket() {
       <div style={styles.wrapper}>
         {/* Header */}
         <div style={styles.header}>
-          <h1 style={styles.headerTitle}>Rise Support Ticket</h1>
+          <h1 style={styles.headerTitle}>Raise Support Ticket</h1>
         </div>
 
         {/* Form Section */}
@@ -107,29 +102,17 @@ export default function UserSupportTicket() {
               />
             </div>
 
-            {/* Action Buttons */}
+            {/* Buttons */}
             <div style={styles.buttonGroup}>
               <button
                 onClick={handleSubmit}
                 style={{ ...styles.button, ...styles.submitButton }}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = "#2563eb")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "#3b82f6")
-                }
               >
                 Submit
               </button>
               <button
                 onClick={handleCancel}
                 style={{ ...styles.button, ...styles.cancelButton }}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = "#64748b")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "#6b7280")
-                }
               >
                 Cancel
               </button>
@@ -143,7 +126,7 @@ export default function UserSupportTicket() {
             <table style={styles.table}>
               <thead style={styles.tableHead}>
                 <tr>
-                  <th style={styles.th}>Ticket id</th>
+                  <th style={styles.th}>Ticket ID</th>
                   <th style={styles.th}>Subject</th>
                   <th style={styles.th}>Message</th>
                   <th style={styles.th}>Date</th>
@@ -153,16 +136,7 @@ export default function UserSupportTicket() {
               </thead>
               <tbody style={styles.tbody}>
                 {tickets.map((ticket) => (
-                  <tr
-                    key={ticket.id}
-                    style={styles.tr}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.backgroundColor = "#f8fafc")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.backgroundColor = "#ffffff")
-                    }
-                  >
+                  <tr key={ticket.id} style={styles.tr}>
                     <td style={styles.td}>{ticket.id}</td>
                     <td style={styles.td}>{ticket.subject}</td>
                     <td style={styles.td}>{ticket.message}</td>
@@ -198,7 +172,6 @@ export default function UserSupportTicket() {
     </div>
   );
 }
-
 const styles = {
   container: {
     minHeight: "100vh",
