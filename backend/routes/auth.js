@@ -15,7 +15,7 @@ router.post("/register", async (req, res) => {
 
     const role = mobile === ADMIN_MOBILE ? "admin" : "user";
 
-    const newUser = new User({ name, email, mobile, password, role });
+    const newUser = new User({ name, email, mobile,phone: mobile, password, role });
     console.log("New user before save:", newUser);
 
     await newUser.save();
@@ -77,7 +77,49 @@ console.log("Entered password:", password);
     res.status(500).json({ message: err.message });
   }
 });
+const axios = require("axios");
 
+const otpStore = new Map(); 
+
+// Send OTP
+router.post("/send-otp", async (req, res) => {
+  const { mobile } = req.body;
+  console.log("📩 Send OTP request received:", mobile);
+  if (!mobile) return res.status(400).json({ message: "Mobile required" });
+
+  const otp = Math.floor(100000 + Math.random() * 900000);
+  otpStore.set(mobile, otp);
+
+  try {
+    const formData = new URLSearchParams();
+    formData.append("appkey", "5a48cbf2-9d89-40fe-a46a-9697626c7908");
+    formData.append("authkey", "SXA40NLGqoOsdNZGJi8wLL1ydT3CTy592MeG9tbAfnXYq43W7W");
+    formData.append("to", `+91${mobile}`); // always include country code
+    formData.append("message", `Your Code Web Telecom OTP is ${otp}. It expires in 5 mins.`);
+    formData.append("priority", "high"); // optional
+    formData.append("channel", "whatsapp"); // send via WhatsApp
+
+    await axios.post("https://softapi.in/api/create-message", formData, {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    });
+
+    res.json({ success: true, message: "OTP sent" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to send OTP" });
+  }
+});
+
+// Verify OTP
+router.post("/verify-otp", (req, res) => {
+  const { mobile, otp } = req.body;
+  const storedOtp = otpStore.get(mobile);
+
+  if (!storedOtp) return res.status(400).json({ message: "OTP expired" });
+  if (parseInt(otp) !== storedOtp) return res.status(400).json({ message: "Invalid OTP" });
+
+  otpStore.delete(mobile);
+  res.json({ success: true, message: "OTP verified" });
+});
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1h" });
