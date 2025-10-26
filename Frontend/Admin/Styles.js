@@ -308,6 +308,117 @@ const styles = {
   footerStrong: {
     fontWeight: "700",
   },
+
+   navContainer: {
+    position: "relative",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    padding: "40px",
+  },
+  navItem: {
+    position: "relative",
+    display: "inline-block",
+  },
+  button: {
+    background: "#007bff",
+    color: "#fff",
+    border: "none",
+    padding: "10px 18px",
+    borderRadius: "5px",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
+  dropdown: {
+    position: "absolute",
+    top: "40px",
+    left: 0,
+    backgroundColor: "#fff",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+    borderRadius: "6px",
+    overflow: "hidden",
+    zIndex: 10,
+    width: "180px",
+  },
+  dropdownItem: {
+    padding: "10px 15px",
+    cursor: "pointer",
+    borderBottom: "1px solid #eee",
+  },
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    background: "rgba(0,0,0,0.5)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 20,
+  },
+  popup: {
+    background: "#fff",
+    borderRadius: "8px",
+    width: "360px",
+    padding: "25px",
+    textAlign: "center",
+    boxShadow: "0 5px 15px rgba(0,0,0,0.3)",
+    animation: "fadeIn 0.3s ease",
+  },
+  popupTitle: {
+    marginBottom: "20px",
+  },
+  select: {
+    width: "100%",
+    padding: "8px",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+    outline: "none",
+  },
+  popupButtons: {
+    marginTop: "20px",
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  closeBtn: {
+    background: "#dc3545",
+    color: "white",
+    border: "none",
+    padding: "8px 15px",
+    borderRadius: "5px",
+    cursor: "pointer",
+  },
+  confirmBtn: {
+    background: "#28a745",
+    color: "white",
+    border: "none",
+    padding: "8px 15px",
+    borderRadius: "5px",
+    cursor: "pointer",
+  },
+  // Normal nav dropdowns
+navDropdown: {
+  position: "absolute",
+  top: "100%",
+  left: 0,
+  backgroundColor: "#fff",
+  minWidth: "220px",        // wider for long items
+  boxShadow: "0 8px 16px rgba(0,0,0,0.1)",
+  zIndex: 1000,
+  borderRadius: "4px",
+  overflow: "hidden",
+},
+
+navDropdownItem: {
+  display: "block",
+  padding: "0.75rem 1rem",
+  color: "#2d3748",
+  textDecoration: "none",
+  fontSize: "0.875rem",
+  borderBottom: "1px solid #f0f0f0",
+  transition: "all 0.2s ease",
+  cursor: "pointer",
+},
+
 };
 
 export default styles;

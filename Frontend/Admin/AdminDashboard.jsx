@@ -7,7 +7,7 @@ import HeroSection from "./HeroSection";
 import ActionButton from "./ActionButton";
 import StatsCard from "./StatsCard";
 import RecentPayments from "./RecentPayments";
-import CustomersDropdown from "./CustomersDropdown";
+
 
 const AdminDashboard = () => {
   const [recentPayments] = useState([]);
@@ -41,7 +41,7 @@ const AdminDashboard = () => {
       <style>{cssStyles}</style>
 
       <Header />
-      <CustomersDropdown />
+    
       <HeroSection />
       <ActionButton />
       <StatsCard />

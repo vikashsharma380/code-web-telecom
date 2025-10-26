@@ -1,25 +1,23 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./Styles";
-import  navItems  from "./NavItems";
-
-import { useNavigate } from "react-router-dom";
+import navItems from "./NavItems";
 
 const Header = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  console.log(navItems);
-  const navigate = useNavigate(); // navigate hook
+  const [hoveredItem, setHoveredItem] = useState(null);
+  const [popupOption, setPopupOption] = useState(null);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    // 1. Clear token or user info from localStorage
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
-    localStorage.removeItem("userRole"); // agar koi role store kiya hai
-
-    // 2. Redirect to login page
-    navigate("/"); // login route ya default page
+    localStorage.removeItem("userRole");
+    navigate("/"); // redirect to login
   };
 
+  const handleClosePopup = () => {
+    setPopupOption(null);
+  };
 
   return (
     <>
@@ -37,7 +35,12 @@ const Header = () => {
           {/* Navigation */}
           <nav style={styles.navMenu}>
             {navItems.map((item, index) => (
-              <div key={index} style={styles.navItem} className="nav-item">
+              <div
+                key={index}
+                style={styles.navItem}
+                onMouseEnter={() => setHoveredItem(item.label)}
+                onMouseLeave={() => setHoveredItem(null)}
+              >
                 {item.href.startsWith("#") ? (
                   <a href={item.href} style={styles.navLink}>
                     {item.label}
@@ -49,41 +52,72 @@ const Header = () => {
                 )}
 
                 {/* Dropdown */}
-                {item.dropdown && (
-                  <div style={styles.dropdown} className="dropdown">
-                    {item.dropdown.map((subItem, subIndex) => (
-                      <Link
-                        key={subIndex}
-                        to={subItem.route}
-                        style={styles.dropdownItem}
-                        className="dropdown-item"
-                      >
-                        {subItem.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
+              {/* Dropdown */}
+{item.dropdown && hoveredItem === item.label && (
+  <div style={item.label === "CUSTOMERS" ? styles.dropdown : styles.navDropdown}>
+    {item.dropdown.map((subItem, subIndex) => {
+      if (item.label === "CUSTOMERS") {
+        return (
+          <div
+            key={subIndex}
+            style={styles.dropdownItem}
+            onClick={() => setPopupOption(subItem.label)}
+          >
+            {subItem.label}
+          </div>
+        );
+      } else {
+        return (
+          <Link
+            key={subIndex}
+            to={subItem.route}
+            style={styles.navDropdownItem}
+          >
+            {subItem.label}
+          </Link>
+        );
+      }
+    })}
+  </div>
+)}
+
               </div>
             ))}
 
-            {/* Log Out */}
+            {/* Logout */}
             <span
               onClick={handleLogout}
               style={{ ...styles.navLink, cursor: "pointer" }}
             >
               LOG OUT
             </span>
-
-            {/* Mobile Menu Button */}
-            <button
-              style={styles.menuBtn}
-              onClick={() => setMenuOpen(!menuOpen)}
-            >
-              ☰ MENU
-            </button>
           </nav>
         </div>
       </header>
+
+      {/* Popup for CUSTOMERS */}
+      {popupOption && (
+        <div style={styles.overlay}>
+          <div style={styles.popup}>
+            <h3 style={styles.popupTitle}>
+              Please Select Customer Type ({popupOption})
+            </h3>
+            <select style={styles.select}>
+              <option>Select...</option>
+              <option>Master Distributor</option>
+              <option>Distributor</option>
+              <option>Retailer</option>
+            </select>
+
+            <div style={styles.popupButtons}>
+              <button style={styles.closeBtn} onClick={handleClosePopup}>
+                Close
+              </button>
+              <button style={styles.confirmBtn}>Confirm</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
