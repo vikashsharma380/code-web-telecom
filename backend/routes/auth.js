@@ -1,28 +1,95 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const Counter = require("../models/Counter");
 const router = express.Router();
 const ADMIN_MOBILE = "9266982764";
+async function getNextUserId() {
+  // We'll use a counter document named 'userId'
+  const counter = await Counter.findOneAndUpdate(
+    { name: "userId" },
+    { $inc: { seq: 1 } },
+    { new: true, upsert: true }
+  );
+
+  // If counter.seq starts from 1, we want userId = 500034 + seq -> first = 500035
+  const base = 500034;
+  return base + counter.seq;
+}
+
+// helper: send WhatsApp via softapi
+async function sendWhatsAppMessage(mobile, message) {
+  try {
+    const formData = new URLSearchParams();
+    formData.append("appkey", process.env.WHATSAPP_APPKEY);
+    formData.append("authkey", process.env.WHATSAPP_AUTHKEY);
+    formData.append("to", `+91${mobile}`);
+    formData.append("message", message);
+    formData.append("priority", "high");
+    formData.append("channel", "whatsapp");
+
+    const res = await axios.post(process.env.WHATSAPP_API_URL, formData.toString(), {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      timeout: 10000,
+    });
+
+    return res.data;
+  } catch (err) {
+    console.error("WhatsApp send error:", err.response?.data || err.message);
+    throw err;
+  }
+}
+
+// Register route
 router.post("/register", async (req, res) => {
   try {
     const { name, email, mobile, password } = req.body;
     console.log("Received signup body:", req.body);
+
+    if (!mobile || !password || !name) {
+      return res.status(400).json({ message: "name, mobile and password are required" });
+    }
 
     const existingUser = await User.findOne({ mobile });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
+    // Determine role
     const role = mobile === ADMIN_MOBILE ? "admin" : "user";
 
-    const newUser = new User({ name, email, mobile,phone: mobile, password, role });
-    console.log("New user before save:", newUser);
+    // get a unique userId (atomic)
+    const userId = await getNextUserId();
+
+    // Create user
+    const newUser = new User({
+      userId,
+      name,
+      email,
+      mobile,
+      phone: mobile,
+      password,
+      role,
+      balance: 0, // initial balance
+    });
 
     await newUser.save();
 
-    res.status(201).json({ message: "Signup successful", role: newUser.role });
+    // Prepare message content (you requested mobile, password, balance, userId)
+    const message = `Welcome to Code Web Telecom!\nUserID: ${newUser.userId}\nMobile(Login): ${newUser.mobile}\nPassword: ${password}\nBalance: ₹${newUser.balance}\n\nLogin at: yoursite.example/login`;
+
+    // Send WhatsApp message (fire-and-forget with try/catch)
+    try {
+      await sendWhatsAppMessage(newUser.mobile, message);
+      console.log("WhatsApp sent for user:", newUser.mobile);
+    } catch (err) {
+      // Log but don't fail registration if WhatsApp sending fails
+      console.error("Failed to send WhatsApp message:", err.message || err);
+    }
+
+    res.status(201).json({ message: "Signup successful", role: newUser.role, userId: newUser.userId });
   } catch (err) {
-    console.error("Signup Error:", err); 
+    console.error("Signup Error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });

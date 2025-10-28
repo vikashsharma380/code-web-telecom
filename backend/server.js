@@ -11,6 +11,7 @@ const nodemailer = require("nodemailer");
 const Contact = require("./models/contact");
 
 
+
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -148,6 +149,8 @@ app.post("/api/gasrecharge", async (req, res) => {
     });
   }
 });
+const User = require("./models/user"); // 🔁 adjust path if needed
+
 app.get("/api/balance", async (req, res) => {
   try {
     const { username, pwd } = req.query;
@@ -159,25 +162,60 @@ app.get("/api/balance", async (req, res) => {
       });
     }
 
-    // ✅ Dynamic API call (no hardcoding)
-    const url = `https://codewebtelecom.com/recharge/balance?username=${encodeURIComponent(
-      username
-    )}&pwd=${encodeURIComponent(pwd)}&format=json`;
-
-    // External API call
-    const response = await axios.get(url);
-
-    console.log("💰 Balance API called successfully");
-    console.log("Frontend sent:", { username });
-    console.log("API Response:", response.data);
-
-    res.json({
-      success: true,
-      balance: Number(response.data) || 0, // convert string to number
+    const user = await User.findOne({
+      $or: [
+        { mobile: username },
+        { phone: username },
+        { userId: Number(username) },
+      ],
     });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found",
+      });
+    }
+
+    // ✅ Define cutoff date (25 Oct 2025)
+    const cutoffDate = new Date("2025-10-25T00:00:00.000Z");
+
+    // ✅ Get activation date
+    const activationDate = new Date(user.activationDate);
+
+    // ✅ Determine old/new
+    const isNewUser = activationDate >= cutoffDate;
+
+    if (isNewUser) {
+      console.log(`💾 Fetching NEW user (${user.name}) balance from MongoDB`);
+      return res.json({
+        success: true,
+        source: "local",
+        balance: user.balance || 0,
+      });
+    } else {
+      const url = `https://codewebtelecom.com/recharge/balance?username=${encodeURIComponent(
+        username
+      )}&pwd=${encodeURIComponent(pwd)}&format=json`;
+
+      console.log("🌐 Fetching OLD user balance from external API:", url);
+
+      const response = await axios.get(url);
+
+      const balance =
+        typeof response.data === "object"
+          ? Number(response.data.balance) || 0
+          : Number(response.data) || 0;
+
+      return res.json({
+        success: true,
+        source: "external",
+        balance,
+      });
+    }
   } catch (error) {
     console.error("❌ Balance fetch failed:", error.message);
-    if (error.response) console.error("API Response:", error.response.data);
+    if (error.response) console.error("🔴 API Response:", error.response.data);
 
     res.status(500).json({
       success: false,
@@ -187,6 +225,7 @@ app.get("/api/balance", async (req, res) => {
     });
   }
 });
+
 
 app.get("/api/status", async (req, res) => {
   try {
