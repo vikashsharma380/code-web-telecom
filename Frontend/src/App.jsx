@@ -60,8 +60,7 @@ import UserMyCommission from "./Components/UserMyCommission";
 // import CustomersDropdown from "../Admin/CustomersDropdown";
 
 function App() {
-// Login.js
-localStorage.setItem("token", token);
+
 
 // App.jsx ya AuthContext.js
 useEffect(() => {
