@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ export default function SignupPage() {
   const handleSendOtp = async () => {
     if (!phone) return setError("Enter mobile number first");
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/send-otp", { mobile: phone });
+      const res = await axios.post(`${API_URL}/api/auth/send-otp`, { mobile: phone });
       if (res.data.success) {
         setOtpSent(true);
         setError("");
