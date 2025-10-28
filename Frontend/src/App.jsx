@@ -64,13 +64,14 @@ function App() {
 
 
 // App.jsx ya AuthContext.js
-useEffect(() => {
-  const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-  if (token) {
-    navigate("/dashboard");
-  }
-}, [navigate]);
+const navigate = useNavigate(); // ✅ hook yahan likho, top-level pe
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   return (
     <>
