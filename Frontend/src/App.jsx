@@ -57,6 +57,7 @@ import AddFund from "./Components/AddFund";
 import UserSupportTicket from "./Components/UserSupportTicket";
 import UserEditProfile from "./Components/UserEditProfile";
 import UserMyCommission from "./Components/UserMyCommission";
+import { useNavigate } from "react-router-dom";
 // import CustomersDropdown from "../Admin/CustomersDropdown";
 
 function App() {
@@ -64,11 +65,12 @@ function App() {
 
 // App.jsx ya AuthContext.js
 useEffect(() => {
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   if (token) {
     navigate("/dashboard");
   }
-}, []);
+}, [navigate]);
 
 // Logout.js
 localStorage.removeItem("token");
