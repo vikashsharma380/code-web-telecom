@@ -189,7 +189,9 @@ router.post("/verify-otp", (req, res) => {
 });
 
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+  // No expiry — user stays logged in until manual logout
+  return jwt.sign({ id }, process.env.JWT_SECRET);
 };
+
 
 module.exports = router;
