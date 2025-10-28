@@ -72,11 +72,6 @@ useEffect(() => {
   }
 }, [navigate]);
 
-// Logout.js
-localStorage.removeItem("token");
-navigate("/");
-
-
   return (
     <>
       <Routes>
