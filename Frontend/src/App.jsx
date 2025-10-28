@@ -67,14 +67,13 @@ localStorage.setItem("token", token);
 useEffect(() => {
   const token = localStorage.getItem("token");
   if (token) {
-    // Optional: decode & check expiry
-    // axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    navigate("/dashboard");
   }
 }, []);
 
 // Logout.js
 localStorage.removeItem("token");
-navigate("/login");
+navigate("/");
 
 
   return (
