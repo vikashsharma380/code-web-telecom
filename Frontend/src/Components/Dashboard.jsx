@@ -11,10 +11,12 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import Nav from "../../hero/nav";
-const rechargeUser = {
-  username: "500032",
-  pwd: "k0ly9gts",
-};
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+// const rechargeUser = {
+//   username: "500032",
+//   pwd: "k0ly9gts",
+// };
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -37,7 +39,7 @@ export default function Dashboard() {
     setBalanceLoading(true);
     try {
       const query = new URLSearchParams(rechargeUser).toString();
-      const res = await fetch(`http://localhost:5000/api/balance?${query}`);
+      const res = await fetch(`${API_URL}/api/balance?${query}`);
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
       setBalance(data.balance || 0);
