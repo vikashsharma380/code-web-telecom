@@ -37,25 +37,25 @@ export default function Dashboard() {
 
 const user = JSON.parse(localStorage.getItem("user"));
 
-  const fetchBalance = async () => {
-    if (!user) return;
-    setBalanceLoading(true);
-    try {
-      const query = new URLSearchParams({
-        username: user.username,
-        pwd: user.password,
-      }).toString();
+ const fetchBalance = async () => {
+  setBalanceLoading(true);
+  try {
+    const rechargeUserStr = localStorage.getItem("rechargeUser");
+    if (!rechargeUserStr) return;
 
-      const res = await fetch(`${API_URL}/api/balance?${query}`);
-      const data = await res.json();
-      setBalance(data.balance || 0);
-    } catch (err) {
-      console.error("Error fetching balance:", err);
-      setBalance(0);
-    } finally {
-      setBalanceLoading(false);
-    }
-  };
+    const rechargeUser = JSON.parse(rechargeUserStr);
+    const query = new URLSearchParams(rechargeUser).toString();
+
+    const res = await fetch(`${API_URL}/api/balance?${query}`);
+    const data = await res.json();
+    setBalance(data.balance || 0);
+  } catch (err) {
+    console.error("Error fetching balance:", err);
+    setBalance(0);
+  } finally {
+    setBalanceLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchBalance();
