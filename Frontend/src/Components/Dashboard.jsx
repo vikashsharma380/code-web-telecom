@@ -35,16 +35,22 @@ export default function Dashboard() {
   const [balance, setBalance] = React.useState(0);
   const [balanceLoading, setBalanceLoading] = React.useState(true);
 
+const user = JSON.parse(localStorage.getItem("user"));
+
   const fetchBalance = async () => {
+    if (!user) return;
     setBalanceLoading(true);
     try {
-      const query = new URLSearchParams(rechargeUser).toString();
+      const query = new URLSearchParams({
+        username: user.username,
+        pwd: user.password,
+      }).toString();
+
       const res = await fetch(`${API_URL}/api/balance?${query}`);
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
       setBalance(data.balance || 0);
     } catch (err) {
-      console.error("Balance fetch failed:", err);
+      console.error("Error fetching balance:", err);
       setBalance(0);
     } finally {
       setBalanceLoading(false);
@@ -54,7 +60,6 @@ export default function Dashboard() {
   useEffect(() => {
     fetchBalance();
   }, []);
-
   return (
     <div style={styles.container}>
       {/* Animated Background */}
