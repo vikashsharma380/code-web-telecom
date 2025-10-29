@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Styles";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+ 
 
 const HeroSection = () => {
    const [balances, setBalances] = useState({
@@ -10,7 +12,7 @@ const HeroSection = () => {
   const fetchBalances = async () => {
     try {
       const res = await fetch(
-        "http://localhost:5000/api/get-balance"
+        `${API_URL}/api/get-balance`
       );
       const data = await res.json();
       console.log("Fetched data:", data);

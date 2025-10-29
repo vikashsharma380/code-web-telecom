@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Smartphone } from "lucide-react";
 import styles from "../src/styles";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 import { useNavigate } from "react-router-dom";
 
@@ -115,7 +116,7 @@ const Nav = () => {
       }
 
       const query = new URLSearchParams(rechargeUser).toString();
-      const res = await fetch(`http://localhost:5000/api/balance?${query}`);
+      const res = await fetch(`${API_URL}/api/balance?${query}`);
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
       setBalance(data.balance || 0);
