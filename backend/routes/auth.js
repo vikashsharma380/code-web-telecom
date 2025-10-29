@@ -76,7 +76,7 @@ router.post("/register", async (req, res) => {
     await newUser.save();
 
     // Prepare message content (you requested mobile, password, balance, userId)
-    const message = `Welcome to Code Web Telecom!\nUserID: ${newUser.userId}\nMobile(Login): ${newUser.mobile}\nPassword: ${password}\nBalance: ₹${newUser.balance}\n\nLogin at: yoursite.example/login`;
+    const message = `Welcome to Code Web Telecom!\nUserID: ${newUser.userId}\nMobile(Login): ${newUser.mobile}\nPassword: ${password}\nBalance: ₹${newUser.balance}\n\nLogin at: www.codewebtelecom.in/login`;
 
     // Send WhatsApp message (fire-and-forget with try/catch)
     try {
