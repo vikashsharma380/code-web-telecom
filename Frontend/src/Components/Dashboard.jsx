@@ -37,29 +37,52 @@ export default function Dashboard() {
 
 const user = JSON.parse(localStorage.getItem("user"));
 
- const fetchBalance = async () => {
+const fetchBalance = async () => {
   setBalanceLoading(true);
   try {
     const rechargeUserStr = localStorage.getItem("rechargeUser");
-    if (!rechargeUserStr) return;
+    if (!rechargeUserStr) {
+      console.error("⚠️ rechargeUser missing");
+      return;
+    }
 
     const rechargeUser = JSON.parse(rechargeUserStr);
+    if (!rechargeUser.username || !rechargeUser.pwd) {
+      console.error("⚠️ Invalid rechargeUser:", rechargeUser);
+      return;
+    }
+
     const query = new URLSearchParams(rechargeUser).toString();
+    console.log("🔗 Balance API URL:", `${API_URL}/api/balance?${query}`);
 
     const res = await fetch(`${API_URL}/api/balance?${query}`);
     const data = await res.json();
+
+    console.log("💰 Balance fetched:", data);
     setBalance(data.balance || 0);
   } catch (err) {
-    console.error("Error fetching balance:", err);
+    console.error("❌ Error fetching balance:", err);
     setBalance(0);
   } finally {
     setBalanceLoading(false);
   }
 };
 
-  useEffect(() => {
-    fetchBalance();
-  }, []);
+useEffect(() => {
+  const rechargeUserStr = localStorage.getItem("rechargeUser");
+
+  if (!rechargeUserStr) {
+    console.warn("⚠️ rechargeUser not found, redirecting to login...");
+    navigate("/login");
+    return;
+  }
+
+  const rechargeUser = JSON.parse(rechargeUserStr);
+  console.log("✅ Fetching balance for:", rechargeUser);
+
+  fetchBalance();
+}, []);
+
   return (
     <div style={styles.container}>
       {/* Animated Background */}
