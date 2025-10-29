@@ -62,16 +62,13 @@ import { useNavigate } from "react-router-dom";
 
 function App() {
 
-
-// App.jsx ya AuthContext.js
-const navigate = useNavigate(); // ✅ hook yahan likho, top-level pe
-
+  const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/dashboard");
+    if (!token) {
+      navigate("/login");
     }
-  }, [navigate]);
+  }, []);
 
   return (
     <>
