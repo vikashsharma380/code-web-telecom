@@ -1,5 +1,5 @@
 const express = require("express");
-const User = require("../models/user");
+const User = require("../../models/user");
 
 const router = express.Router();
 
@@ -23,6 +23,16 @@ router.get("/role/:role", async (req, res) => {
   } catch (error) {
     console.error("Error fetching users by role:", error);
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/retailers", async (req, res) => {
+  try {
+    const retailers = await User.find({ role: "retailer" }).select("-password");
+    res.json(retailers);
+  } catch (err) {
+    console.error("Error fetching retailers:", err);
+    res.status(500).json({ message: "Server Error" });
   }
 });
 
