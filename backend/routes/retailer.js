@@ -39,6 +39,7 @@ router.post("/retailer-register", async (req, res) => {
       name: retailerName,
       email,
       mobile: mobileNo,
+      phone: mobileNo,
       address: postalAddress,
       pincode: pinCode,
       state,
