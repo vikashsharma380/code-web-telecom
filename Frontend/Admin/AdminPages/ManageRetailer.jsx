@@ -8,6 +8,9 @@ const ManageRetailer = () => {
   const [searchBy, setSearchBy] = useState("Name");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedUser, setSelectedUser] = useState(null);
+const [showModal, setShowModal] = useState(false);
+
   const itemsPerPage = 25;
 
   // ✅ Fetch retailers from backend
@@ -53,6 +56,7 @@ const ManageRetailer = () => {
 
   // ✅ Same style object
   const styles = {
+    
     container: {
       minHeight: "100vh",
       background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
@@ -182,6 +186,15 @@ const ManageRetailer = () => {
   };
 
   return (
+    <>
+     <style>
+      {`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.9); }
+          to { opacity: 1; transform: scale(1); }
+        }
+      `}
+    </style>
     <div style={styles.container}>
       <div style={styles.header}>TOTAL AGENT BALANCE: {totalBalance}</div>
 
@@ -243,11 +256,18 @@ const ManageRetailer = () => {
                     {retailer.status || "Active"}
                   </span>
                 </td>
-                <td style={styles.td}>
-                  <button style={{ ...styles.button, ...styles.viewProfileBtn }}>
-                    View Profile
-                  </button>
-                </td>
+               <td style={styles.td}>
+  <button
+    style={{ ...styles.button, ...styles.viewProfileBtn }}
+    onClick={() => {
+      setSelectedUser(retailer);
+      setShowModal(true);
+    }}
+  >
+    View Profile
+  </button>
+</td>
+
                 <td style={styles.td}>
                   <button style={{ ...styles.button, ...styles.editProfileBtn }}>
                     Edit Profile
@@ -305,9 +325,81 @@ const ManageRetailer = () => {
         >
           Next
         </button>
+        {showModal && selectedUser && (
+  <div style={modalStyles.overlay}>
+    <div style={modalStyles.modal}>
+      <h2 style={modalStyles.header}>User Profile</h2>
+
+      <div style={modalStyles.body}>
+        <p><strong>User ID:</strong> {selectedUser.userId}</p>
+        <p><strong>Name:</strong> {selectedUser.name}</p>
+        <p><strong>Mobile:</strong> {selectedUser.mobile}</p>
+        <p><strong>Email:</strong> {selectedUser.email || "N/A"}</p>
+        <p><strong>Balance:</strong> ₹{selectedUser.balance}</p>
+        <p><strong>Status:</strong> {selectedUser.status || "Active"}</p>
+        <p><strong>Role:</strong> {selectedUser.role || "Retailer"}</p>
+      </div>
+
+      <button
+        style={modalStyles.closeButton}
+        onClick={() => setShowModal(false)}
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
+
       </div>
     </div>
+    </>
   );
+};
+const modalStyles = {
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100vw",
+    height: "100vh",
+    backgroundColor: "rgba(0,0,0,0.6)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+  },
+  modal: {
+    backgroundColor: "white",
+    borderRadius: "10px",
+    padding: "25px",
+    width: "400px",
+    boxShadow: "0 5px 15px rgba(0,0,0,0.3)",
+    textAlign: "left",
+    animation: "fadeIn 0.3s ease",
+  },
+  header: {
+    fontSize: "20px",
+    fontWeight: "700",
+    marginBottom: "15px",
+    textAlign: "center",
+  },
+  body: {
+    fontSize: "15px",
+    lineHeight: "1.6",
+    color: "#333",
+  },
+  closeButton: {
+    display: "block",
+    width: "100%",
+    padding: "10px 0",
+    marginTop: "20px",
+    background: "#2563eb",
+    color: "white",
+    fontWeight: "600",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+  },
 };
 
 export default ManageRetailer;
