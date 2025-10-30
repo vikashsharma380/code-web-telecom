@@ -25,10 +25,45 @@ const RetailerRegistration = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    console.log("Form submitted:", formData);
-    alert("Form submitted successfully!");
-  };
+  const handleSubmit = async () => {
+  try {
+    const response = await fetch(
+      "https://code-web-telecom-production-5618.up.railway.app/api/retailer-register",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.success) {
+      alert("✅ Retailer Registered Successfully!");
+      setFormData({
+        retailerName: "",
+        selectParent: "",
+        postalAddress: "",
+        pinCode: "",
+        state: "",
+        mobileNo: "",
+        alternatNumber: "",
+        retailerBusinessType: "",
+        email: "",
+        panNoGSTNumber: "",
+        contactPerson: "",
+        selectScheme: "",
+        openingBalance: "",
+      });
+    } else {
+      alert("❌ " + data.message);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Something went wrong!");
+  }
+};
+
 
   const handleCancel = () => {
     setFormData({
