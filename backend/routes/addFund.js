@@ -16,7 +16,7 @@ router.post("/add-fund", async (req, res) => {
       customer_email: "user@example.com",
       customer_mobile: "9999999999",
       redirect_url,
-      udf1: userId,
+       userId: user?._id,
     };
 
     console.log("📤 Sending to EKQR:", payload);
