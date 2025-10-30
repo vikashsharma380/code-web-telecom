@@ -65,6 +65,7 @@ import SettingUpiSetting from "../Admin/AdminPages/SettingUpiSetting";
 import SettingChangePassword from "../Admin/AdminPages/SettingChangePassword";
 import ReportCheckTransaction from "../Admin/AdminPages/ReportCheckTransaction";
 import ReportRetailerReport from "../Admin/AdminPages/ReportRetailerReport";
+import ManageMasterDistributor from "../Admin/ManageMasterDistributor";
 // import CustomersDropdown from "../Admin/CustomersDropdown";
 
 function App() {
@@ -197,6 +198,12 @@ function App() {
           path="/report/retailer-report"
           element={<ReportRetailerReport />}
         />
+        <Route
+          path="/manage-master-distributor"
+          element={<ManageMasterDistributor />}
+        />
+        {/* <Route path="/manage-distributor" element={<ManageDistributor />} />
+        <Route path="/manage-retailer" element={<ManageRetailer />} /> */}
       </Routes>
       {/* <CustomersDropdown /> */}
     </>
