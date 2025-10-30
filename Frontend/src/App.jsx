@@ -67,6 +67,7 @@ import ReportCheckTransaction from "../Admin/AdminPages/ReportCheckTransaction";
 import ReportRetailerReport from "../Admin/AdminPages/ReportRetailerReport";
 import ManageMasterDistributor from "../Admin/ManageMasterDistributor";
 import ManageDistributor from "../Admin/AdminPages/ManageDistributor";
+import ManageRetailer from "../Admin/AdminPages/ManageRetailer";
 // import CustomersDropdown from "../Admin/CustomersDropdown";
 
 function App() {
@@ -204,7 +205,7 @@ function App() {
           element={<ManageMasterDistributor />}
         />
         <Route path="/manage-distributor" element={<ManageDistributor />} />
-        {/* <Route path="/manage-retailer" element={<ManageRetailer />} /> */}
+        <Route path="/manage-retailer" element={<ManageRetailer />} />
       </Routes>
       {/* <CustomersDropdown /> */}
     </>
