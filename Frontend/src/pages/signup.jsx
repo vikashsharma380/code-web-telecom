@@ -64,7 +64,7 @@ export default function SignupPage() {
         mobile: phone,
         password,
       });
-      alert("Signup Successful. Please login.");
+      
       navigate("/login");
     } catch (err) {
       setError(err.response?.data?.message || "Signup failed");

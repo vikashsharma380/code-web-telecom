@@ -41,13 +41,18 @@ export default function LoginPage() {
         JSON.stringify({
           userId: user.userId,
           apiPassword: user.apiPassword,
+          name: data.user.name,
+          email: data.user.email,
+          role: user.role,
         })
       );
       localStorage.setItem(
         "rechargeUser",
         JSON.stringify({
           username: user.userId, // or whichever field matches recharge username
-          pwd: user.apiPassword, // match your backend field
+          pwd: user.apiPassword,
+           name: data.user.name,  
+          email: data.user.email,
         })
       );
 
@@ -59,7 +64,7 @@ export default function LoginPage() {
 
       localStorage.setItem("rechargeUser", JSON.stringify(rechargeUser));
 
-      alert("Login successful");
+    
 
       console.log(
         "Recharge User:",
