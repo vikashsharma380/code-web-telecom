@@ -59,7 +59,7 @@ export default function LoginPage() {
 
       localStorage.setItem("rechargeUser", JSON.stringify(rechargeUser));
 
-      alert("Login successful");
+    
 
       console.log(
         "Recharge User:",
