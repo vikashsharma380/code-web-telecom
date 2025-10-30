@@ -225,7 +225,8 @@ app.get("/api/balance", async (req, res) => {
     });
   }
 });
-
+const fundRoutes = require("./routes/addFund");
+app.use("/api", fundRoutes);
 
 app.get("/api/status", async (req, res) => {
   try {
@@ -294,8 +295,7 @@ app.post("/api/contact", async (req, res) => {
 
 
 
-const fundRoutes = require("./routes/addFund");
-app.use("/api", fundRoutes);
+
 
 const balanceRoutes = require("./routes/balance");
 app.use("/api", balanceRoutes); // ✅ API routes first
