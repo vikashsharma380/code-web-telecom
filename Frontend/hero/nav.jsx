@@ -15,6 +15,7 @@ const Nav = () => {
   const [balanceLoading, setBalanceLoading] = useState(true);
   const [showAddFundModal, setShowAddFundModal] = useState(false);
   const [fundAmount, setFundAmount] = useState("");
+  const [userName, setUserName] = useState(""); 
 
   const rechargeUser = {
     username: "500032",
@@ -135,6 +136,14 @@ const Nav = () => {
     }
   }, []);
 
+
+    useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUserName(parsedUser?.name || "User"); 
+    }
+  }, []);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -410,7 +419,9 @@ const Nav = () => {
               style={{ position: "relative" }}
               onClick={() => setShowUserMenu((prev) => !prev)}
             >
-              <div style={styles.avatar}>V</div>
+             <div style={styles.avatar}>
+    {userName ? userName.charAt(0).toUpperCase() : "U"}
+  </div>
 
               {showUserMenu && (
                 <div

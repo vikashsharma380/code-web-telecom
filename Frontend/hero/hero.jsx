@@ -1,15 +1,26 @@
 import React from "react";
 import { Zap, Clock } from "lucide-react";
 import styles from "../src/styles";
+import { useState, useEffect } from "react";
+
 
 export default function Hero({ title, subtitle }) {
+  const [userName, setUserName] = useState("User");
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUserName(parsedUser?.name || "User");
+    }
+  }, []);
   return (
   <div style={styles.hero}>
         <div style={styles.heroContent}>
           <div style={styles.heroLeft}>
             <div style={styles.welcomeBadge}>
               <Zap size={16} />
-              <span>Welcome back, Vikash!</span>
+             <span>Welcome back, {userName}!</span>
             </div>
             <h1 style={styles.heroTitle}>{title}</h1>
             <p style={styles.heroSubtitle}>
