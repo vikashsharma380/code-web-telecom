@@ -227,6 +227,10 @@ app.get("/api/balance", async (req, res) => {
 });
 const fundRoutes = require("./routes/addFund");
 app.use("/api", fundRoutes);
+const retailerRoutes = require("./routes/retailer");
+app.use("/api", retailerRoutes);
+
+
 
 app.get("/api/status", async (req, res) => {
   try {
