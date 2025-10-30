@@ -51,54 +51,75 @@ const Nav = () => {
     { name: "Logout", path: "/logout" },
   ];
   const [amount, setAmount] = useState("");
-  const handleAddFund = async () => {
-    if (!fundAmount || Number(fundAmount) <= 0) {
-      return alert("Please enter a valid amount.");
+const handleAddFund = async () => {
+  if (!fundAmount || Number(fundAmount) <= 0) {
+    return alert("Please enter a valid amount.");
+  }
+
+  try {
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user || !user.userId) {
+      return alert("User ID missing. Please login again.");
     }
 
-    try {
-      const token = localStorage.getItem("token");
-      const user = JSON.parse(localStorage.getItem("user"));
+    const body = {
+      userId: user.userId,
+      amount: Number(fundAmount),
+     redirect_url: "https://codewebtelecom.com/mrobo_upi/payment_callback_upi",
+    };
 
-      if (!user || !user.userId) {
-        return alert("User ID missing. Please login again.");
-      }
+    const res = await fetch(`${API_URL}/api/add-fund`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    });
 
-      console.log("User from localStorage:", user);
-      console.log("UserID:", user.userId);
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      console.error("Add Fund Error:", data.error || data);
+      return alert("❌ " + (data.error || "Something went wrong"));
+    }
 
-      const body = {
-        userId: user.userId,
-        amount: Number(fundAmount),
-        redirect_url: "http://localhost:5173/dashboard", // public URL
-      };
+    // Load SDK
+    const script = document.createElement("script");
+    script.src = "https://cdn.ekqr.in/ekqr_sdk.js";
+    script.onload = () => {
+      const paymentSDK = new EKQR({
+        sessionId: data.sessionId,
+        callbacks: {
+          onSuccess: async (response) => {
+            console.log("Payment Success:", response);
+            alert("✅ Payment Successful!");
 
-      const res = await fetch(`http://localhost:5000/api/add-fund`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+            // After success, update wallet balance
+            await fetchBalance();
+            setShowAddFundModal(false);
+          },
+          onError: (response) => {
+            console.error("Payment Error:", response);
+            alert("❌ Payment failed!");
+          },
+          onCancelled: (response) => {
+            console.log("Payment Cancelled:", response);
+            alert("⚠️ Payment cancelled");
+          },
         },
-        body: JSON.stringify(body),
       });
 
-      const data = await res.json();
+      paymentSDK.pay(); // open popup
+    };
 
-      if (!res.ok || !data.success) {
-        console.error("Add Fund Error:", data.error || data);
-        return alert("❌ " + (data.error || "Something went wrong"));
-      }
+    document.body.appendChild(script);
+  } catch (err) {
+    console.error("Server error:", err);
+    alert("Server error: " + err.message);
+  }
+};
 
-      window.open(data.paymentUrl, "_blank");
-      setFundAmount("");
-      alert(
-        "Payment initiated! After success, balance will update automatically."
-      );
-    } catch (err) {
-      console.error("Server error:", err);
-      alert("Server error: " + err.message);
-    }
-  };
   const fetchBalance = async () => {
     setBalanceLoading(true);
     try {

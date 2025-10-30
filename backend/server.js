@@ -294,7 +294,7 @@ app.post("/api/contact", async (req, res) => {
 
 
 
-const fundRoutes = require("./routes/fund");
+const fundRoutes = require("./routes/addFund");
 app.use("/api", fundRoutes);
 
 const balanceRoutes = require("./routes/balance");

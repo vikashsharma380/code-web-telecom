@@ -64,6 +64,7 @@ import SettingsAddBankName from "../Admin/AdminPages/SettingsAddBankName";
 import SettingUpiSetting from "../Admin/AdminPages/SettingUpiSetting";
 import SettingChangePassword from "../Admin/AdminPages/SettingChangePassword";
 import ReportCheckTransaction from "../Admin/AdminPages/ReportCheckTransaction";
+import ReportRetailerReport from "../Admin/AdminPages/ReportRetailerReport";
 // import CustomersDropdown from "../Admin/CustomersDropdown";
 
 function App() {
@@ -191,6 +192,10 @@ function App() {
         <Route
           path="/report/check-transaction"
           element={<ReportCheckTransaction />}
+        />
+        <Route
+          path="/report/retailer-report"
+          element={<ReportRetailerReport />}
         />
       </Routes>
       {/* <CustomersDropdown /> */}
