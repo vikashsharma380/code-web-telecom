@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import CodeWebTelecom from "./CodeWebFrontend";
@@ -58,10 +57,12 @@ import UserSupportTicket from "./Components/UserSupportTicket";
 import UserEditProfile from "./Components/UserEditProfile";
 import UserMyCommission from "./Components/UserMyCommission";
 import { useNavigate } from "react-router-dom";
+import MasterDistributorRegistration from "../Admin/AdminPages/MasterDistributorRegistration";
+import DistributorRegistration from "../Admin/AdminPages/DistributorRegistration";
+import RetailerRegistration from "../Admin/AdminPages/RetailerRegistration";
 // import CustomersDropdown from "../Admin/CustomersDropdown";
 
 function App() {
-
   const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -161,6 +162,19 @@ function App() {
 
         {/* Support */}
         <Route path="/support/set-alert" element={<SupportSetAlert />} />
+        {/* New Registration Routes */}
+        <Route
+          path="/master-distributor-registration"
+          element={<MasterDistributorRegistration />}
+        />
+        <Route
+          path="/distributor-registration"
+          element={<DistributorRegistration />}
+        />
+        <Route
+          path="/retailer-registration"
+          element={<RetailerRegistration />}
+        />
       </Routes>
       {/* <CustomersDropdown /> */}
     </>
