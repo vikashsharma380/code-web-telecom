@@ -7,22 +7,28 @@ router.post("/add-fund", async (req, res) => {
   try {
     const { userId, amount, redirect_url } = req.body;
 
+    if (!userId || !amount || !redirect_url) {
+      return res.status(400).json({ success: false, error: "Missing required fields" });
+    }
+
+    // Make sure udf1 is short
+    const shortUserId = userId.toString().substring(0, 90);
+
     const payload = {
       key: process.env.UPI_GATEWAY_KEY,
       client_txn_id: Date.now().toString(),
       amount: amount.toString(),
       p_info: "Wallet Fund Add",
-      customer_name: "User " + userId,
+      customer_name: "User " + shortUserId,
       customer_email: "user@example.com",
       customer_mobile: "9999999999",
       redirect_url,
-       userId: user?._id,
+      udf1: shortUserId, // ✅ correct field for EKQR
     };
 
     console.log("📤 Sending to EKQR:", payload);
 
     const createOrderRes = await axios.post("https://api.ekqr.in/api/v2/create_order", payload);
-
     console.log("📥 EKQR Response:", createOrderRes.data);
 
     const { status, data, msg } = createOrderRes.data;
@@ -40,6 +46,5 @@ router.post("/add-fund", async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 });
-
 
 module.exports = router;
