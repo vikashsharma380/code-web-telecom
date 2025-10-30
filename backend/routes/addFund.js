@@ -3,7 +3,7 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/add-fund", async (req, res) => {
   try {
     const { userId, amount, redirect_url } = req.body;
 
