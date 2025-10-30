@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Styles";
@@ -173,7 +172,7 @@ export default function ActionButton() {
           style={styles.actionBtn}
           onClick={() => navigate("/upi-gateway")}
         >
-          UPI GATEWAY
+          UPI GATEWAYY
         </button>
         <button
           style={styles.actionBtn}
