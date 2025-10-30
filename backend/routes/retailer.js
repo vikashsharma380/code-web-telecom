@@ -39,6 +39,7 @@ router.post("/retailer-register", async (req, res) => {
       name: retailerName,
       email,
       mobile: mobileNo,
+      phone: mobileNo,
       address: postalAddress,
       pincode: pinCode,
       state,
@@ -49,7 +50,7 @@ router.post("/retailer-register", async (req, res) => {
       contactPerson,
       scheme: selectScheme,
       balance: openingBalance || 0,
-      role: "Retailer",
+      role: "user",
       password: await bcrypt.hash(mobileNo, 10),
     });
 
