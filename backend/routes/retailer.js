@@ -102,7 +102,8 @@ router.post("/retailer-register", async (req, res) => {
       scheme: selectScheme,
       balance: openingBalance || 0,
       role: "user",
-      password: hashedPassword,
+     password: plainPassword,
+
     });
 
     await newRetailer.save();
