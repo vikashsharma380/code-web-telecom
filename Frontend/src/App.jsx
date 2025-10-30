@@ -60,6 +60,10 @@ import { useNavigate } from "react-router-dom";
 import MasterDistributorRegistration from "../Admin/AdminPages/MasterDistributorRegistration";
 import DistributorRegistration from "../Admin/AdminPages/DistributorRegistration";
 import RetailerRegistration from "../Admin/AdminPages/RetailerRegistration";
+import SettingsAddBankName from "../Admin/AdminPages/SettingsAddBankName";
+import SettingUpiSetting from "../Admin/AdminPages/SettingUpiSetting";
+import SettingChangePassword from "../Admin/AdminPages/SettingChangePassword";
+import ReportCheckTransaction from "../Admin/AdminPages/ReportCheckTransaction";
 // import CustomersDropdown from "../Admin/CustomersDropdown";
 
 function App() {
@@ -174,6 +178,19 @@ function App() {
         <Route
           path="/retailer-registration"
           element={<RetailerRegistration />}
+        />
+        <Route
+          path="/setting/add-bank-name"
+          element={<SettingsAddBankName />}
+        />
+        <Route path="/setting/upi-setting" element={<SettingUpiSetting />} />
+        <Route
+          path="/setting/change-password"
+          element={<SettingChangePassword />}
+        />
+        <Route
+          path="/report/check-transaction"
+          element={<ReportCheckTransaction />}
         />
       </Routes>
       {/* <CustomersDropdown /> */}
