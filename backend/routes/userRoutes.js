@@ -25,6 +25,17 @@ router.get("/role/:role", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+router.get("/retailers", async (req, res) => {
+  try {
+    const users = await User.find({ role: "retailer" }).select(
+      "userId name mobile balance status"
+    );
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 
 // ✅ Correct export
 module.exports = router;

@@ -1,262 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const ManageRetailer = () => {
+  const [retailers, setRetailers] = useState([]);
   const [searchBy, setSearchBy] = useState("Name");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 25;
 
-  // Sample data - replace with actual API call
-  const allRetailers = [
-    // Page 1 data
-    {
-      userId: "300021",
-      name: "MUNNA KUMAR",
-      mobile: "9162693250",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300022",
-      name: "neha",
-      mobile: "8115903936",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300023",
-      name: "Gupta IT Solution",
-      mobile: "7870442209",
-      balance: "846.99",
-      status: "Active",
-    },
-    {
-      userId: "300024",
-      name: "nazar",
-      mobile: "8294821902",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300025",
-      name: "Imran",
-      mobile: "8178947826",
-      balance: "10.00",
-      status: "Active",
-    },
-    {
-      userId: "300026",
-      name: "sana",
-      mobile: "6206197036",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300027",
-      name: "Nadeem mallick",
-      mobile: "7209172207",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300028",
-      name: "Abhishek Dewand",
-      mobile: "7004970988",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300029",
-      name: "Moin",
-      mobile: "9693936734",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300031",
-      name: "Ayush Gupta",
-      mobile: "7779067090",
-      balance: "10.00",
-      status: "Active",
-    },
-    {
-      userId: "300046",
-      name: "Mohit Kumar",
-      mobile: "7004094316",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300072",
-      name: "Manjay Kumar",
-      mobile: "9162826778",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300073",
-      name: "Prince S",
-      mobile: "8407874876",
-      balance: "4.68",
-      status: "Active",
-    },
-    {
-      userId: "300074",
-      name: "arshad ansari",
-      mobile: "9097758093",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300075",
-      name: "sabir ansari",
-      mobile: "7061198879",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300076",
-      name: "Pawan Kumar Gupta",
-      mobile: "9608079462",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300077",
-      name: "Vinay",
-      mobile: "8318786430",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300078",
-      name: "prince",
-      mobile: "9097889362",
-      balance: "5.92",
-      status: "Active",
-    },
-    {
-      userId: "300079",
-      name: "om parkash",
-      mobile: "6200973478",
-      balance: "7.09",
-      status: "Active",
-    },
-    {
-      userId: "300091",
-      name: "Shamshaad Khan",
-      mobile: "9161019161",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300021",
-      name: "Niraj Kumar",
-      mobile: "9123487048",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300022",
-      name: "Vinay",
-      mobile: "7903746880",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300023",
-      name: "ATUL PRAKASH",
-      mobile: "8252339220",
-      balance: "2.47",
-      status: "Active",
-    },
-    {
-      userId: "300024",
-      name: "MICKEY USMAN",
-      mobile: "7667636428",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300025",
-      name: "Sunny Kumar",
-      mobile: "9162541535",
-      balance: "0.00",
-      status: "Active",
-    },
-    // Page 2 data
-    {
-      userId: "300027",
-      name: "Sombhu Raj",
-      mobile: "9905468620",
-      balance: "-62.70",
-      status: "Active",
-    },
-    {
-      userId: "300028",
-      name: "Piyush Kumar",
-      mobile: "7903836661",
-      balance: "1.40",
-      status: "Active",
-    },
-    {
-      userId: "300029",
-      name: "vijay",
-      mobile: "8434601949",
-      balance: "4.05",
-      status: "Active",
-    },
-    {
-      userId: "300030",
-      name: "Abhishek Ranjan",
-      mobile: "7973047851",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300031",
-      name: "shashi",
-      mobile: "8271607847",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "300032",
-      name: "Vikash Sharma",
-      mobile: "9031738909",
-      balance: "10.00",
-      status: "Active",
-    },
-    {
-      userId: "300033",
-      name: "ashik ali",
-      mobile: "7903542180",
-      balance: "11.93",
-      status: "Active",
-    },
-  ];
+  // ✅ Fetch retailers from backend
+  useEffect(() => {
+    const fetchRetailers = async () => {
+      try {
+       const res = await axios.get(`${API_URL}/api/users/retailers`);
 
-  const totalBalance = allRetailers
-    .reduce((sum, ret) => sum + parseFloat(ret.balance), 0)
-    .toFixed(2);
+        setRetailers(res.data);
+      } catch (err) {
+        console.error("Error fetching retailers:", err);
+      }
+    };
+    fetchRetailers();
+  }, []);
 
-  // Pagination logic
+  // ✅ Search filter
+  const filteredRetailers = retailers.filter((retailer) => {
+    const term = searchTerm.toLowerCase();
+    if (searchBy === "Name") return retailer.name.toLowerCase().includes(term);
+    if (searchBy === "Mobile") return retailer.mobile.includes(term);
+    if (searchBy === "UserId") return retailer.userId.toString().includes(term);
+    return true;
+  });
+
+  // ✅ Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentRetailers = allRetailers.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
-  const totalPages = Math.ceil(allRetailers.length / itemsPerPage);
+  const currentRetailers = filteredRetailers.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredRetailers.length / itemsPerPage);
+
+  const totalBalance = filteredRetailers
+    .reduce((sum, r) => sum + parseFloat(r.balance || 0), 0)
+    .toFixed(2);
 
   const handleSearch = () => {
-    console.log("Searching by:", searchBy, "Term:", searchTerm);
+    setCurrentPage(1);
   };
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
+  // ✅ Same style object
   const styles = {
     container: {
       minHeight: "100vh",
@@ -284,11 +79,7 @@ const ManageRetailer = () => {
       alignItems: "center",
       gap: "10px",
     },
-    label: {
-      fontWeight: "600",
-      fontSize: "14px",
-      color: "#333",
-    },
+    label: { fontWeight: "600", fontSize: "14px", color: "#333" },
     select: {
       padding: "8px 12px",
       border: "1px solid #ddd",
@@ -322,10 +113,7 @@ const ManageRetailer = () => {
       boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
       marginBottom: "20px",
     },
-    table: {
-      width: "100%",
-      borderCollapse: "collapse",
-    },
+    table: { width: "100%", borderCollapse: "collapse" },
     th: {
       background: "#f8f9fa",
       padding: "12px",
@@ -360,26 +148,11 @@ const ManageRetailer = () => {
       transition: "all 0.3s",
       marginRight: "5px",
     },
-    viewProfileBtn: {
-      background: "#2563eb",
-      color: "white",
-    },
-    editProfileBtn: {
-      background: "#f59e0b",
-      color: "white",
-    },
-    addBalanceBtn: {
-      background: "#ef4444",
-      color: "white",
-    },
-    revertBalanceBtn: {
-      background: "#0891b2",
-      color: "white",
-    },
-    loginBtn: {
-      background: "#22c55e",
-      color: "white",
-    },
+    viewProfileBtn: { background: "#2563eb", color: "white" },
+    editProfileBtn: { background: "#f59e0b", color: "white" },
+    addBalanceBtn: { background: "#ef4444", color: "white" },
+    revertBalanceBtn: { background: "#0891b2", color: "white" },
+    loginBtn: { background: "#22c55e", color: "white" },
     pagination: {
       background: "white",
       padding: "15px",
@@ -412,6 +185,7 @@ const ManageRetailer = () => {
     <div style={styles.container}>
       <div style={styles.header}>TOTAL AGENT BALANCE: {totalBalance}</div>
 
+      {/* 🔍 Search Section */}
       <div style={styles.searchSection}>
         <span style={styles.label}>Search by:</span>
         <select
@@ -440,6 +214,7 @@ const ManageRetailer = () => {
         </button>
       </div>
 
+      {/* 📋 Retailer Table */}
       <div style={styles.tableContainer}>
         <table style={styles.table}>
           <thead>
@@ -464,50 +239,34 @@ const ManageRetailer = () => {
                 <td style={styles.td}>{retailer.mobile}</td>
                 <td style={styles.td}>{retailer.balance}</td>
                 <td style={styles.td}>
-                  <span style={styles.statusBadge}>{retailer.status}</span>
+                  <span style={styles.statusBadge}>
+                    {retailer.status || "Active"}
+                  </span>
                 </td>
                 <td style={styles.td}>
-                  <button
-                    style={{ ...styles.button, ...styles.viewProfileBtn }}
-                    onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
-                    onMouseLeave={(e) => (e.target.style.opacity = "1")}
-                  >
+                  <button style={{ ...styles.button, ...styles.viewProfileBtn }}>
                     View Profile
                   </button>
                 </td>
                 <td style={styles.td}>
-                  <button
-                    style={{ ...styles.button, ...styles.editProfileBtn }}
-                    onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
-                    onMouseLeave={(e) => (e.target.style.opacity = "1")}
-                  >
+                  <button style={{ ...styles.button, ...styles.editProfileBtn }}>
                     Edit Profile
                   </button>
                 </td>
                 <td style={styles.td}>
-                  <button
-                    style={{ ...styles.button, ...styles.addBalanceBtn }}
-                    onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
-                    onMouseLeave={(e) => (e.target.style.opacity = "1")}
-                  >
+                  <button style={{ ...styles.button, ...styles.addBalanceBtn }}>
                     Add Balance
                   </button>
                 </td>
                 <td style={styles.td}>
                   <button
                     style={{ ...styles.button, ...styles.revertBalanceBtn }}
-                    onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
-                    onMouseLeave={(e) => (e.target.style.opacity = "1")}
                   >
                     Revert Balance
                   </button>
                 </td>
                 <td style={styles.td}>
-                  <button
-                    style={{ ...styles.button, ...styles.loginBtn }}
-                    onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
-                    onMouseLeave={(e) => (e.target.style.opacity = "1")}
-                  >
+                  <button style={{ ...styles.button, ...styles.loginBtn }}>
                     Login
                   </button>
                 </td>
@@ -517,22 +276,15 @@ const ManageRetailer = () => {
         </table>
       </div>
 
-      {/* Pagination */}
+      {/* 📄 Pagination */}
       <div style={styles.pagination}>
         <button
           style={styles.pageButton}
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          onMouseEnter={(e) =>
-            !e.target.disabled && (e.target.style.background = "#f0f0f0")
-          }
-          onMouseLeave={(e) =>
-            !e.target.disabled && (e.target.style.background = "white")
-          }
         >
           Previous
         </button>
-
         {[...Array(totalPages)].map((_, index) => (
           <button
             key={index + 1}
@@ -542,28 +294,14 @@ const ManageRetailer = () => {
                 : styles.pageButton
             }
             onClick={() => handlePageChange(index + 1)}
-            onMouseEnter={(e) =>
-              currentPage !== index + 1 &&
-              (e.target.style.background = "#f0f0f0")
-            }
-            onMouseLeave={(e) =>
-              currentPage !== index + 1 && (e.target.style.background = "white")
-            }
           >
             {index + 1}
           </button>
         ))}
-
         <button
           style={styles.pageButton}
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          onMouseEnter={(e) =>
-            !e.target.disabled && (e.target.style.background = "#f0f0f0")
-          }
-          onMouseLeave={(e) =>
-            !e.target.disabled && (e.target.style.background = "white")
-          }
         >
           Next
         </button>
