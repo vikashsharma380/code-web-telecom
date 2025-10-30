@@ -65,7 +65,7 @@ import SettingUpiSetting from "../Admin/AdminPages/SettingUpiSetting";
 import SettingChangePassword from "../Admin/AdminPages/SettingChangePassword";
 import ReportCheckTransaction from "../Admin/AdminPages/ReportCheckTransaction";
 import ReportRetailerReport from "../Admin/AdminPages/ReportRetailerReport";
-import ManageMasterDistributor from "../Admin/ManageMasterDistributor";
+import ManageMasterDistributor from "../Admin/AdminPages/ManageMasterDistributor";
 import ManageDistributor from "../Admin/AdminPages/ManageDistributor";
 import ManageRetailer from "../Admin/AdminPages/ManageRetailer";
 import BalanceTransferRetailer from "../Admin/AdminPages/BalanceTransferRetailer";
