@@ -7,28 +7,30 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   mobile: { type: String, required: true, unique: true },
   phone: { type: String, required: true, unique: true },
-
   loginMobile: { type: String },
   password: { type: String },
   apiUserId: { type: Number },
   apiPassword: { type: String },
- role: {
+  role: {
     type: String,
     enum: ["admin", "distributor", "master-distributor", "user"],
     default: "user",
   },
-
   parentName: { type: String, default: "" },
   state: { type: String, default: "" },
-
   address: { type: String, default: "" },
   alternateNumber: { type: String, default: "" },
+  postalAddress: { type: String, default: "" }, // ✅ Add this
+  pinCode: { type: String, default: "" },        // ✅ Add this
+  retailerType: { type: String, default: "" },   // ✅ Add this
+  contactPerson: { type: String, default: "" },  // ✅ Add this
+  scheme: { type: String, default: "" },         // ✅ Add this
+  underDistributorName: { type: String, default: "" }, // ✅ Add this
+  balance: { type: Number, default: 0 },
   activationDate: { type: Date, default: Date.now },
   createdAt: { type: Date, default: Date.now },
-
-  // ✅ Add balance field
-  balance: { type: Number, default: 0 },
 });
+
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

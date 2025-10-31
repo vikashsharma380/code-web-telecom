@@ -49,14 +49,22 @@ router.get("/:id", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-
   try {
-    const updated = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(updated);
+    console.log("🟢 Update Request Body:", req.body);
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true, // extra safe
+    });
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(updatedUser);
   } catch (err) {
+    console.error("❌ Error updating user:", err.message);
     res.status(500).json({ message: "Error updating user", error: err.message });
   }
 });
+
 
 
 module.exports = router;
