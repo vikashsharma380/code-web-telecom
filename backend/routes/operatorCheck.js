@@ -12,6 +12,8 @@ router.get("/operator-info/:mobile", async (req, res) => {
     const response = await axios.get(
       `http://operatorcheck.mplan.in/api/operatorinfo.php?apikey=${API_KEY}&tel=${mobile}`
     );
+    console.log("Operator API called for:", mobile);
+    console.log("Response from Mplan:", response.data);
 
     res.json(response.data);
   } catch (error) {
