@@ -1,7 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const User = require("../../models/user");
-const Counter = require("../../models/Counter");
+const User = require("../models/user");
+const Counter = require("../models/Counter");
 const router = express.Router();
 const ADMIN_MOBILE = "9266982764";
 async function getNextUserId() {
@@ -28,10 +28,14 @@ async function sendWhatsAppMessage(mobile, message) {
     formData.append("priority", "high");
     formData.append("channel", "whatsapp");
 
-    const res = await axios.post(process.env.WHATSAPP_API_URL, formData.toString(), {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      timeout: 10000,
-    });
+    const res = await axios.post(
+      process.env.WHATSAPP_API_URL,
+      formData.toString(),
+      {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        timeout: 10000,
+      }
+    );
 
     return res.data;
   } catch (err) {
@@ -47,7 +51,9 @@ router.post("/register", async (req, res) => {
     console.log("Received signup body:", req.body);
 
     if (!mobile || !password || !name) {
-      return res.status(400).json({ message: "name, mobile and password are required" });
+      return res
+        .status(400)
+        .json({ message: "name, mobile and password are required" });
     }
 
     const existingUser = await User.findOne({ mobile });
@@ -87,7 +93,13 @@ router.post("/register", async (req, res) => {
       console.error("Failed to send WhatsApp message:", err.message || err);
     }
 
-    res.status(201).json({ message: "Signup successful", role: newUser.role, userId: newUser.userId });
+    res
+      .status(201)
+      .json({
+        message: "Signup successful",
+        role: newUser.role,
+        userId: newUser.userId,
+      });
   } catch (err) {
     console.error("Signup Error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
@@ -99,27 +111,29 @@ router.post("/login", async (req, res) => {
 
   try {
     if (!loginInput || !password) {
-      return res.status(400).json({ message: "Please enter User ID/Mobile and Password" });
+      return res
+        .status(400)
+        .json({ message: "Please enter User ID/Mobile and Password" });
     }
 
     let user;
-    
 
     if (/^\d{10}$/.test(loginInput)) {
       // mobile is string
-     user = await User.findOne({
-    $or: [{ mobile: loginInput }, { phone: loginInput }],
-  });}
-     else{ // userId is number
+      user = await User.findOne({
+        $or: [{ mobile: loginInput }, { phone: loginInput }],
+      });
+    } else {
+      // userId is number
       user = await User.findOne({ userId: Number(loginInput) });
     }
 
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-console.log("✅ Found user:", user.mobile || user.userId);
-console.log("DB password hash:", user.password);
-console.log("Entered password:", password);
+    console.log("✅ Found user:", user.mobile || user.userId);
+    console.log("DB password hash:", user.password);
+    console.log("Entered password:", password);
 
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
@@ -136,7 +150,7 @@ console.log("Entered password:", password);
         userId: user.userId,
         name: user.name,
         role: user.role,
-        apiPassword: password, 
+        apiPassword: password,
       },
     });
   } catch (err) {
@@ -146,7 +160,7 @@ console.log("Entered password:", password);
 });
 const axios = require("axios");
 
-const otpStore = new Map(); 
+const otpStore = new Map();
 
 // Send OTP
 router.post("/send-otp", async (req, res) => {
@@ -160,9 +174,15 @@ router.post("/send-otp", async (req, res) => {
   try {
     const formData = new URLSearchParams();
     formData.append("appkey", "5a48cbf2-9d89-40fe-a46a-9697626c7908");
-    formData.append("authkey", "SXA40NLGqoOsdNZGJi8wLL1ydT3CTy592MeG9tbAfnXYq43W7W");
+    formData.append(
+      "authkey",
+      "SXA40NLGqoOsdNZGJi8wLL1ydT3CTy592MeG9tbAfnXYq43W7W"
+    );
     formData.append("to", `+91${mobile}`); // always include country code
-    formData.append("message", `Your Code Web Telecom OTP is ${otp}. It expires in 5 mins.`);
+    formData.append(
+      "message",
+      `Your Code Web Telecom OTP is ${otp}. It expires in 5 mins.`
+    );
     formData.append("priority", "high"); // optional
     formData.append("channel", "whatsapp"); // send via WhatsApp
 
@@ -182,7 +202,8 @@ router.post("/verify-otp", (req, res) => {
   const storedOtp = otpStore.get(mobile);
 
   if (!storedOtp) return res.status(400).json({ message: "OTP expired" });
-  if (parseInt(otp) !== storedOtp) return res.status(400).json({ message: "Invalid OTP" });
+  if (parseInt(otp) !== storedOtp)
+    return res.status(400).json({ message: "Invalid OTP" });
 
   otpStore.delete(mobile);
   res.json({ success: true, message: "OTP verified" });
@@ -192,6 +213,5 @@ const generateToken = (id) => {
   // No expiry — user stays logged in until manual logout
   return jwt.sign({ id }, process.env.JWT_SECRET);
 };
-
 
 module.exports = router;

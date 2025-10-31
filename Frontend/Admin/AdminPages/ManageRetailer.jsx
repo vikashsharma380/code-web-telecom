@@ -1,57 +1,42 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const ManageRetailer = () => {
+  const [retailers, setRetailers] = useState([]);
   const [searchBy, setSearchBy] = useState("Name");
   const [searchTerm, setSearchTerm] = useState("");
-  const [allRetailers, setAllRetailers] = useState([]);
-  const [filteredRetailers, setFilteredRetailers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
   const itemsPerPage = 25;
 
-  // ✅ Fetch data from backend
+  // ✅ Fetch retailers from backend
   useEffect(() => {
     const fetchRetailers = async () => {
       try {
-        setLoading(true);
-        const res = await fetch(`${API_URL}/api/users/retailers`);
-        const data = await res.json();
-        setAllRetailers(data);
-        setFilteredRetailers(data);
-      } catch (error) {
-        console.error("Error fetching retailers:", error);
-      } finally {
-        setLoading(false);
+        const res = await axios.get(`${API_URL}/api/users/retailers`);
+
+        setRetailers(res.data);
+      } catch (err) {
+        console.error("Error fetching retailers:", err);
       }
     };
     fetchRetailers();
   }, []);
 
-  // ✅ Total balance
-  const totalBalance = filteredRetailers
-    .reduce((sum, ret) => sum + parseFloat(ret.balance || 0), 0)
-    .toFixed(2);
-
-  // ✅ Search function
-  const handleSearch = () => {
-    if (!searchTerm.trim()) {
-      setFilteredRetailers(allRetailers);
-      return;
-    }
+  // ✅ Search filter
+  const filteredRetailers = retailers.filter((retailer) => {
     const term = searchTerm.toLowerCase();
-    const filtered = allRetailers.filter((ret) => {
-      if (searchBy === "Name") return ret.name?.toLowerCase().includes(term);
-      if (searchBy === "Mobile") return ret.mobile?.includes(term);
-      if (searchBy === "UserId") return ret.userId?.toString().includes(term);
-      return false;
-    });
-    setFilteredRetailers(filtered);
-    setCurrentPage(1);
-  };
+    if (searchBy === "Name") return retailer.name.toLowerCase().includes(term);
+    if (searchBy === "Mobile") return retailer.mobile.includes(term);
+    if (searchBy === "UserId") return retailer.userId.toString().includes(term);
+    return true;
+  });
 
-  // ✅ Pagination
+  // ✅ Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentRetailers = filteredRetailers.slice(
@@ -60,11 +45,19 @@ const ManageRetailer = () => {
   );
   const totalPages = Math.ceil(filteredRetailers.length / itemsPerPage);
 
+  const totalBalance = filteredRetailers
+    .reduce((sum, r) => sum + parseFloat(r.balance || 0), 0)
+    .toFixed(2);
+
+  const handleSearch = () => {
+    setCurrentPage(1);
+  };
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  // ✅ Styles (same as your original — copied fully)
+  // ✅ Same style object
   const styles = {
     container: {
       minHeight: "100vh",
@@ -92,11 +85,7 @@ const ManageRetailer = () => {
       alignItems: "center",
       gap: "10px",
     },
-    label: {
-      fontWeight: "600",
-      fontSize: "14px",
-      color: "#333",
-    },
+    label: { fontWeight: "600", fontSize: "14px", color: "#333" },
     select: {
       padding: "8px 12px",
       border: "1px solid #ddd",
@@ -130,10 +119,7 @@ const ManageRetailer = () => {
       boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
       marginBottom: "20px",
     },
-    table: {
-      width: "100%",
-      borderCollapse: "collapse",
-    },
+    table: { width: "100%", borderCollapse: "collapse" },
     th: {
       background: "#f8f9fa",
       padding: "12px",
@@ -168,26 +154,11 @@ const ManageRetailer = () => {
       transition: "all 0.3s",
       marginRight: "5px",
     },
-    viewProfileBtn: {
-      background: "#2563eb",
-      color: "white",
-    },
-    editProfileBtn: {
-      background: "#f59e0b",
-      color: "white",
-    },
-    addBalanceBtn: {
-      background: "#ef4444",
-      color: "white",
-    },
-    revertBalanceBtn: {
-      background: "#0891b2",
-      color: "white",
-    },
-    loginBtn: {
-      background: "#22c55e",
-      color: "white",
-    },
+    viewProfileBtn: { background: "#2563eb", color: "white" },
+    editProfileBtn: { background: "#f59e0b", color: "white" },
+    addBalanceBtn: { background: "#ef4444", color: "white" },
+    revertBalanceBtn: { background: "#0891b2", color: "white" },
+    loginBtn: { background: "#22c55e", color: "white" },
     pagination: {
       background: "white",
       padding: "15px",
@@ -217,42 +188,48 @@ const ManageRetailer = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>TOTAL AGENT BALANCE: {totalBalance}</div>
+    <>
+      <style>
+        {`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.9); }
+          to { opacity: 1; transform: scale(1); }
+        }
+      `}
+      </style>
+      <div style={styles.container}>
+        <div style={styles.header}>TOTAL AGENT BALANCE: {totalBalance}</div>
 
-      {/* 🔍 Search Section */}
-      <div style={styles.searchSection}>
-        <span style={styles.label}>Search by:</span>
-        <select
-          style={styles.select}
-          value={searchBy}
-          onChange={(e) => setSearchBy(e.target.value)}
-        >
-          <option value="Name">Name</option>
-          <option value="Mobile">Mobile</option>
-          <option value="UserId">User ID</option>
-        </select>
-        <input
-          type="text"
-          style={styles.input}
-          placeholder="Enter search term..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button
-          style={styles.searchButton}
-          onClick={handleSearch}
-          onMouseEnter={(e) => (e.target.style.background = "#1d4ed8")}
-          onMouseLeave={(e) => (e.target.style.background = "#2563eb")}
-        >
-          Search
-        </button>
-      </div>
+        {/* 🔍 Search Section */}
+        <div style={styles.searchSection}>
+          <span style={styles.label}>Search by:</span>
+          <select
+            style={styles.select}
+            value={searchBy}
+            onChange={(e) => setSearchBy(e.target.value)}
+          >
+            <option value="Name">Name</option>
+            <option value="Mobile">Mobile</option>
+            <option value="UserId">User ID</option>
+          </select>
+          <input
+            type="text"
+            style={styles.input}
+            placeholder="Enter search term..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button
+            style={styles.searchButton}
+            onClick={handleSearch}
+            onMouseEnter={(e) => (e.target.style.background = "#1d4ed8")}
+            onMouseLeave={(e) => (e.target.style.background = "#2563eb")}
+          >
+            Search
+          </button>
+        </div>
 
-      {/* 🧾 Table Section */}
-      {loading ? (
-        <div style={{ color: "white", textAlign: "center" }}>Loading...</div>
-      ) : (
+        {/* 📋 Retailer Table */}
         <div style={styles.tableContainer}>
           <table style={styles.table}>
             <thead>
@@ -270,71 +247,178 @@ const ManageRetailer = () => {
               </tr>
             </thead>
             <tbody>
-              {currentRetailers.map((ret, index) => (
+              {currentRetailers.map((retailer, index) => (
                 <tr key={index}>
-                  <td style={styles.td}>{ret.userId}</td>
-                  <td style={styles.td}>{ret.name}</td>
-                  <td style={styles.td}>{ret.mobile}</td>
-                  <td style={styles.td}>{ret.balance}</td>
+                  <td style={styles.td}>{retailer.userId}</td>
+                  <td style={styles.td}>{retailer.name}</td>
+                  <td style={styles.td}>{retailer.mobile}</td>
+                  <td style={styles.td}>{retailer.balance}</td>
                   <td style={styles.td}>
-                    <span style={styles.statusBadge}>{ret.status || "Active"}</span>
+                    <span style={styles.statusBadge}>
+                      {retailer.status || "Active"}
+                    </span>
                   </td>
                   <td style={styles.td}>
-                    <button style={{ ...styles.button, ...styles.viewProfileBtn }}>View Profile</button>
+                    <button
+                      style={{ ...styles.button, ...styles.viewProfileBtn }}
+                      onClick={() => {
+                        setSelectedUser(retailer);
+                        setShowModal(true);
+                      }}
+                    >
+                      View Profile
+                    </button>
+                  </td>
+
+                  <td style={styles.td}>
+                    <button
+                      style={{ ...styles.button, ...styles.editProfileBtn }}
+                    >
+                      Edit Profile
+                    </button>
                   </td>
                   <td style={styles.td}>
-                    <button style={{ ...styles.button, ...styles.editProfileBtn }}>Edit Profile</button>
+                    <button
+                      style={{ ...styles.button, ...styles.addBalanceBtn }}
+                    >
+                      Add Balance
+                    </button>
                   </td>
                   <td style={styles.td}>
-                    <button style={{ ...styles.button, ...styles.addBalanceBtn }}>Add Balance</button>
+                    <button
+                      style={{ ...styles.button, ...styles.revertBalanceBtn }}
+                    >
+                      Revert Balance
+                    </button>
                   </td>
                   <td style={styles.td}>
-                    <button style={{ ...styles.button, ...styles.revertBalanceBtn }}>Revert Balance</button>
-                  </td>
-                  <td style={styles.td}>
-                    <button style={{ ...styles.button, ...styles.loginBtn }}>Login</button>
+                    <button style={{ ...styles.button, ...styles.loginBtn }}>
+                      Login
+                    </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      )}
 
-      {/* 📄 Pagination */}
-      <div style={styles.pagination}>
-        <button
-          style={styles.pageButton}
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          Previous
-        </button>
-
-        {[...Array(totalPages)].map((_, index) => (
+        {/* 📄 Pagination */}
+        <div style={styles.pagination}>
           <button
-            key={index + 1}
-            style={
-              currentPage === index + 1
-                ? { ...styles.pageButton, ...styles.activePageButton }
-                : styles.pageButton
-            }
-            onClick={() => handlePageChange(index + 1)}
+            style={styles.pageButton}
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
           >
-            {index + 1}
+            Previous
           </button>
-        ))}
+          {[...Array(totalPages)].map((_, index) => (
+            <button
+              key={index + 1}
+              style={
+                currentPage === index + 1
+                  ? { ...styles.pageButton, ...styles.activePageButton }
+                  : styles.pageButton
+              }
+              onClick={() => handlePageChange(index + 1)}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button
+            style={styles.pageButton}
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+          {showModal && selectedUser && (
+            <div style={modalStyles.overlay}>
+              <div style={modalStyles.modal}>
+                <h2 style={modalStyles.header}>User Profile</h2>
 
-        <button
-          style={styles.pageButton}
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </button>
+                <div style={modalStyles.body}>
+                  <p>
+                    <strong>User ID:</strong> {selectedUser.userId}
+                  </p>
+                  <p>
+                    <strong>Name:</strong> {selectedUser.name}
+                  </p>
+                  <p>
+                    <strong>Mobile:</strong> {selectedUser.mobile}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {selectedUser.email || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Balance:</strong> ₹{selectedUser.balance}
+                  </p>
+                  <p>
+                    <strong>Status:</strong> {selectedUser.status || "Active"}
+                  </p>
+                  <p>
+                    <strong>Role:</strong> {selectedUser.role || "Retailer"}
+                  </p>
+                </div>
+
+                <button
+                  style={modalStyles.closeButton}
+                  onClick={() => setShowModal(false)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
+};
+const modalStyles = {
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100vw",
+    height: "100vh",
+    backgroundColor: "rgba(0,0,0,0.6)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+  },
+  modal: {
+    backgroundColor: "white",
+    borderRadius: "10px",
+    padding: "25px",
+    width: "400px",
+    boxShadow: "0 5px 15px rgba(0,0,0,0.3)",
+    textAlign: "left",
+    animation: "fadeIn 0.3s ease",
+  },
+  header: {
+    fontSize: "20px",
+    fontWeight: "700",
+    marginBottom: "15px",
+    textAlign: "center",
+  },
+  body: {
+    fontSize: "15px",
+    lineHeight: "1.6",
+    color: "#333",
+  },
+  closeButton: {
+    display: "block",
+    width: "100%",
+    padding: "10px 0",
+    marginTop: "20px",
+    background: "#2563eb",
+    color: "white",
+    fontWeight: "600",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+  },
 };
 
 export default ManageRetailer;

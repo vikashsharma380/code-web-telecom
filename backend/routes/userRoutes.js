@@ -1,5 +1,5 @@
 const express = require("express");
-const User = require("../../models/user");
+const User = require("../models/user");
 
 const router = express.Router();
 
@@ -25,16 +25,24 @@ router.get("/role/:role", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
 router.get("/retailers", async (req, res) => {
   try {
-    const retailers = await User.find({ role: "retailer" }).select("-password");
-    res.json(retailers);
+    const users = await User.find().select("userId name mobile balance status");
+    res.json(users);
   } catch (err) {
-    console.error("Error fetching retailers:", err);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ error: "Server error" });
   }
 });
-
-// ✅ Correct export
+router.get("/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 module.exports = router;
