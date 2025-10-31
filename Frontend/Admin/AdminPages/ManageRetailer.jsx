@@ -10,6 +10,22 @@ const ManageRetailer = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editData, setEditData] = useState({
+    name: "",
+    distributorName: "",
+    address: "",
+    pinCode: "",
+    state: "",
+    city: "",
+    mobile: "",
+    altMobile: "",
+    retailerType: "",
+    email: "",
+    panNo: "",
+    contactPerson: "",
+    scheme: "",
+  });
 
   const itemsPerPage = 25;
 
@@ -273,10 +289,30 @@ const ManageRetailer = () => {
                   <td style={styles.td}>
                     <button
                       style={{ ...styles.button, ...styles.editProfileBtn }}
+                      onClick={() => {
+                        setSelectedUser(retailer);
+                        setEditData({
+                          name: retailer.name || "",
+                          distributorName: retailer.distributorName || "",
+                          address: retailer.address || "",
+                          pinCode: retailer.pinCode || "",
+                          state: retailer.state || "",
+                          city: retailer.city || "",
+                          mobile: retailer.mobile || "",
+                          altMobile: retailer.altMobile || "",
+                          retailerType: retailer.retailerType || "",
+                          email: retailer.email || "",
+                          panNo: retailer.panNo || "",
+                          contactPerson: retailer.contactPerson || "",
+                          scheme: retailer.scheme || "",
+                        });
+                        setShowEditModal(true);
+                      }}
                     >
                       Edit Profile
                     </button>
                   </td>
+
                   <td style={styles.td}>
                     <button
                       style={{ ...styles.button, ...styles.addBalanceBtn }}
@@ -369,6 +405,203 @@ const ManageRetailer = () => {
               </div>
             </div>
           )}
+
+          {showEditModal && selectedUser && (
+            <div style={modalStyles.overlay}>
+              <div
+                style={{
+                  ...modalStyles.modal,
+                  width: "500px",
+                  maxHeight: "90vh",
+                  overflowY: "auto",
+                }}
+              >
+                <h2 style={modalStyles.header}>Edit Profile</h2>
+
+                <div style={modalStyles.body}>
+                  <label>Retailer Name :</label>
+                  <input
+                    style={inputStyle}
+                    type="text"
+                    value={editData.name}
+                    onChange={(e) =>
+                      setEditData({ ...editData, name: e.target.value })
+                    }
+                  />
+
+                  <label>Under Distributor Name :</label>
+                  <input
+                    style={inputStyle}
+                    type="text"
+                    value={editData.distributorName}
+                    onChange={(e) =>
+                      setEditData({
+                        ...editData,
+                        distributorName: e.target.value,
+                      })
+                    }
+                  />
+
+                  <label>Postal Address :</label>
+                  <textarea
+                    style={{ ...inputStyle, height: "60px" }}
+                    value={editData.address}
+                    onChange={(e) =>
+                      setEditData({ ...editData, address: e.target.value })
+                    }
+                  />
+
+                  <label>Pin Code :</label>
+                  <input
+                    style={inputStyle}
+                    type="text"
+                    value={editData.pinCode}
+                    onChange={(e) =>
+                      setEditData({ ...editData, pinCode: e.target.value })
+                    }
+                  />
+
+                  <label>State :</label>
+                  <select
+                    style={inputStyle}
+                    value={editData.state}
+                    onChange={(e) =>
+                      setEditData({ ...editData, state: e.target.value })
+                    }
+                  >
+                    <option value="">Select State</option>
+                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Delhi">Delhi</option>
+                    {/* aur bhi states add kar sakte ho */}
+                  </select>
+
+                  <label>City/District :</label>
+                  <select
+                    style={inputStyle}
+                    value={editData.city}
+                    onChange={(e) =>
+                      setEditData({ ...editData, city: e.target.value })
+                    }
+                  >
+                    <option value="">Select City</option>
+                    <option value="Gwalior">Gwalior</option>
+                    <option value="Bhopal">Bhopal</option>
+                    <option value="Indore">Indore</option>
+                  </select>
+
+                  <label>Mobile No :</label>
+                  <input
+                    style={inputStyle}
+                    type="text"
+                    value={editData.mobile}
+                    onChange={(e) =>
+                      setEditData({ ...editData, mobile: e.target.value })
+                    }
+                  />
+
+                  <label>Alternate Number :</label>
+                  <input
+                    style={inputStyle}
+                    type="text"
+                    value={editData.altMobile}
+                    onChange={(e) =>
+                      setEditData({ ...editData, altMobile: e.target.value })
+                    }
+                  />
+
+                  <label>Retailer Type :</label>
+                  <input
+                    style={inputStyle}
+                    type="text"
+                    value={editData.retailerType}
+                    onChange={(e) =>
+                      setEditData({ ...editData, retailerType: e.target.value })
+                    }
+                  />
+
+                  <label>Email :</label>
+                  <input
+                    style={inputStyle}
+                    type="email"
+                    value={editData.email}
+                    onChange={(e) =>
+                      setEditData({ ...editData, email: e.target.value })
+                    }
+                  />
+
+                  <label>Pan No :</label>
+                  <input
+                    style={inputStyle}
+                    type="text"
+                    value={editData.panNo}
+                    onChange={(e) =>
+                      setEditData({ ...editData, panNo: e.target.value })
+                    }
+                  />
+
+                  <label>Contact Person :</label>
+                  <input
+                    style={inputStyle}
+                    type="text"
+                    value={editData.contactPerson}
+                    onChange={(e) =>
+                      setEditData({
+                        ...editData,
+                        contactPerson: e.target.value,
+                      })
+                    }
+                  />
+
+                  <label>Scheme :</label>
+                  <input
+                    style={inputStyle}
+                    type="text"
+                    value={editData.scheme}
+                    onChange={(e) =>
+                      setEditData({ ...editData, scheme: e.target.value })
+                    }
+                  />
+                </div>
+
+                <button
+                  style={modalStyles.closeButton}
+                  onClick={async () => {
+                    try {
+                      await axios.put(
+                        `${API_URL}/api/users/${selectedUser._id}`,
+                        editData
+                      );
+                      alert("Profile updated successfully!");
+                      setRetailers((prev) =>
+                        prev.map((r) =>
+                          r._id === selectedUser._id ? { ...r, ...editData } : r
+                        )
+                      );
+                      setShowEditModal(false);
+                    } catch (err) {
+                      console.error("Error updating profile:", err);
+                      alert("Error updating profile!");
+                    }
+                  }}
+                >
+                  Save Changes
+                </button>
+
+                <button
+                  style={{
+                    ...modalStyles.closeButton,
+                    background: "#ef4444",
+                    marginTop: "10px",
+                  }}
+                  onClick={() => setShowEditModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>
@@ -419,6 +652,15 @@ const modalStyles = {
     borderRadius: "6px",
     cursor: "pointer",
   },
+};
+
+const inputStyle = {
+  width: "100%",
+  padding: "8px",
+  marginBottom: "10px",
+  border: "1px solid #ddd",
+  borderRadius: "6px",
+  fontSize: "14px",
 };
 
 export default ManageRetailer;
