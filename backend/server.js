@@ -323,7 +323,15 @@ const userRoutes = require("./routes/userRoutes");
 app.use("/api/users", userRoutes);
 const operatorCheck = require("./routes/operatorCheck");
 app.use("/api", operatorCheck);
-
+app.get("/myip", async (req, res) => {
+  try {
+    const response = await axios.get("https://api.ipify.org?format=json");
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error fetching IP:", error.message);
+    res.status(500).json({ error: "Failed to get server IP" });
+  }
+});
 
 // Serve frontend
 app.use(express.static(path.join(__dirname, "../Frontend/dist")));
