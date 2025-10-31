@@ -220,7 +220,8 @@ function MobileRechargeForm({ rechargeUser }) {
 
     if (value.length === 10) {
       try {
-        const res = await fetch(`${API_URL}/api/operatorinfo/${value}`);
+       const res = await fetch(`${API_URL}/api/operator-info/${value}`);
+
         const data = await res.json();
 
         if (data.Operator && data.Circle) {

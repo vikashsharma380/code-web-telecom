@@ -3,7 +3,7 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 
-const API_KEY = "yourapikey"; // replace with your real API key
+const API_KEY = "6fda75354f70927c5d45a3a4dca7f6ce"; // replace with your real API key
 
 router.get("/operator-info/:mobile", async (req, res) => {
   const mobile = req.params.mobile;
