@@ -65,12 +65,13 @@ import SettingUpiSetting from "../Admin/AdminPages/SettingUpiSetting";
 import SettingChangePassword from "../Admin/AdminPages/SettingChangePassword";
 import ReportCheckTransaction from "../Admin/AdminPages/ReportCheckTransaction";
 import ReportRetailerReport from "../Admin/AdminPages/ReportRetailerReport";
-import ManageMasterDistributor from "../Admin/ManageMasterDistributor";
+import ManageMasterDistributor from "../Admin/AdminPages/ManageMasterDistributor";
 import ManageDistributor from "../Admin/AdminPages/ManageDistributor";
 import ManageRetailer from "../Admin/AdminPages/ManageRetailer";
 import BalanceTransferRetailer from "../Admin/AdminPages/BalanceTransferRetailer";
 import BalanceTransferDistributor from "../Admin/AdminPages/BalanceTransferDistributor";
 import BalanceTransferMasterDistributor from "../Admin/AdminPages/BalanceTransferMasterDistributor";
+import DistributorPanel from "../Admin/AdminPages/DistributorPanel";
 // import CustomersDropdown from "../Admin/CustomersDropdown";
 
 function App() {
@@ -220,6 +221,10 @@ function App() {
         <Route
           path="/balance-transfer-retailer"
           element={<BalanceTransferRetailer />}
+        />
+        <Route
+          path="/balance-transfer-retailer"
+          element={<DistributorPanel />}
         />
       </Routes>
       {/* <CustomersDropdown /> */}

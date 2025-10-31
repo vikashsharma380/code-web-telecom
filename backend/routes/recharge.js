@@ -1,11 +1,11 @@
 // routes/recharge.js
 const express = require("express");
 const router = express.Router();
-const { verifyToken } = require("../middleware/authMiddleware");
+const { verifyToken } = require("../../middleware/authMiddleware");
 const { v4: uuidv4 } = require("uuid");
 const axios = require("axios");
-const Transaction = require("../models/Transaction");
-const User = require("../models/user");
+const Transaction = require("../../models/Transaction");
+const User = require("../../models/user");
 
 // Cutoff: users activated ON/AFTER this date are "new"
 const cutoffDate = new Date("2025-10-25T00:00:00.000Z");

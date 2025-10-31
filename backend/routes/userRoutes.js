@@ -27,9 +27,7 @@ router.get("/role/:role", async (req, res) => {
 });
 router.get("/retailers", async (req, res) => {
   try {
-    const users = await User.find().select(
-      "userId name mobile balance status"
-    );
+    const users = await User.find().select("userId name mobile balance status");
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: "Server error" });

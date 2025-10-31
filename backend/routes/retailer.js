@@ -21,8 +21,10 @@ function generateSimplePassword() {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   const digits = "0123456789";
   let pass = "";
-  for (let i = 0; i < 4; i++) pass += letters[Math.floor(Math.random() * letters.length)];
-  for (let i = 0; i < 2; i++) pass += digits[Math.floor(Math.random() * digits.length)];
+  for (let i = 0; i < 4; i++)
+    pass += letters[Math.floor(Math.random() * letters.length)];
+  for (let i = 0; i < 2; i++)
+    pass += digits[Math.floor(Math.random() * digits.length)];
   return pass;
 }
 
@@ -43,7 +45,10 @@ async function sendWhatsAppMessage(mobile, message) {
 
     console.log("✅ WhatsApp sent to:", mobile);
   } catch (err) {
-    console.error("❌ WhatsApp send failed:", err.response?.data || err.message);
+    console.error(
+      "❌ WhatsApp send failed:",
+      err.response?.data || err.message
+    );
   }
 }
 
@@ -102,13 +107,15 @@ router.post("/retailer-register", async (req, res) => {
       scheme: selectScheme,
       balance: openingBalance || 0,
       role: "user",
-      password: hashedPassword,
+      password: plainPassword,
     });
 
     await newRetailer.save();
 
     // Send WhatsApp welcome message
-    const message = `Welcome to Code Web Telecom!\nUserID: ${userId}\nMobile(Login): ${mobileNo}\nPassword: ${plainPassword}\nBalance: ₹${openingBalance || 0}\n\nLogin at: www.codewebtelecom.in/login`;
+    const message = `Welcome to Code Web Telecom!\nUserID: ${userId}\nMobile(Login): ${mobileNo}\nPassword: ${plainPassword}\nBalance: ₹${
+      openingBalance || 0
+    }\n\nLogin at: www.codewebtelecom.in/login`;
     await sendWhatsAppMessage(mobileNo, message);
 
     res.json({

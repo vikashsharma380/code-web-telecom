@@ -1,77 +1,36 @@
 // import React, { useState } from "react";
 // import MasterDistributorPanel from "./MasterDistributorPanel";
 
-// const ManageDistributor = () => {
+// const ManageMasterDistributor = () => {
 //   const [searchBy, setSearchBy] = useState("Name");
 //   const [searchTerm, setSearchTerm] = useState("");
 //   const [showDashboard, setShowDashboard] = useState(false);
-//   const [selectedDistributor, setSelectedDistributor] = useState(null);
+//   const [selectedDealer, setSelectedDealer] = useState(null);
 
 //   // Sample data - replace with actual API call
-//   const [distributors] = useState([
+//   const [masterDealers] = useState([
 //     {
-//       userId: "200002",
-//       name: "DEMO DISTRIBUTOR",
-//       mobile: "12345",
-//       balance: "0.00",
-//       status: "Active",
-//     },
-//     {
-//       userId: "200003",
-//       name: "CWT DISTRIBUTOR",
-//       mobile: "9135353235",
-//       balance: "53.35",
-//       status: "Active",
-//     },
-//     {
-//       userId: "200004",
-//       name: "SP Gupta",
-//       mobile: "8877788099",
-//       balance: "0.00",
-//       status: "Active",
-//     },
-//     {
-//       userId: "200005",
-//       name: "AMAN KUMAR",
-//       mobile: "8969351180",
-//       balance: "0.00",
-//       status: "Active",
-//     },
-//     {
-//       userId: "200006",
-//       name: "PAPPU KUMAR GIRI",
-//       mobile: "9007133563",
-//       balance: "0.00",
-//       status: "Active",
-//     },
-//     {
-//       userId: "200007",
-//       name: "ATUL PRAKASH",
-//       mobile: "08252339220",
+//       userId: "300003",
+//       name: "ADMIN",
+//       mobile: "31241",
 //       balance: "0.00",
 //       status: "Active",
 //     },
 //   ]);
-
-//   const totalBalance = distributors
-//     .reduce((sum, dist) => sum + parseFloat(dist.balance), 0)
-//     .toFixed(2);
 
 //   const handleSearch = () => {
 //     // Implement search logic here
 //     console.log("Searching by:", searchBy, "Term:", searchTerm);
 //   };
 
-//   // ✅ Login handler - Opens dashboard
-//   const handleLogin = (distributor) => {
-//     setSelectedDistributor(distributor);
+//   const handleLogin = (dealer) => {
+//     setSelectedDealer(dealer);
 //     setShowDashboard(true);
 //   };
 
-//   // ✅ Back to list handler
 //   const handleBackToList = () => {
 //     setShowDashboard(false);
-//     setSelectedDistributor(null);
+//     setSelectedDealer(null);
 //   };
 
 //   const styles = {
@@ -82,7 +41,7 @@
 //       fontFamily: "Arial, sans-serif",
 //     },
 //     header: {
-//       background: "linear-gradient(to right, #3b82f6, #2563eb)",
+//       background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
 //       color: "white",
 //       padding: "15px 20px",
 //       fontSize: "18px",
@@ -100,6 +59,7 @@
 //       display: "flex",
 //       alignItems: "center",
 //       gap: "10px",
+//       flexWrap: "wrap",
 //     },
 //     label: {
 //       fontWeight: "600",
@@ -112,6 +72,7 @@
 //       borderRadius: "4px",
 //       fontSize: "14px",
 //       minWidth: "120px",
+//       cursor: "pointer",
 //     },
 //     input: {
 //       padding: "8px 12px",
@@ -120,27 +81,29 @@
 //       fontSize: "14px",
 //       flex: "1",
 //       maxWidth: "300px",
+//       minWidth: "200px",
 //     },
 //     searchButton: {
 //       padding: "8px 24px",
-//       background: "#2563eb",
+//       background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
 //       color: "white",
 //       border: "none",
 //       borderRadius: "4px",
 //       fontSize: "14px",
 //       fontWeight: "600",
 //       cursor: "pointer",
-//       transition: "background 0.3s",
+//       transition: "all 0.3s",
 //     },
 //     tableContainer: {
 //       background: "white",
 //       borderRadius: "8px",
-//       overflow: "hidden",
+//       overflow: "auto",
 //       boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
 //     },
 //     table: {
 //       width: "100%",
 //       borderCollapse: "collapse",
+//       minWidth: "1200px",
 //     },
 //     th: {
 //       background: "#f8f9fa",
@@ -150,6 +113,7 @@
 //       fontSize: "14px",
 //       color: "#333",
 //       borderBottom: "2px solid #ddd",
+//       whiteSpace: "nowrap",
 //     },
 //     td: {
 //       padding: "12px",
@@ -174,10 +138,10 @@
 //       fontWeight: "600",
 //       cursor: "pointer",
 //       transition: "all 0.3s",
-//       marginRight: "5px",
+//       whiteSpace: "nowrap",
 //     },
 //     viewProfileBtn: {
-//       background: "#2563eb",
+//       background: "#667eea",
 //       color: "white",
 //     },
 //     editProfileBtn: {
@@ -198,11 +162,11 @@
 //     },
 //   };
 
-//   // ✅ If dashboard is active, show MasterDistributorPanel
-//   if (showDashboard && selectedDistributor) {
+//   // If dashboard is active, show the MasterDistributorPanel component
+//   if (showDashboard && selectedDealer) {
 //     return (
 //       <MasterDistributorPanel
-//         dealer={selectedDistributor}
+//         dealer={selectedDealer}
 //         onBack={handleBackToList}
 //       />
 //     );
@@ -210,7 +174,7 @@
 
 //   return (
 //     <div style={styles.container}>
-//       <div style={styles.header}>TOTAL DISTRIBUTOR BALANCE: {totalBalance}</div>
+//       <div style={styles.header}>TOTAL MASTER DEALER BALANCE: 0</div>
 
 //       <div style={styles.searchSection}>
 //         <span style={styles.label}>Search by:</span>
@@ -233,8 +197,8 @@
 //         <button
 //           style={styles.searchButton}
 //           onClick={handleSearch}
-//           onMouseEnter={(e) => (e.target.style.background = "#1d4ed8")}
-//           onMouseLeave={(e) => (e.target.style.background = "#2563eb")}
+//           onMouseEnter={(e) => (e.target.style.opacity = "0.9")}
+//           onMouseLeave={(e) => (e.target.style.opacity = "1")}
 //         >
 //           Search
 //         </button>
@@ -257,14 +221,14 @@
 //             </tr>
 //           </thead>
 //           <tbody>
-//             {distributors.map((distributor, index) => (
+//             {masterDealers.map((dealer, index) => (
 //               <tr key={index}>
-//                 <td style={styles.td}>{distributor.userId}</td>
-//                 <td style={styles.td}>{distributor.name}</td>
-//                 <td style={styles.td}>{distributor.mobile}</td>
-//                 <td style={styles.td}>{distributor.balance}</td>
+//                 <td style={styles.td}>{dealer.userId}</td>
+//                 <td style={styles.td}>{dealer.name}</td>
+//                 <td style={styles.td}>{dealer.mobile}</td>
+//                 <td style={styles.td}>{dealer.balance}</td>
 //                 <td style={styles.td}>
-//                   <span style={styles.statusBadge}>{distributor.status}</span>
+//                   <span style={styles.statusBadge}>{dealer.status}</span>
 //                 </td>
 //                 <td style={styles.td}>
 //                   <button
@@ -305,7 +269,7 @@
 //                 <td style={styles.td}>
 //                   <button
 //                     style={{ ...styles.button, ...styles.loginBtn }}
-//                     onClick={() => handleLogin(distributor)}
+//                     onClick={() => handleLogin(dealer)}
 //                     onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
 //                     onMouseLeave={(e) => (e.target.style.opacity = "1")}
 //                   >
@@ -321,82 +285,41 @@
 //   );
 // };
 
-// export default ManageDistributor;
+// export default ManageMasterDistributor;
 import React, { useState } from "react";
 import MasterDistributorPanel from "./MasterDistributorPanel";
 import PanelHeader from "./PanelHeader";
 
-const ManageDistributor = () => {
+const ManageMasterDistributor = () => {
   const [searchBy, setSearchBy] = useState("Name");
   const [searchTerm, setSearchTerm] = useState("");
   const [showDashboard, setShowDashboard] = useState(false);
-  const [selectedDistributor, setSelectedDistributor] = useState(null);
+  const [selectedDealer, setSelectedDealer] = useState(null);
 
   // Sample data - replace with actual API call
-  const [distributors] = useState([
+  const [masterDealers] = useState([
     {
-      userId: "200002",
-      name: "DEMO DISTRIBUTOR",
-      mobile: "12345",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "200003",
-      name: "CWT DISTRIBUTOR",
-      mobile: "9135353235",
-      balance: "53.35",
-      status: "Active",
-    },
-    {
-      userId: "200004",
-      name: "SP Gupta",
-      mobile: "8877788099",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "200005",
-      name: "AMAN KUMAR",
-      mobile: "8969351180",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "200006",
-      name: "PAPPU KUMAR GIRI",
-      mobile: "9007133563",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "200007",
-      name: "ATUL PRAKASH",
-      mobile: "08252339220",
+      userId: "300003",
+      name: "ADMIN",
+      mobile: "31241",
       balance: "0.00",
       status: "Active",
     },
   ]);
-
-  const totalBalance = distributors
-    .reduce((sum, dist) => sum + parseFloat(dist.balance), 0)
-    .toFixed(2);
 
   const handleSearch = () => {
     // Implement search logic here
     console.log("Searching by:", searchBy, "Term:", searchTerm);
   };
 
-  // ✅ Login handler - Opens dashboard
-  const handleLogin = (distributor) => {
-    setSelectedDistributor(distributor);
+  const handleLogin = (dealer) => {
+    setSelectedDealer(dealer);
     setShowDashboard(true);
   };
 
-  // ✅ Back to list handler
   const handleBackToList = () => {
     setShowDashboard(false);
-    setSelectedDistributor(null);
+    setSelectedDealer(null);
   };
 
   const styles = {
@@ -407,7 +330,7 @@ const ManageDistributor = () => {
       fontFamily: "Arial, sans-serif",
     },
     header: {
-      background: "linear-gradient(to right, #3b82f6, #2563eb)",
+      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
       color: "white",
       padding: "15px 20px",
       fontSize: "18px",
@@ -425,6 +348,7 @@ const ManageDistributor = () => {
       display: "flex",
       alignItems: "center",
       gap: "10px",
+      flexWrap: "wrap",
     },
     label: {
       fontWeight: "600",
@@ -437,6 +361,7 @@ const ManageDistributor = () => {
       borderRadius: "4px",
       fontSize: "14px",
       minWidth: "120px",
+      cursor: "pointer",
     },
     input: {
       padding: "8px 12px",
@@ -445,27 +370,29 @@ const ManageDistributor = () => {
       fontSize: "14px",
       flex: "1",
       maxWidth: "300px",
+      minWidth: "200px",
     },
     searchButton: {
       padding: "8px 24px",
-      background: "#2563eb",
+      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
       color: "white",
       border: "none",
       borderRadius: "4px",
       fontSize: "14px",
       fontWeight: "600",
       cursor: "pointer",
-      transition: "background 0.3s",
+      transition: "all 0.3s",
     },
     tableContainer: {
       background: "white",
       borderRadius: "8px",
-      overflow: "hidden",
+      overflow: "auto",
       boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
     },
     table: {
       width: "100%",
       borderCollapse: "collapse",
+      minWidth: "1200px",
     },
     th: {
       background: "#f8f9fa",
@@ -475,6 +402,7 @@ const ManageDistributor = () => {
       fontSize: "14px",
       color: "#333",
       borderBottom: "2px solid #ddd",
+      whiteSpace: "nowrap",
     },
     td: {
       padding: "12px",
@@ -499,10 +427,10 @@ const ManageDistributor = () => {
       fontWeight: "600",
       cursor: "pointer",
       transition: "all 0.3s",
-      marginRight: "5px",
+      whiteSpace: "nowrap",
     },
     viewProfileBtn: {
-      background: "#2563eb",
+      background: "#667eea",
       color: "white",
     },
     editProfileBtn: {
@@ -523,13 +451,13 @@ const ManageDistributor = () => {
     },
   };
 
-  // ✅ If dashboard is active, show MasterDistributorPanel
-  if (showDashboard && selectedDistributor) {
+  // If dashboard is active, show the MasterDistributorPanel component
+  if (showDashboard && selectedDealer) {
     return (
       <>
-        <PanelHeader userRole="distributor" />
+        <PanelHeader userRole="master_distributor" />
         <MasterDistributorPanel
-          dealer={selectedDistributor}
+          dealer={selectedDealer}
           onBack={handleBackToList}
         />
       </>
@@ -538,11 +466,9 @@ const ManageDistributor = () => {
 
   return (
     <>
-      <PanelHeader userRole="distributor" />
+      <PanelHeader userRole="master_distributor" />
       <div style={styles.container}>
-        <div style={styles.header}>
-          TOTAL DISTRIBUTOR BALANCE: {totalBalance}
-        </div>
+        <div style={styles.header}>TOTAL MASTER DEALER BALANCE: 0</div>
 
         <div style={styles.searchSection}>
           <span style={styles.label}>Search by:</span>
@@ -565,8 +491,8 @@ const ManageDistributor = () => {
           <button
             style={styles.searchButton}
             onClick={handleSearch}
-            onMouseEnter={(e) => (e.target.style.background = "#1d4ed8")}
-            onMouseLeave={(e) => (e.target.style.background = "#2563eb")}
+            onMouseEnter={(e) => (e.target.style.opacity = "0.9")}
+            onMouseLeave={(e) => (e.target.style.opacity = "1")}
           >
             Search
           </button>
@@ -589,14 +515,14 @@ const ManageDistributor = () => {
               </tr>
             </thead>
             <tbody>
-              {distributors.map((distributor, index) => (
+              {masterDealers.map((dealer, index) => (
                 <tr key={index}>
-                  <td style={styles.td}>{distributor.userId}</td>
-                  <td style={styles.td}>{distributor.name}</td>
-                  <td style={styles.td}>{distributor.mobile}</td>
-                  <td style={styles.td}>{distributor.balance}</td>
+                  <td style={styles.td}>{dealer.userId}</td>
+                  <td style={styles.td}>{dealer.name}</td>
+                  <td style={styles.td}>{dealer.mobile}</td>
+                  <td style={styles.td}>{dealer.balance}</td>
                   <td style={styles.td}>
-                    <span style={styles.statusBadge}>{distributor.status}</span>
+                    <span style={styles.statusBadge}>{dealer.status}</span>
                   </td>
                   <td style={styles.td}>
                     <button
@@ -637,7 +563,7 @@ const ManageDistributor = () => {
                   <td style={styles.td}>
                     <button
                       style={{ ...styles.button, ...styles.loginBtn }}
-                      onClick={() => handleLogin(distributor)}
+                      onClick={() => handleLogin(dealer)}
                       onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
                       onMouseLeave={(e) => (e.target.style.opacity = "1")}
                     >
@@ -654,4 +580,4 @@ const ManageDistributor = () => {
   );
 };
 
-export default ManageDistributor;
+export default ManageMasterDistributor;
