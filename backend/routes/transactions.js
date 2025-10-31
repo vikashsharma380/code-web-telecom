@@ -1,7 +1,7 @@
 // routes/transactions.js (or in your main file for quick testing)
 const express = require("express");
 const router = express.Router();
-const Transaction = require("../../models/Transaction");
+const Transaction = require("../models/Transaction");
 
 // GET /api/transactions/search?mobileNumber=9876543210
 router.get("/search", async (req, res) => {

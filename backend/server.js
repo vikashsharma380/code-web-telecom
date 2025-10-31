@@ -4,7 +4,7 @@ const axios = require("axios");
 const { v4: uuidv4 } = require("uuid");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const authRoutes = require("routes/auth");
+const authRoutes = require("./routes/auth");
 const Transaction = require("./models/Transaction");
 const { verifyToken } = require("./middleware/authMiddleware");
 const nodemailer = require("nodemailer");
@@ -57,7 +57,7 @@ app.get("/api/transactions", async (req, res) => {
 });
 
 
-const rechargeRoutes = require("routes/recharge");
+const rechargeRoutes = require("./routes/recharge");
 app.use("/api", rechargeRoutes); // ✅ ab /api/recharge route kaam karega
 
 
@@ -225,9 +225,9 @@ app.get("/api/balance", async (req, res) => {
     });
   }
 });
-const fundRoutes = require("routes/addFund");
+const fundRoutes = require("./routes/addFund");
 app.use("/api", fundRoutes);
-const retailerRoutes = require("routes/retailer");
+const retailerRoutes = require("./routes/retailer");
 app.use("/api", retailerRoutes);
 
 
@@ -301,20 +301,20 @@ app.post("/api/contact", async (req, res) => {
 
 
 
-const balanceRoutes = require("routes/balance");
+const balanceRoutes = require("./routes/balance");
 app.use("/api", balanceRoutes); // ✅ API routes first
 
-const getRechargesRoute = require("routes/getRecharges");
+const getRechargesRoute = require("./routes/getRecharges");
 app.use("/api/recharges", getRechargesRoute);
 
-const refundReportRoute = require("routes/refund");
+const refundReportRoute = require("./routes/refund");
 app.use("/api", refundReportRoute);
-const earningsRoutes = require("routes/earnings");
+const earningsRoutes = require("./routes/earnings");
 app.use("/api", earningsRoutes);
-const transactionsRoutes = require("routes/transactions");
+const transactionsRoutes = require("./routes/transactions");
 app.use("/api", transactionsRoutes);
 
-const ticketRoutes = require("routes/ticketRoutes");
+const ticketRoutes = require("./routes/ticketRoutes");
 app.use("/api/tickets", ticketRoutes);
 
 

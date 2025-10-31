@@ -1,8 +1,8 @@
 // routes/earnings.js
 const express = require("express");
 const router = express.Router();
-const { verifyToken } = require("../../middleware/authMiddleware");
-const Transaction = require("../../models/Transaction");
+const { verifyToken } = require("../middleware/authMiddleware");
+const Transaction = require("../models/Transaction");
 
 router.get("/my-earnings", verifyToken, async (req, res) => {
   try {
