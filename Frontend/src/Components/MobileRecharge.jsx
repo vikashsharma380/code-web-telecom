@@ -209,15 +209,44 @@ function MobileRechargeForm({ rechargeUser }) {
             <form onSubmit={handleRecharge}>
               <div style={styles.formGroup}>
                 <label style={styles.label}>Mobile Number</label>
-                <input
-                  type="tel"
-                  name="number"
-                  placeholder="Enter 10-digit mobile number"
-                  value={formData.number}
-                  onChange={handleChange}
-                  maxLength="10"
-                  style={styles.input}
-                />
+               <input
+  type="tel"
+  name="number"
+  placeholder="Enter 10-digit mobile number"
+  value={formData.number}
+  onChange={async (e) => {
+    const value = e.target.value;
+    setFormData((prev) => ({ ...prev, number: value }));
+
+    if (value.length === 10) {
+      try {
+        const res = await fetch(`${API_URL}/api/operatorinfo/${value}`);
+        const data = await res.json();
+
+        if (data.Operator && data.Circle) {
+          // find matching operator code from list
+          const operatorMatch = operators.find((op) =>
+            data.Operator.toLowerCase().includes(op.name.toLowerCase())
+          );
+          const circleMatch = circles.find((c) =>
+            data.Circle.toLowerCase().includes(c.name.toLowerCase())
+          );
+
+          setFormData((prev) => ({
+            ...prev,
+            operatorcode: operatorMatch ? operatorMatch.code : "",
+            circlecode: circleMatch ? circleMatch.code : "",
+          }));
+        }
+      } catch (err) {
+        console.error("Operator fetch failed", err);
+      }
+    }
+  }}
+  maxLength="10"
+  style={styles.input}
+/>
+
               </div>
               <div style={styles.formGroup}>
                 <label style={styles.label}>Operator</label>

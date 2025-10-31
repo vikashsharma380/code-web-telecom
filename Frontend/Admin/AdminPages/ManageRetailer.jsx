@@ -71,6 +71,63 @@ const [editData, setEditData] = useState({
     setCurrentPage(pageNumber);
   };
 
+  const handleAddBalance = async (user) => {
+    const amount = prompt(`Enter amount to add for ${user.name}:`);
+    if (!amount || isNaN(amount)) return alert("Invalid amount");
+
+    try {
+      const res = await axios.put(`${API_URL}/api/users/${user._id}`, {
+        balance: Number(user.balance) + Number(amount),
+      });
+      alert("Balance added successfully!");
+      setRetailers((prev) =>
+        prev.map((r) => (r._id === user._id ? res.data : r))
+      );
+    } catch (err) {
+      console.error("Error adding balance:", err);
+      alert("Failed to add balance");
+    }
+  };
+
+  // ✅ Revert balance function
+  const handleRevertBalance = async (user) => {
+    const amount = prompt(`Enter amount to revert for ${user.name}:`);
+    if (!amount || isNaN(amount)) return alert("Invalid amount");
+
+    if (Number(amount) > user.balance)
+      return alert("Amount cannot exceed current balance");
+
+    try {
+      const res = await axios.put(`${API_URL}/api/users/${user._id}`, {
+        balance: Number(user.balance) - Number(amount),
+      });
+      alert("Balance reverted successfully!");
+      setRetailers((prev) =>
+        prev.map((r) => (r._id === user._id ? res.data : r))
+      );
+    } catch (err) {
+      console.error("Error reverting balance:", err);
+      alert("Failed to revert balance");
+    }
+  };
+
+  // ✅ Admin Login as Retailer
+  const handleLoginAsUser = async (user) => {
+    try {
+      // Optional: you can add a backend route to generate retailer token
+      const res = await axios.post(`${API_URL}/api/auth/admin-login`, {
+        userId: user._id,
+      });
+      const { token } = res.data;
+      localStorage.setItem("token", token);
+      alert(`Logged in as ${user.name}`);
+      window.location.href = "/dashboard";
+    } catch (err) {
+      console.error("Error logging in as user:", err);
+      alert("Login as user failed!");
+    }
+  };
+
   // ✅ Same style object
   const styles = {
     

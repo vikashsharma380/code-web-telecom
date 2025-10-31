@@ -320,6 +320,8 @@ app.use("/api/tickets", ticketRoutes);
 
 const userRoutes = require("./routes/userRoutes");
 app.use("/api/users", userRoutes);
+const operatorCheck = require("./routes/operatorCheck");
+app.use("/api", operatorCheck);
 
 
 // Serve frontend
