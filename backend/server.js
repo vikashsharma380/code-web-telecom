@@ -323,6 +323,9 @@ const userRoutes = require("./routes/userRoutes");
 app.use("/api/users", userRoutes);
 const operatorCheck = require("./routes/operatorCheck");
 app.use("/api", operatorCheck);
+
+const simplePlan = require("./routes/simplePlan");
+app.use("/api", simplePlan);
 app.get("/myip", async (req, res) => {
   try {
     const response = await axios.get("https://api.ipify.org?format=json");

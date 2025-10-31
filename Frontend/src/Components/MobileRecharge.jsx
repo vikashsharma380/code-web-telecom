@@ -29,6 +29,16 @@ function MobileRechargeForm({ rechargeUser }) {
   const [result, setResult] = useState(null);
   const [balance, setBalance] = useState(0);
 
+
+  const fetchSimplePlan = async () => {
+  const res = await fetch(
+    "https://code-web-telecom-production.up.railway.app/api/simple-plan?circle=Gujarat&operator=Jio"
+  );
+  const data = await res.json();
+  console.log(data);
+};
+
+
   const operators = [
     { code: "A", name: "Airtel" },
     { code: "V", name: "Vodafone" },
@@ -280,6 +290,42 @@ function MobileRechargeForm({ rechargeUser }) {
                     </option>
                   ))}
                 </select>
+                <div style={{ marginTop: "10px" }}>
+  <button
+    type="button"
+    onClick={async () => {
+      try {
+        const circleName = circles.find(c => c.code === formData.circlecode)?.name;
+        const operatorName = operators.find(o => o.code === formData.operatorcode)?.name;
+
+        if (!circleName || !operatorName) {
+          alert("Please select operator and circle first");
+          return;
+        }
+
+        const res = await fetch(
+          `https://code-web-telecom-production.up.railway.app/api/simple-plan?circle=${circleName}&operator=${operatorName}`
+        );
+        const data = await res.json();
+        console.log("Fetched Plans:", data);
+        alert(`Plans fetched for ${operatorName} (${circleName}) — Check console`);
+      } catch (err) {
+        console.error("Plan fetch failed", err);
+      }
+    }}
+    style={{
+      padding: "10px 15px",
+      backgroundColor: "#007bff",
+      color: "#fff",
+      border: "none",
+      borderRadius: "6px",
+      cursor: "pointer",
+      fontWeight: "500",
+    }}
+  >
+    Show Plans
+  </button>
+</div>
               </div>
               <div style={styles.formGroup}>
                 <label style={styles.label}>Amount</label>
