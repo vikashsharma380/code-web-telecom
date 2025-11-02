@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import Header from "../Header";
+import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 const MasterDistributorRegistration = () => {
   const [formData, setFormData] = useState({
@@ -26,10 +29,16 @@ const MasterDistributorRegistration = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    console.log("Form submitted:", formData);
-    alert("Form submitted successfully!");
-  };
+ const handleSubmit = async () => {
+  try {
+    const res = await axios.post(`${API_URL}/masterDistributor/register`, formData);
+    alert(`Master Distributor Created Successfully!
+UserID: ${res.data.userId}
+Password: ${res.data.password}`);
+  } catch (err) {
+    alert(err.response?.data?.message || "Something went wrong");
+  }
+};
 
   const handleCancel = () => {
     setFormData({

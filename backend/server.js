@@ -333,6 +333,9 @@ app.use("/api/commission", commissionRoutes);
 const distributorRoutes = require("./routes/distributor");
 app.use("/api/distributor", distributorRoutes);
 
+const masterDistributorRoutes = require("./routes/masterDistributor");
+app.use("/api/master-distributor", masterDistributorRoutes);
+
 
 app.get("/myip", async (req, res) => {
   try {
