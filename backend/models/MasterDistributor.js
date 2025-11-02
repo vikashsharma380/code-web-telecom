@@ -1,25 +1,23 @@
-// models/MasterDistributor.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
-const MasterDistributorSchema = new mongoose.Schema({
-  userId: { type: String, unique: true }, // MD000001 style
-  name: { type: String, required: true },                // masterDistributorName
+const masterDistributorSchema = new mongoose.Schema({
+  masterDistributorName: { type: String, required: true },
+  postalAddress: { type: String, required: true },
+  pinCode: { type: String, required: true },
+  state: { type: String, required: true },
+  cityDistrict: { type: String, required: true },
+
   email: { type: String, required: true, unique: true },
-  mobile: { type: String, required: true, unique: true }, // mobileNo
-  phone: { type: String, default: "" },                   // mirror of mobile (optional)
-  alternateNumber: { type: String, default: "" },
-  businessType: { type: String, default: "" },
-  panNo: { type: String, default: "" },
-  contactPerson: { type: String, default: "" },
-  postalAddress: { type: String, default: "" },
-  pinCode: { type: String, default: "" },
-  state: { type: String, default: "" },
-  cityDistrict: { type: String, default: "" },
-  scheme: { type: String, default: "" },                  // selectScheme
-  balance: { type: Number, default: 0 },                  // openingBalance
-  password: { type: String, required: true },             // hashed
-  role: { type: String, default: "master-distributor" },
-  createdAt: { type: Date, default: Date.now },
+  mobile: { type: String, required: true, unique: true },
+  
+  password: { type: String, required: true },
+}, { timestamps: true });
+
+masterDistributorSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
 });
 
-module.exports = mongoose.model("MasterDistributor", MasterDistributorSchema);
+module.exports = mongoose.model("MasterDistributor", masterDistributorSchema);
