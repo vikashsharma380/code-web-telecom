@@ -8,6 +8,7 @@ import {
   Clock,
   XCircle,
 } from "lucide-react";
+import Nav from "../../hero/nav";
 
 export default function AddFund() {
   const [formData, setFormData] = useState({
@@ -60,8 +61,11 @@ export default function AddFund() {
   };
 
   return (
-    <div className="add-fund-container">
-      <style>{`
+    <>
+      {" "}
+      <Nav />
+      <div className="add-fund-container">
+        <style>{`
         .add-fund-container {
           min-height: 100vh;
           background: #f5f7fa;
@@ -221,190 +225,191 @@ export default function AddFund() {
         }
       `}</style>
 
-      <div className="container">
-        {/* Header */}
-        <div className="header">
-          <h1>Add Funds</h1>
-          <p>Submit a new payment request to add funds to your account</p>
-        </div>
+        <div className="container">
+          {/* Header */}
+          <div className="header">
+            <h1>Add Funds</h1>
+            <p>Submit a new payment request to add funds to your account</p>
+          </div>
 
-        {/* Main Grid */}
-        <div className="grid">
-          {/* Payment Form */}
+          {/* Main Grid */}
+          <div className="grid">
+            {/* Payment Form */}
+            <div className="card">
+              <div className="card-header">
+                <CreditCard /> Payment Request Form
+              </div>
+              <div className="card-body">
+                <form onSubmit={handleSubmit}>
+                  <div className="form-group">
+                    <label>
+                      <DollarSign /> Request Amount *
+                    </label>
+                    <input
+                      type="number"
+                      name="requestAmount"
+                      value={formData.requestAmount}
+                      onChange={handleInputChange}
+                      required
+                      placeholder="Enter amount"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>
+                      <FileText /> Bank Reference Number *
+                    </label>
+                    <input
+                      type="text"
+                      name="bankRefNo"
+                      value={formData.bankRefNo}
+                      onChange={handleInputChange}
+                      required
+                      placeholder="Enter bank reference number"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>
+                      <Calendar /> Payment Date *
+                    </label>
+                    <input
+                      type="date"
+                      name="paymentDate"
+                      value={formData.paymentDate}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>
+                      <Building2 /> Payment Mode *
+                    </label>
+                    <select
+                      name="paymentMode"
+                      value={formData.paymentMode}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value="">Select payment mode</option>
+                      <option value="State Bank Of India">
+                        State Bank Of India
+                      </option>
+                      <option value="HDFC Bank">HDFC Bank</option>
+                      <option value="ICICI Bank">ICICI Bank</option>
+                      <option value="Axis Bank">Axis Bank</option>
+                      <option value="Punjab National Bank">
+                        Punjab National Bank
+                      </option>
+                      <option value="Bank of Baroda">Bank of Baroda</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>
+                      <FileText /> Remarks
+                    </label>
+                    <textarea
+                      name="remarks"
+                      value={formData.remarks}
+                      onChange={handleInputChange}
+                      rows="4"
+                      placeholder="Bank Name, Account number, mobile number or any remarks"
+                    />
+                  </div>
+                  <button type="submit">Submit Payment Request</button>
+                </form>
+              </div>
+            </div>
+
+            {/* Sidebar */}
+            <div className="sidebar">
+              <div
+                className="card"
+                style={{ background: "#4f46e5", color: "white" }}
+              >
+                <h3>Quick Tips</h3>
+                <ul className="quick-tips">
+                  <li>
+                    <div></div> Double-check your bank reference number
+                  </li>
+                  <li>
+                    <div></div> Payment verification may take 24-48 hours
+                  </li>
+                  <li>
+                    <div></div> Keep your transaction receipt safe
+                  </li>
+                  <li>
+                    <div></div> Contact support if payment is not reflected
+                  </li>
+                </ul>
+              </div>
+              <div className="card">
+                <h3>Need Help?</h3>
+                <p>
+                  If you're facing any issues with your payment request, our
+                  support team is here to help.
+                </p>
+                <button style={{ background: "#f1f5f9", color: "#334155" }}>
+                  Contact Support
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Payment History */}
           <div className="card">
             <div className="card-header">
-              <CreditCard /> Payment Request Form
+              <Clock /> Payment History
             </div>
-            <div className="card-body">
-              <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                  <label>
-                    <DollarSign /> Request Amount *
-                  </label>
-                  <input
-                    type="number"
-                    name="requestAmount"
-                    value={formData.requestAmount}
-                    onChange={handleInputChange}
-                    required
-                    placeholder="Enter amount"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>
-                    <FileText /> Bank Reference Number *
-                  </label>
-                  <input
-                    type="text"
-                    name="bankRefNo"
-                    value={formData.bankRefNo}
-                    onChange={handleInputChange}
-                    required
-                    placeholder="Enter bank reference number"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>
-                    <Calendar /> Payment Date *
-                  </label>
-                  <input
-                    type="date"
-                    name="paymentDate"
-                    value={formData.paymentDate}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>
-                    <Building2 /> Payment Mode *
-                  </label>
-                  <select
-                    name="paymentMode"
-                    value={formData.paymentMode}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="">Select payment mode</option>
-                    <option value="State Bank Of India">
-                      State Bank Of India
-                    </option>
-                    <option value="HDFC Bank">HDFC Bank</option>
-                    <option value="ICICI Bank">ICICI Bank</option>
-                    <option value="Axis Bank">Axis Bank</option>
-                    <option value="Punjab National Bank">
-                      Punjab National Bank
-                    </option>
-                    <option value="Bank of Baroda">Bank of Baroda</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>
-                    <FileText /> Remarks
-                  </label>
-                  <textarea
-                    name="remarks"
-                    value={formData.remarks}
-                    onChange={handleInputChange}
-                    rows="4"
-                    placeholder="Bank Name, Account number, mobile number or any remarks"
-                  />
-                </div>
-                <button type="submit">Submit Payment Request</button>
-              </form>
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <div className="sidebar">
-            <div
-              className="card"
-              style={{ background: "#4f46e5", color: "white" }}
-            >
-              <h3>Quick Tips</h3>
-              <ul className="quick-tips">
-                <li>
-                  <div></div> Double-check your bank reference number
-                </li>
-                <li>
-                  <div></div> Payment verification may take 24-48 hours
-                </li>
-                <li>
-                  <div></div> Keep your transaction receipt safe
-                </li>
-                <li>
-                  <div></div> Contact support if payment is not reflected
-                </li>
-              </ul>
-            </div>
-            <div className="card">
-              <h3>Need Help?</h3>
-              <p>
-                If you're facing any issues with your payment request, our
-                support team is here to help.
-              </p>
-              <button style={{ background: "#f1f5f9", color: "#334155" }}>
-                Contact Support
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Payment History */}
-        <div className="card">
-          <div className="card-header">
-            <Clock /> Payment History
-          </div>
-          <div className="card-body table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Status</th>
-                  <th>Amount</th>
-                  <th>Mode</th>
-                  <th>Bank Ref. No.</th>
-                  <th>Response</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paymentHistory.length > 0 ? (
-                  paymentHistory.map((payment) => (
-                    <tr key={payment.id}>
-                      <td>
-                        <span className="status-badge">
-                          <XCircle /> {payment.status}
-                        </span>
-                      </td>
-                      <td>₹{payment.amount}</td>
-                      <td>{payment.mode}</td>
-                      <td>{payment.bankRefNo}</td>
-                      <td>{payment.response || "-"}</td>
-                      <td>{payment.date}</td>
-                    </tr>
-                  ))
-                ) : (
+            <div className="card-body table-container">
+              <table>
+                <thead>
                   <tr>
-                    <td
-                      colSpan="6"
-                      style={{ textAlign: "center", padding: "40px" }}
-                    >
-                      <Clock
-                        style={{
-                          width: "50px",
-                          height: "50px",
-                          color: "#cbd5e1",
-                        }}
-                      />
-                      <p>No payment history found</p>
-                    </td>
+                    <th>Status</th>
+                    <th>Amount</th>
+                    <th>Mode</th>
+                    <th>Bank Ref. No.</th>
+                    <th>Response</th>
+                    <th>Date</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {paymentHistory.length > 0 ? (
+                    paymentHistory.map((payment) => (
+                      <tr key={payment.id}>
+                        <td>
+                          <span className="status-badge">
+                            <XCircle /> {payment.status}
+                          </span>
+                        </td>
+                        <td>₹{payment.amount}</td>
+                        <td>{payment.mode}</td>
+                        <td>{payment.bankRefNo}</td>
+                        <td>{payment.response || "-"}</td>
+                        <td>{payment.date}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        style={{ textAlign: "center", padding: "40px" }}
+                      >
+                        <Clock
+                          style={{
+                            width: "50px",
+                            height: "50px",
+                            color: "#cbd5e1",
+                          }}
+                        />
+                        <p>No payment history found</p>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 }
