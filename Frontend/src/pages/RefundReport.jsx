@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Nav from "../../hero/nav";
 
 const RefundReport = () => {
   const [refunds, setRefunds] = useState([]);
@@ -9,14 +10,17 @@ const RefundReport = () => {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await fetch("http://localhost:5000/api/refund-report", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "http://localhost:5000/api/refund-report",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         const data = await response.json();
-        console.log("Refund data fetched:", data); 
+        console.log("Refund data fetched:", data);
         if (data.success) {
           setRefunds(data.refunds);
         }
@@ -194,102 +198,110 @@ const RefundReport = () => {
   );
 
   return (
-    <div style={styles.container}>
-      <div style={styles.bgPattern} />
-      <div style={styles.content}>
-        <div style={styles.header}>
-          <h1 style={styles.title}>Refund Report</h1>
-          <p style={styles.subtitle}>
-            View all refunded transactions and amounts
-          </p>
-        </div>
-
-        {!loading && refunds.length > 0 && (
-          <div style={styles.summaryCard}>
-            <div style={styles.summaryItem}>
-              <span style={styles.summaryLabel}>Total Refunds</span>
-              <span style={styles.summaryCount}>{refunds.length}</span>
-            </div>
-            <div style={styles.summaryItem}>
-              <span style={styles.summaryLabel}>Total Refund Amount</span>
-              <span style={styles.summaryValue}>₹{totalRefund.toFixed(2)}</span>
-            </div>
-          </div>
-        )}
-
-        <div style={styles.card}>
-          <div style={styles.cardHeader}>
-            <h2 style={styles.cardTitle}>Refund Report</h2>
+    <>
+      {" "}
+      <Nav />
+      <div style={styles.container}>
+        <div style={styles.bgPattern} />
+        <div style={styles.content}>
+          <div style={styles.header}>
+            <h1 style={styles.title}>Refund Report</h1>
+            <p style={styles.subtitle}>
+              View all refunded transactions and amounts
+            </p>
           </div>
 
-          {loading ? (
-            <div style={styles.emptyState}>
-              <div style={styles.emptyIcon}>⏳</div>
-              <p style={styles.emptyText}>Loading refund data...</p>
-            </div>
-          ) : refunds.length === 0 ? (
-            <div style={styles.emptyState}>
-              <div style={styles.emptyIcon}>💰</div>
-              <p style={styles.emptyText}>No refunds found</p>
-              <p style={styles.emptySubtext}>
-                Your refund transactions will appear here
-              </p>
-            </div>
-          ) : (
-            <div style={styles.tableWrapper}>
-              <table style={styles.table}>
-                <thead style={styles.thead}>
-                  <tr>
-                    <th style={styles.th}>Recharge ID</th>
-                    <th style={styles.th}>Date</th>
-                    <th style={styles.th}>Description</th>
-                    <th style={styles.th}>Refund Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {refunds.map((refund, index) => (
-                    <tr
-                      key={index}
-                      style={{
-                        ...styles.tr,
-                        background:
-                          index % 2 === 0
-                            ? "rgba(255, 255, 255, 0.02)"
-                            : "transparent",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background =
-                          "rgba(102, 126, 234, 0.1)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background =
-                          index % 2 === 0
-                            ? "rgba(255, 255, 255, 0.02)"
-                            : "transparent";
-                      }}
-                    >
-                      <td style={{ ...styles.td, ...styles.rechargeIdCell }}>
-                        {refund.rechargeId}
-                      </td>
-                      <td style={styles.td}>
-                        {new Date(refund.refundDate).toLocaleString()}
-                      </td>
-                      <td style={{ ...styles.td, ...styles.descriptionCell }}>
-                        {refund.description ||
-                          `Refund for failed ${refund.operator} recharge - ${refund.number}`}
-                      </td>
-                      <td style={{ ...styles.td, ...styles.refundAmountCell }}>
-                        ₹{refund.refundAmount.toFixed(2)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {!loading && refunds.length > 0 && (
+            <div style={styles.summaryCard}>
+              <div style={styles.summaryItem}>
+                <span style={styles.summaryLabel}>Total Refunds</span>
+                <span style={styles.summaryCount}>{refunds.length}</span>
+              </div>
+              <div style={styles.summaryItem}>
+                <span style={styles.summaryLabel}>Total Refund Amount</span>
+                <span style={styles.summaryValue}>
+                  ₹{totalRefund.toFixed(2)}
+                </span>
+              </div>
             </div>
           )}
+
+          <div style={styles.card}>
+            <div style={styles.cardHeader}>
+              <h2 style={styles.cardTitle}>Refund Report</h2>
+            </div>
+
+            {loading ? (
+              <div style={styles.emptyState}>
+                <div style={styles.emptyIcon}>⏳</div>
+                <p style={styles.emptyText}>Loading refund data...</p>
+              </div>
+            ) : refunds.length === 0 ? (
+              <div style={styles.emptyState}>
+                <div style={styles.emptyIcon}>💰</div>
+                <p style={styles.emptyText}>No refunds found</p>
+                <p style={styles.emptySubtext}>
+                  Your refund transactions will appear here
+                </p>
+              </div>
+            ) : (
+              <div style={styles.tableWrapper}>
+                <table style={styles.table}>
+                  <thead style={styles.thead}>
+                    <tr>
+                      <th style={styles.th}>Recharge ID</th>
+                      <th style={styles.th}>Date</th>
+                      <th style={styles.th}>Description</th>
+                      <th style={styles.th}>Refund Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {refunds.map((refund, index) => (
+                      <tr
+                        key={index}
+                        style={{
+                          ...styles.tr,
+                          background:
+                            index % 2 === 0
+                              ? "rgba(255, 255, 255, 0.02)"
+                              : "transparent",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background =
+                            "rgba(102, 126, 234, 0.1)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background =
+                            index % 2 === 0
+                              ? "rgba(255, 255, 255, 0.02)"
+                              : "transparent";
+                        }}
+                      >
+                        <td style={{ ...styles.td, ...styles.rechargeIdCell }}>
+                          {refund.rechargeId}
+                        </td>
+                        <td style={styles.td}>
+                          {new Date(refund.refundDate).toLocaleString()}
+                        </td>
+                        <td style={{ ...styles.td, ...styles.descriptionCell }}>
+                          {refund.description ||
+                            `Refund for failed ${refund.operator} recharge - ${refund.number}`}
+                        </td>
+                        <td
+                          style={{ ...styles.td, ...styles.refundAmountCell }}
+                        >
+                          ₹{refund.refundAmount.toFixed(2)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 };
 

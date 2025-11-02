@@ -1,5 +1,6 @@
 // MyEarning.jsx
 import React, { useEffect, useState } from "react";
+import Nav from "../../hero/nav";
 
 const MyEarning = () => {
   const [fromDate, setFromDate] = useState("");
@@ -72,8 +73,17 @@ const MyEarning = () => {
     },
     content: { position: "relative", maxWidth: "1400px", margin: "0 auto" },
     header: { marginBottom: "32px" },
-    title: { fontSize: "36px", fontWeight: "800", color: "white", margin: "0 0 8px 0" },
-    subtitle: { fontSize: "16px", color: "rgba(255, 255, 255, 0.6)", margin: 0 },
+    title: {
+      fontSize: "36px",
+      fontWeight: "800",
+      color: "white",
+      margin: "0 0 8px 0",
+    },
+    subtitle: {
+      fontSize: "16px",
+      color: "rgba(255, 255, 255, 0.6)",
+      margin: 0,
+    },
     filterCard: {
       background: "rgba(255, 255, 255, 0.05)",
       backdropFilter: "blur(20px)",
@@ -83,147 +93,279 @@ const MyEarning = () => {
       marginBottom: "32px",
       boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
     },
-    filterHeader: { background: "rgba(52, 152, 219, 0.15)", padding: "16px 24px", borderRadius: "16px", marginBottom: "24px" },
-    filterTitle: { fontSize: "18px", fontWeight: "700", color: "white", margin: 0 },
-    filterForm: { display: "flex", alignItems: "end", gap: "24px", flexWrap: "wrap" },
+    filterHeader: {
+      background: "rgba(52, 152, 219, 0.15)",
+      padding: "16px 24px",
+      borderRadius: "16px",
+      marginBottom: "24px",
+    },
+    filterTitle: {
+      fontSize: "18px",
+      fontWeight: "700",
+      color: "white",
+      margin: 0,
+    },
+    filterForm: {
+      display: "flex",
+      alignItems: "end",
+      gap: "24px",
+      flexWrap: "wrap",
+    },
     formGroup: { flex: "1", minWidth: "200px" },
-    label: { display: "block", fontSize: "14px", fontWeight: "600", color: "rgba(255, 255, 255, 0.9)", marginBottom: "8px", letterSpacing: "0.3px" },
-    input: { width: "100%", padding: "14px 16px", background: "rgba(255, 255, 255, 0.08)", border: "1px solid rgba(255, 255, 255, 0.15)", borderRadius: "12px", fontSize: "15px", color: "white", boxSizing: "border-box", transition: "all 0.3s ease" },
-    submitBtn: { padding: "14px 32px", background: "linear-gradient(135deg, #3498db 0%, #2980b9 100%)", border: "none", borderRadius: "12px", color: "white", fontSize: "16px", fontWeight: "700", cursor: "pointer", boxShadow: "0 8px 24px rgba(52, 152, 219, 0.4)", transition: "all 0.3s ease", whiteSpace: "nowrap" },
-    summaryCard: { background: "rgba(255, 255, 255, 0.05)", backdropFilter: "blur(20px)", border: "1px solid rgba(255, 255, 255, 0.1)", borderRadius: "24px", padding: "24px 32px", marginBottom: "32px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px" },
+    label: {
+      display: "block",
+      fontSize: "14px",
+      fontWeight: "600",
+      color: "rgba(255, 255, 255, 0.9)",
+      marginBottom: "8px",
+      letterSpacing: "0.3px",
+    },
+    input: {
+      width: "100%",
+      padding: "14px 16px",
+      background: "rgba(255, 255, 255, 0.08)",
+      border: "1px solid rgba(255, 255, 255, 0.15)",
+      borderRadius: "12px",
+      fontSize: "15px",
+      color: "white",
+      boxSizing: "border-box",
+      transition: "all 0.3s ease",
+    },
+    submitBtn: {
+      padding: "14px 32px",
+      background: "linear-gradient(135deg, #3498db 0%, #2980b9 100%)",
+      border: "none",
+      borderRadius: "12px",
+      color: "white",
+      fontSize: "16px",
+      fontWeight: "700",
+      cursor: "pointer",
+      boxShadow: "0 8px 24px rgba(52, 152, 219, 0.4)",
+      transition: "all 0.3s ease",
+      whiteSpace: "nowrap",
+    },
+    summaryCard: {
+      background: "rgba(255, 255, 255, 0.05)",
+      backdropFilter: "blur(20px)",
+      border: "1px solid rgba(255, 255, 255, 0.1)",
+      borderRadius: "24px",
+      padding: "24px 32px",
+      marginBottom: "32px",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      flexWrap: "wrap",
+      gap: "24px",
+    },
     summaryItem: { display: "flex", flexDirection: "column", gap: "8px" },
-    summaryLabel: { fontSize: "14px", color: "rgba(255, 255, 255, 0.6)", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.5px" },
+    summaryLabel: {
+      fontSize: "14px",
+      color: "rgba(255, 255, 255, 0.6)",
+      fontWeight: "600",
+      textTransform: "uppercase",
+      letterSpacing: "0.5px",
+    },
     summaryValue: { fontSize: "32px", fontWeight: "800", color: "#6ee7b7" },
     summaryCount: { fontSize: "32px", fontWeight: "800", color: "#a5b4fc" },
-    card: { background: "rgba(255, 255, 255, 0.05)", backdropFilter: "blur(20px)", border: "1px solid rgba(255, 255, 255, 0.1)", borderRadius: "24px", overflow: "hidden", boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)" },
-    cardHeader: { padding: "24px 32px", background: "rgba(102, 126, 234, 0.1)", borderBottom: "1px solid rgba(255, 255, 255, 0.1)" },
-    cardTitle: { fontSize: "20px", fontWeight: "700", color: "white", margin: 0 },
+    card: {
+      background: "rgba(255, 255, 255, 0.05)",
+      backdropFilter: "blur(20px)",
+      border: "1px solid rgba(255, 255, 255, 0.1)",
+      borderRadius: "24px",
+      overflow: "hidden",
+      boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
+    },
+    cardHeader: {
+      padding: "24px 32px",
+      background: "rgba(102, 126, 234, 0.1)",
+      borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+    },
+    cardTitle: {
+      fontSize: "20px",
+      fontWeight: "700",
+      color: "white",
+      margin: 0,
+    },
     tableWrapper: { overflowX: "auto" },
     table: { width: "100%", borderCollapse: "collapse" },
     thead: { background: "rgba(255, 255, 255, 0.03)" },
-    th: { padding: "16px 24px", textAlign: "left", fontSize: "13px", fontWeight: "700", color: "#a5b4fc", textTransform: "uppercase", letterSpacing: "0.5px", borderBottom: "1px solid rgba(255, 255, 255, 0.1)", whiteSpace: "nowrap" },
-    td: { padding: "20px 24px", fontSize: "14px", color: "rgba(255, 255, 255, 0.8)", borderBottom: "1px solid rgba(255, 255, 255, 0.05)" },
+    th: {
+      padding: "16px 24px",
+      textAlign: "left",
+      fontSize: "13px",
+      fontWeight: "700",
+      color: "#a5b4fc",
+      textTransform: "uppercase",
+      letterSpacing: "0.5px",
+      borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+      whiteSpace: "nowrap",
+    },
+    td: {
+      padding: "20px 24px",
+      fontSize: "14px",
+      color: "rgba(255, 255, 255, 0.8)",
+      borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
+    },
     tr: { transition: "all 0.3s ease" },
     operatorCell: { fontWeight: "600", color: "white" },
     commissionCell: { fontWeight: "700", color: "#6ee7b7", fontSize: "16px" },
     emptyState: { padding: "80px 24px", textAlign: "center" },
     emptyIcon: { fontSize: "64px", marginBottom: "16px" },
-    emptyText: { fontSize: "18px", fontWeight: "600", color: "rgba(255, 255, 255, 0.7)", margin: "0 0 8px 0" },
-    emptySubtext: { fontSize: "14px", color: "rgba(255, 255, 255, 0.4)", margin: 0 },
+    emptyText: {
+      fontSize: "18px",
+      fontWeight: "600",
+      color: "rgba(255, 255, 255, 0.7)",
+      margin: "0 0 8px 0",
+    },
+    emptySubtext: {
+      fontSize: "14px",
+      color: "rgba(255, 255, 255, 0.4)",
+      margin: 0,
+    },
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.bgPattern} />
-      <div style={styles.content}>
-        <div style={styles.header}>
-          <h1 style={styles.title}>My Earning</h1>
-          <p style={styles.subtitle}>Track your commission earnings and revenue</p>
-        </div>
-
-        <div style={styles.filterCard}>
-          <div style={styles.filterHeader}>
-            <h2 style={styles.filterTitle}>Filter Earnings</h2>
+    <>
+      {" "}
+      <Nav />
+      <div style={styles.container}>
+        <div style={styles.bgPattern} />
+        <div style={styles.content}>
+          <div style={styles.header}>
+            <h1 style={styles.title}>My Earning</h1>
+            <p style={styles.subtitle}>
+              Track your commission earnings and revenue
+            </p>
           </div>
-          <div style={styles.filterForm}>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>From Date:</label>
-              <input
-                type="date"
-                style={styles.input}
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-              />
+
+          <div style={styles.filterCard}>
+            <div style={styles.filterHeader}>
+              <h2 style={styles.filterTitle}>Filter Earnings</h2>
             </div>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>To Date:</label>
-              <input
-                type="date"
-                style={styles.input}
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-              />
+            <div style={styles.filterForm}>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>From Date:</label>
+                <input
+                  type="date"
+                  style={styles.input}
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                />
+              </div>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>To Date:</label>
+                <input
+                  type="date"
+                  style={styles.input}
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                />
+              </div>
+              <button style={styles.submitBtn} onClick={handleSubmit}>
+                Submit
+              </button>
             </div>
-            <button style={styles.submitBtn} onClick={handleSubmit}>
-              Submit
-            </button>
           </div>
-        </div>
 
-        {loading ? (
-          <div style={styles.emptyState}>
-            <div style={styles.emptyIcon}>⏳</div>
-            <p style={styles.emptyText}>Loading earnings...</p>
-          </div>
-        ) : (
-          showResults && (
-            <>
-              {filteredEarnings.length > 0 && (
-                <div style={styles.summaryCard}>
-                  <div style={styles.summaryItem}>
-                    <span style={styles.summaryLabel}>Total Transactions</span>
-                    <span style={styles.summaryCount}>{filteredEarnings.length}</span>
-                  </div>
-                  <div style={styles.summaryItem}>
-                    <span style={styles.summaryLabel}>Total Earning</span>
-                    <span style={styles.summaryValue}>
-                      ₹{calculateTotal(filteredEarnings).toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              <div style={styles.card}>
-                <div style={styles.cardHeader}>
-                  <h2 style={styles.cardTitle}>
-                    Earning Details ({filteredEarnings.length})
-                  </h2>
-                </div>
-
-                {filteredEarnings.length === 0 ? (
-                  <div style={styles.emptyState}>
-                    <div style={styles.emptyIcon}>💰</div>
-                    <p style={styles.emptyText}>No earnings found</p>
-                    <p style={styles.emptySubtext}>Try adjusting your date range</p>
-                  </div>
-                ) : (
-                  <div style={styles.tableWrapper}>
-                    <table style={styles.table}>
-                      <thead style={styles.thead}>
-                        <tr>
-                          <th style={styles.th}>Earning ID</th>
-                          <th style={styles.th}>Date</th>
-                          <th style={styles.th}>Transaction ID</th>
-                          <th style={styles.th}>Operator</th>
-                          <th style={styles.th}>Number</th>
-                          <th style={styles.th}>Amount</th>
-                          <th style={styles.th}>Commission</th>
-                          <th style={styles.th}>Type</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredEarnings.map((earning, index) => (
-                          <tr key={index} style={index % 2 === 0 ? { background: "rgba(255,255,255,0.02)" } : {}}>
-                            <td style={styles.td}>{earning.id}</td>
-                            <td style={styles.td}>{earning.date}</td>
-                            <td style={styles.td}>{earning.transactionId}</td>
-                            <td style={{ ...styles.td, ...styles.operatorCell }}>{earning.operator}</td>
-                            <td style={styles.td}>{earning.number}</td>
-                            <td style={styles.td}>₹{earning.amount}</td>
-                            <td style={{ ...styles.td, ...styles.commissionCell }}>₹{earning.commission}</td>
-                            <td style={styles.td}>{earning.type}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+          {loading ? (
+            <div style={styles.emptyState}>
+              <div style={styles.emptyIcon}>⏳</div>
+              <p style={styles.emptyText}>Loading earnings...</p>
+            </div>
+          ) : (
+            showResults && (
+              <>
+                {filteredEarnings.length > 0 && (
+                  <div style={styles.summaryCard}>
+                    <div style={styles.summaryItem}>
+                      <span style={styles.summaryLabel}>
+                        Total Transactions
+                      </span>
+                      <span style={styles.summaryCount}>
+                        {filteredEarnings.length}
+                      </span>
+                    </div>
+                    <div style={styles.summaryItem}>
+                      <span style={styles.summaryLabel}>Total Earning</span>
+                      <span style={styles.summaryValue}>
+                        ₹{calculateTotal(filteredEarnings).toFixed(2)}
+                      </span>
+                    </div>
                   </div>
                 )}
-              </div>
-            </>
-          )
-        )}
-      </div>
-    </div>
+
+                <div style={styles.card}>
+                  <div style={styles.cardHeader}>
+                    <h2 style={styles.cardTitle}>
+                      Earning Details ({filteredEarnings.length})
+                    </h2>
+                  </div>
+
+                  {filteredEarnings.length === 0 ? (
+                    <div style={styles.emptyState}>
+                      <div style={styles.emptyIcon}>💰</div>
+                      <p style={styles.emptyText}>No earnings found</p>
+                      <p style={styles.emptySubtext}>
+                        Try adjusting your date range
+                      </p>
+                    </div>
+                  ) : (
+                    <div style={styles.tableWrapper}>
+                      <table style={styles.table}>
+                        <thead style={styles.thead}>
+                          <tr>
+                            <th style={styles.th}>Earning ID</th>
+                            <th style={styles.th}>Date</th>
+                            <th style={styles.th}>Transaction ID</th>
+                            <th style={styles.th}>Operator</th>
+                            <th style={styles.th}>Number</th>
+                            <th style={styles.th}>Amount</th>
+                            <th style={styles.th}>Commission</th>
+                            <th style={styles.th}>Type</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredEarnings.map((earning, index) => (
+                            <tr
+                              key={index}
+                              style={
+                                index % 2 === 0
+                                  ? { background: "rgba(255,255,255,0.02)" }
+                                  : {}
+                              }
+                            >
+                              <td style={styles.td}>{earning.id}</td>
+                              <td style={styles.td}>{earning.date}</td>
+                              <td style={styles.td}>{earning.transactionId}</td>
+                              <td
+                                style={{ ...styles.td, ...styles.operatorCell }}
+                              >
+                                {earning.operator}
+                              </td>
+                              <td style={styles.td}>{earning.number}</td>
+                              <td style={styles.td}>₹{earning.amount}</td>
+                              <td
+                                style={{
+                                  ...styles.td,
+                                  ...styles.commissionCell,
+                                }}
+                              >
+                                ₹{earning.commission}
+                              </td>
+                              <td style={styles.td}>{earning.type}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              </>
+            )
+          )}
+        </div>
+      </div>{" "}
+    </>
   );
 };
 

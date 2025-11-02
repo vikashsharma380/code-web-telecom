@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Nav from "../../hero/nav";
 
 const SearchPlan = () => {
   const [selectedOperator, setSelectedOperator] = useState("Airtel");
@@ -386,149 +387,155 @@ const SearchPlan = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.bgPattern} />
-      <div style={styles.content}>
-        <div style={styles.header}>
-          <h1 style={styles.title}>Search Plan</h1>
-          <p style={styles.subtitle}>
-            Browse available recharge plans by operator and circle
-          </p>
-        </div>
-
-        <div style={styles.searchCard}>
-          <div style={styles.searchHeader}>
-            <h2 style={styles.searchTitle}>Search Plan</h2>
+    <>
+      {" "}
+      <Nav />
+      <div style={styles.container}>
+        <div style={styles.bgPattern} />
+        <div style={styles.content}>
+          <div style={styles.header}>
+            <h1 style={styles.title}>Search Plan</h1>
+            <p style={styles.subtitle}>
+              Browse available recharge plans by operator and circle
+            </p>
           </div>
-          <div style={styles.searchForm}>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Select Operator:</label>
-              <select
-                style={styles.select}
-                value={selectedOperator}
-                onChange={(e) => setSelectedOperator(e.target.value)}
-              >
-                {operators.map((op) => (
-                  <option key={op} value={op}>
-                    {op}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Select Circle:</label>
-              <select
-                style={styles.select}
-                value={selectedCircle}
-                onChange={(e) => setSelectedCircle(e.target.value)}
-              >
-                {circles.map((circle) => (
-                  <option key={circle} value={circle}>
-                    {circle}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button
-              style={styles.submitBtn}
-              onClick={handleSubmit}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow =
-                  "0 12px 32px rgba(52, 152, 219, 0.5)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow =
-                  "0 8px 24px rgba(52, 152, 219, 0.4)";
-              }}
-            >
-              Submit
-            </button>
-          </div>
-        </div>
 
-        {showResults && (
-          <div style={styles.card}>
-            <div style={styles.cardHeader}>
-              <h2 style={styles.cardTitle}>
-                Available Plans - {selectedOperator} ({selectedCircle}){" "}
-                {plans.length > 0 && `- ${plans.length} Plans`}
-              </h2>
+          <div style={styles.searchCard}>
+            <div style={styles.searchHeader}>
+              <h2 style={styles.searchTitle}>Search Plan</h2>
             </div>
-
-            {plans.length === 0 ? (
-              <div style={styles.emptyState}>
-                <div style={styles.emptyIcon}>📱</div>
-                <p style={styles.emptyText}>No plans available</p>
-                <p style={styles.emptySubtext}>
-                  No plans found for the selected operator and circle
-                </p>
+            <div style={styles.searchForm}>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Select Operator:</label>
+                <select
+                  style={styles.select}
+                  value={selectedOperator}
+                  onChange={(e) => setSelectedOperator(e.target.value)}
+                >
+                  {operators.map((op) => (
+                    <option key={op} value={op}>
+                      {op}
+                    </option>
+                  ))}
+                </select>
               </div>
-            ) : (
-              <div style={styles.tableWrapper}>
-                <table style={styles.table}>
-                  <thead style={styles.thead}>
-                    <tr>
-                      <th style={styles.th}>Amount</th>
-                      <th style={styles.th}>Description</th>
-                      <th style={styles.th}>Validity</th>
-                      <th style={styles.th}>Type</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {plans.map((plan, index) => (
-                      <tr
-                        key={index}
-                        style={{
-                          ...styles.tr,
-                          background:
-                            index % 2 === 0
-                              ? "rgba(255, 255, 255, 0.02)"
-                              : "transparent",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background =
-                            "rgba(102, 126, 234, 0.1)";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background =
-                            index % 2 === 0
-                              ? "rgba(255, 255, 255, 0.02)"
-                              : "transparent";
-                        }}
-                      >
-                        <td style={{ ...styles.td, ...styles.amountCell }}>
-                          ₹{plan.amount}
-                        </td>
-                        <td style={{ ...styles.td, ...styles.descriptionCell }}>
-                          {plan.description}
-                        </td>
-                        <td style={{ ...styles.td, ...styles.validityCell }}>
-                          {plan.validity}
-                        </td>
-                        <td style={styles.td}>
-                          <span
-                            style={{
-                              ...styles.typeBadge,
-                              ...(plan.type === "Data"
-                                ? styles.dataBadge
-                                : styles.voiceBadge),
-                            }}
-                          >
-                            {plan.type}
-                          </span>
-                        </td>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Select Circle:</label>
+                <select
+                  style={styles.select}
+                  value={selectedCircle}
+                  onChange={(e) => setSelectedCircle(e.target.value)}
+                >
+                  {circles.map((circle) => (
+                    <option key={circle} value={circle}>
+                      {circle}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <button
+                style={styles.submitBtn}
+                onClick={handleSubmit}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 12px 32px rgba(52, 152, 219, 0.5)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 24px rgba(52, 152, 219, 0.4)";
+                }}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+
+          {showResults && (
+            <div style={styles.card}>
+              <div style={styles.cardHeader}>
+                <h2 style={styles.cardTitle}>
+                  Available Plans - {selectedOperator} ({selectedCircle}){" "}
+                  {plans.length > 0 && `- ${plans.length} Plans`}
+                </h2>
+              </div>
+
+              {plans.length === 0 ? (
+                <div style={styles.emptyState}>
+                  <div style={styles.emptyIcon}>📱</div>
+                  <p style={styles.emptyText}>No plans available</p>
+                  <p style={styles.emptySubtext}>
+                    No plans found for the selected operator and circle
+                  </p>
+                </div>
+              ) : (
+                <div style={styles.tableWrapper}>
+                  <table style={styles.table}>
+                    <thead style={styles.thead}>
+                      <tr>
+                        <th style={styles.th}>Amount</th>
+                        <th style={styles.th}>Description</th>
+                        <th style={styles.th}>Validity</th>
+                        <th style={styles.th}>Type</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
+                    </thead>
+                    <tbody>
+                      {plans.map((plan, index) => (
+                        <tr
+                          key={index}
+                          style={{
+                            ...styles.tr,
+                            background:
+                              index % 2 === 0
+                                ? "rgba(255, 255, 255, 0.02)"
+                                : "transparent",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background =
+                              "rgba(102, 126, 234, 0.1)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background =
+                              index % 2 === 0
+                                ? "rgba(255, 255, 255, 0.02)"
+                                : "transparent";
+                          }}
+                        >
+                          <td style={{ ...styles.td, ...styles.amountCell }}>
+                            ₹{plan.amount}
+                          </td>
+                          <td
+                            style={{ ...styles.td, ...styles.descriptionCell }}
+                          >
+                            {plan.description}
+                          </td>
+                          <td style={{ ...styles.td, ...styles.validityCell }}>
+                            {plan.validity}
+                          </td>
+                          <td style={styles.td}>
+                            <span
+                              style={{
+                                ...styles.typeBadge,
+                                ...(plan.type === "Data"
+                                  ? styles.dataBadge
+                                  : styles.voiceBadge),
+                              }}
+                            >
+                              {plan.type}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>{" "}
+    </>
   );
 };
 
