@@ -1,55 +1,77 @@
 import React, { useState } from "react";
+import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const DistributorRegistration = () => {
   const [formData, setFormData] = useState({
     distributorName: "",
-    selectParent: "",
-    postalAddress: "",
-    pinCode: "",
-    state: "",
-    cityDistrict: "",
+    email: "",
     mobileNo: "",
     alternateNumber: "",
-    businessType: "",
-    email: "",
-    panNo: "",
     contactPerson: "",
+    postalAddress: "",
+    state: "",
+    cityDistrict: "",
+    pinCode: "",
     scheme: "",
     openingBalance: "",
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = () => {
-    console.log("Form submitted:", formData);
-    alert("Form submitted successfully!");
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleCancel = () => {
     setFormData({
       distributorName: "",
-      selectParent: "",
-      postalAddress: "",
-      pinCode: "",
-      state: "",
-      cityDistrict: "",
+      email: "",
       mobileNo: "",
       alternateNumber: "",
-      businessType: "",
-      email: "",
-      panNo: "",
       contactPerson: "",
+      postalAddress: "",
+      state: "",
+      cityDistrict: "",
+      pinCode: "",
       scheme: "",
       openingBalance: "",
     });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        name: formData.distributorName,
+        email: formData.email,
+        mobile: formData.mobileNo,
+        state: formData.state,
+        address: formData.cityDistrict,
+        alternateNumber: formData.alternateNumber,
+        postalAddress: formData.postalAddress,
+        pinCode: formData.pinCode,
+        contactPerson: formData.contactPerson,
+        scheme: formData.scheme,
+        openingBalance: formData.openingBalance,
+      };
+
+      const res = await axios.post(
+        `${API_URL}/api/distributor/register`,
+        payload
+      );
+
+      if (res.data.success) {
+        alert(
+          `✅ Distributor Registered Successfully!\nUSER ID: ${res.data.userId}`
+        );
+        handleCancel();
+      } else {
+        alert(res.data.message || "Something went wrong");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("❌ Server Error! Please try again.");
+    }
+  };
   const styles = {
     container: {
       maxWidth: "900px",
@@ -67,21 +89,15 @@ const DistributorRegistration = () => {
       fontWeight: "600",
       letterSpacing: "0.5px",
     },
-    formBody: {
-      padding: "32px",
-    },
+    formBody: { padding: "32px" },
     formGrid: {
       display: "grid",
       gridTemplateColumns: "1fr 1fr",
       gap: "24px",
       marginBottom: "24px",
     },
-    formGroupFull: {
-      gridColumn: "1 / -1",
-    },
-    formGroup: {
-      marginBottom: "0",
-    },
+    formGroupFull: { gridColumn: "1 / -1" },
+    formGroup: { marginBottom: "0" },
     label: {
       display: "block",
       marginBottom: "8px",
@@ -159,11 +175,15 @@ const DistributorRegistration = () => {
 
   return (
     <div style={styles.container}>
-      <div style={styles.header}>Distributor Registration Form</div>
+      {" "}
+      <div style={styles.header}>Distributor Registration Form</div>{" "}
       <div style={styles.formBody}>
+        {" "}
         <div style={styles.formGrid}>
+          {" "}
           <div style={styles.formGroupFull}>
-            <label style={styles.label}>Distributor Name</label>
+            {" "}
+            <label style={styles.label}>Distributor Name</label>{" "}
             <input
               type="text"
               name="distributorName"
@@ -172,11 +192,11 @@ const DistributorRegistration = () => {
               style={styles.input}
               onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
               onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />
-          </div>
-
+            />{" "}
+          </div>{" "}
           <div style={styles.formGroupFull}>
-            <label style={styles.label}>Select Parent</label>
+            {" "}
+            <label style={styles.label}>Select Parent</label>{" "}
             <select
               name="selectParent"
               value={formData.selectParent}
@@ -185,15 +205,16 @@ const DistributorRegistration = () => {
               onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
               onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
             >
-              <option value="">Select Parent</option>
-              <option value="Master Distributor 1">Master Distributor 1</option>
-              <option value="Master Distributor 2">Master Distributor 2</option>
-              <option value="Master Distributor 3">Master Distributor 3</option>
-            </select>
-          </div>
-
+              {" "}
+              <option value="">Select Parent</option>{" "}
+              <option value="Master Distributor 1">Master Distributor 1</option>{" "}
+              <option value="Master Distributor 2">Master Distributor 2</option>{" "}
+              <option value="Master Distributor 3">Master Distributor 3</option>{" "}
+            </select>{" "}
+          </div>{" "}
           <div style={styles.formGroupFull}>
-            <label style={styles.label}>Postal Address</label>
+            {" "}
+            <label style={styles.label}>Postal Address</label>{" "}
             <textarea
               name="postalAddress"
               value={formData.postalAddress}
@@ -201,11 +222,11 @@ const DistributorRegistration = () => {
               style={styles.textarea}
               onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
               onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />
-          </div>
-
+            />{" "}
+          </div>{" "}
           <div style={styles.formGroup}>
-            <label style={styles.label}>Pin Code</label>
+            {" "}
+            <label style={styles.label}>Pin Code</label>{" "}
             <input
               type="text"
               name="pinCode"
@@ -214,11 +235,11 @@ const DistributorRegistration = () => {
               style={styles.input}
               onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
               onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />
-          </div>
-
+            />{" "}
+          </div>{" "}
           <div style={styles.formGroup}>
-            <label style={styles.label}>State</label>
+            {" "}
+            <label style={styles.label}>State</label>{" "}
             <select
               name="state"
               value={formData.state}
@@ -227,16 +248,17 @@ const DistributorRegistration = () => {
               onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
               onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
             >
-              <option value="">Select State</option>
-              <option value="Bihar">Bihar</option>
-              <option value="Uttar Pradesh">Uttar Pradesh</option>
-              <option value="Maharashtra">Maharashtra</option>
-              <option value="Delhi">Delhi</option>
-            </select>
-          </div>
-
+              {" "}
+              <option value="">Select State</option>{" "}
+              <option value="Bihar">Bihar</option>{" "}
+              <option value="Uttar Pradesh">Uttar Pradesh</option>{" "}
+              <option value="Maharashtra">Maharashtra</option>{" "}
+              <option value="Delhi">Delhi</option>{" "}
+            </select>{" "}
+          </div>{" "}
           <div style={styles.formGroup}>
-            <label style={styles.label}>City/District</label>
+            {" "}
+            <label style={styles.label}>City/District</label>{" "}
             <select
               name="cityDistrict"
               value={formData.cityDistrict}
@@ -245,15 +267,16 @@ const DistributorRegistration = () => {
               onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
               onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
             >
-              <option value="">Select City/District</option>
-              <option value="Patna">Patna</option>
-              <option value="Gaya">Gaya</option>
-              <option value="Muzaffarpur">Muzaffarpur</option>
-            </select>
-          </div>
-
+              {" "}
+              <option value="">Select City/District</option>{" "}
+              <option value="Patna">Patna</option>{" "}
+              <option value="Gaya">Gaya</option>{" "}
+              <option value="Muzaffarpur">Muzaffarpur</option>{" "}
+            </select>{" "}
+          </div>{" "}
           <div style={styles.formGroup}>
-            <label style={styles.label}>Mobile No</label>
+            {" "}
+            <label style={styles.label}>Mobile No</label>{" "}
             <input
               type="tel"
               name="mobileNo"
@@ -262,11 +285,11 @@ const DistributorRegistration = () => {
               style={styles.input}
               onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
               onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />
-          </div>
-
+            />{" "}
+          </div>{" "}
           <div style={styles.formGroup}>
-            <label style={styles.label}>Alternate Number</label>
+            {" "}
+            <label style={styles.label}>Alternate Number</label>{" "}
             <input
               type="tel"
               name="alternateNumber"
@@ -275,11 +298,11 @@ const DistributorRegistration = () => {
               style={styles.input}
               onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
               onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />
-          </div>
-
+            />{" "}
+          </div>{" "}
           <div style={styles.formGroup}>
-            <label style={styles.label}>Business Type</label>
+            {" "}
+            <label style={styles.label}>Business Type</label>{" "}
             <select
               name="businessType"
               value={formData.businessType}
@@ -288,15 +311,16 @@ const DistributorRegistration = () => {
               onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
               onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
             >
-              <option value="">Select Business Type</option>
-              <option value="Proprietorship">Proprietorship</option>
-              <option value="Partnership">Partnership</option>
-              <option value="Private Limited">Private Limited</option>
-            </select>
-          </div>
-
+              {" "}
+              <option value="">Select Business Type</option>{" "}
+              <option value="Proprietorship">Proprietorship</option>{" "}
+              <option value="Partnership">Partnership</option>{" "}
+              <option value="Private Limited">Private Limited</option>{" "}
+            </select>{" "}
+          </div>{" "}
           <div style={styles.formGroup}>
-            <label style={styles.label}>Email</label>
+            {" "}
+            <label style={styles.label}>Email</label>{" "}
             <input
               type="email"
               name="email"
@@ -305,11 +329,11 @@ const DistributorRegistration = () => {
               style={styles.input}
               onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
               onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />
-          </div>
-
+            />{" "}
+          </div>{" "}
           <div style={styles.formGroup}>
-            <label style={styles.label}>Pan No</label>
+            {" "}
+            <label style={styles.label}>Pan No</label>{" "}
             <input
               type="text"
               name="panNo"
@@ -318,11 +342,11 @@ const DistributorRegistration = () => {
               style={styles.input}
               onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
               onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />
-          </div>
-
+            />{" "}
+          </div>{" "}
           <div style={styles.formGroup}>
-            <label style={styles.label}>Contact Person</label>
+            {" "}
+            <label style={styles.label}>Contact Person</label>{" "}
             <input
               type="text"
               name="contactPerson"
@@ -331,11 +355,11 @@ const DistributorRegistration = () => {
               style={styles.input}
               onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
               onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />
-          </div>
-
+            />{" "}
+          </div>{" "}
           <div style={styles.formGroup}>
-            <label style={styles.label}>Scheme</label>
+            {" "}
+            <label style={styles.label}>Scheme</label>{" "}
             <select
               name="scheme"
               value={formData.scheme}
@@ -344,15 +368,16 @@ const DistributorRegistration = () => {
               onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
               onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
             >
-              <option value="">Select Scheme</option>
-              <option value="Scheme A">Scheme A</option>
-              <option value="Scheme B">Scheme B</option>
-              <option value="Scheme C">Scheme C</option>
-            </select>
-          </div>
-
+              {" "}
+              <option value="">Select Scheme</option>{" "}
+              <option value="Scheme A">Scheme A</option>{" "}
+              <option value="Scheme B">Scheme B</option>{" "}
+              <option value="Scheme C">Scheme C</option>{" "}
+            </select>{" "}
+          </div>{" "}
           <div style={styles.formGroup}>
-            <label style={styles.label}>Opening Balance</label>
+            {" "}
+            <label style={styles.label}>Opening Balance</label>{" "}
             <input
               type="number"
               name="openingBalance"
@@ -361,19 +386,20 @@ const DistributorRegistration = () => {
               style={styles.input}
               onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
               onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />
-          </div>
-        </div>
-
+            />{" "}
+          </div>{" "}
+        </div>{" "}
         <div style={styles.buttonGroup}>
+          {" "}
           <button
             onClick={handleCancel}
             style={styles.cancelBtn}
             onMouseOver={(e) => (e.target.style.transform = "translateY(-2px)")}
             onMouseOut={(e) => (e.target.style.transform = "translateY(0)")}
           >
-            Cancel
-          </button>
+            {" "}
+            Cancel{" "}
+          </button>{" "}
           <button
             onClick={handleSubmit}
             style={styles.submitBtn}
@@ -386,12 +412,12 @@ const DistributorRegistration = () => {
               e.target.style.boxShadow = "0 4px 15px rgba(102, 126, 234, 0.4)";
             }}
           >
-            Submit Details
-          </button>
-        </div>
-      </div>
+            {" "}
+            Submit Details{" "}
+          </button>{" "}
+        </div>{" "}
+      </div>{" "}
     </div>
   );
 };
-
 export default DistributorRegistration;
