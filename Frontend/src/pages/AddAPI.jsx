@@ -1,4 +1,5 @@
 import React from "react";
+import Header from "../../Admin/Header";
 
 export default function AddAPI() {
   const styles = {
@@ -88,35 +89,92 @@ export default function AddAPI() {
   };
 
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
-        <div style={styles.title}>AITopup</div>
-        <div style={styles.formRow}>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.page}>
+        <div style={styles.card}>
+          <div style={styles.title}>AITopup</div>
+          <div style={styles.formRow}>
+            <div>
+              <label style={styles.label}>API Name</label>
+              <input
+                type="text"
+                placeholder="Enter API Name"
+                style={styles.input}
+              />
+            </div>
+            <div>
+              <label style={styles.label}>Response Type</label>
+              <select style={styles.select}>
+                <option>json</option>
+                <option>xml</option>
+              </select>
+            </div>
+          </div>
+
+          <div style={styles.formRow}>
+            <div>
+              <label style={styles.label}>Method</label>
+              <select style={styles.select}>
+                <option>GET</option>
+                <option>POST</option>
+              </select>
+            </div>
+            <div>
+              <label style={styles.label}>Request URL</label>
+              <input
+                type="text"
+                placeholder="Enter request URL"
+                style={styles.input}
+              />
+            </div>
+          </div>
+
           <div>
-            <label style={styles.label}>API Name</label>
+            <label style={styles.label}>Recharge Response</label>
             <input
               type="text"
-              placeholder="Enter API Name"
+              placeholder="Enter Status, Transaction ID, etc."
               style={styles.input}
             />
           </div>
+
           <div>
-            <label style={styles.label}>Response Type</label>
-            <select style={styles.select}>
-              <option>json</option>
-              <option>xml</option>
-            </select>
+            <label style={styles.label}>Balance API URL</label>
+            <input
+              type="text"
+              placeholder="Enter balance API URL"
+              style={styles.input}
+            />
+          </div>
+
+          <div style={styles.buttonGroup}>
+            <button style={styles.updateBtn}>Update</button>
+            <button style={styles.deleteBtn}>Delete</button>
           </div>
         </div>
 
-        <div style={styles.formRow}>
-          <div>
-            <label style={styles.label}>Method</label>
-            <select style={styles.select}>
-              <option>GET</option>
-              <option>POST</option>
-            </select>
+        <div style={styles.card}>
+          <div style={styles.title}>AITopup Utility</div>
+          <div style={styles.formRow}>
+            <div>
+              <label style={styles.label}>API Name</label>
+              <input
+                type="text"
+                placeholder="Enter API Name"
+                style={styles.input}
+              />
+            </div>
+            <div>
+              <label style={styles.label}>Response Type</label>
+              <select style={styles.select}>
+                <option>json</option>
+                <option>xml</option>
+              </select>
+            </div>
           </div>
+
           <div>
             <label style={styles.label}>Request URL</label>
             <input
@@ -125,75 +183,22 @@ export default function AddAPI() {
               style={styles.input}
             />
           </div>
-        </div>
 
-        <div>
-          <label style={styles.label}>Recharge Response</label>
-          <input
-            type="text"
-            placeholder="Enter Status, Transaction ID, etc."
-            style={styles.input}
-          />
-        </div>
-
-        <div>
-          <label style={styles.label}>Balance API URL</label>
-          <input
-            type="text"
-            placeholder="Enter balance API URL"
-            style={styles.input}
-          />
-        </div>
-
-        <div style={styles.buttonGroup}>
-          <button style={styles.updateBtn}>Update</button>
-          <button style={styles.deleteBtn}>Delete</button>
-        </div>
-      </div>
-
-      <div style={styles.card}>
-        <div style={styles.title}>AITopup Utility</div>
-        <div style={styles.formRow}>
           <div>
-            <label style={styles.label}>API Name</label>
+            <label style={styles.label}>Balance API URL</label>
             <input
               type="text"
-              placeholder="Enter API Name"
+              placeholder="Enter balance API URL"
               style={styles.input}
             />
           </div>
-          <div>
-            <label style={styles.label}>Response Type</label>
-            <select style={styles.select}>
-              <option>json</option>
-              <option>xml</option>
-            </select>
+
+          <div style={styles.buttonGroup}>
+            <button style={styles.updateBtn}>Update</button>
+            <button style={styles.deleteBtn}>Delete</button>
           </div>
         </div>
-
-        <div>
-          <label style={styles.label}>Request URL</label>
-          <input
-            type="text"
-            placeholder="Enter request URL"
-            style={styles.input}
-          />
-        </div>
-
-        <div>
-          <label style={styles.label}>Balance API URL</label>
-          <input
-            type="text"
-            placeholder="Enter balance API URL"
-            style={styles.input}
-          />
-        </div>
-
-        <div style={styles.buttonGroup}>
-          <button style={styles.updateBtn}>Update</button>
-          <button style={styles.deleteBtn}>Delete</button>
-        </div>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 }

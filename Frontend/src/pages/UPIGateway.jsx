@@ -1,4 +1,5 @@
 import React from "react";
+import Header from "../../Admin/Header";
 
 export default function UPIGateway() {
   const styles = {
@@ -70,68 +71,72 @@ export default function UPIGateway() {
   };
 
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
-        <div style={styles.title}>Paytm Payment Gateway Setting</div>
-        <label style={styles.label}>Merchant ID</label>
-        <input
-          type="text"
-          placeholder="Enter Merchant ID"
-          style={styles.input}
-        />
+    <>
+      {" "}
+      <Header />
+      <div style={styles.page}>
+        <div style={styles.card}>
+          <div style={styles.title}>Paytm Payment Gateway Setting</div>
+          <label style={styles.label}>Merchant ID</label>
+          <input
+            type="text"
+            placeholder="Enter Merchant ID"
+            style={styles.input}
+          />
 
-        <label style={styles.label}>Merchant Key</label>
-        <input
-          type="text"
-          placeholder="Enter Merchant Key"
-          style={styles.input}
-        />
+          <label style={styles.label}>Merchant Key</label>
+          <input
+            type="text"
+            placeholder="Enter Merchant Key"
+            style={styles.input}
+          />
 
-        <label style={styles.label}>App Status</label>
-        <select style={styles.select}>
-          <option>ON</option>
-          <option>OFF</option>
-        </select>
+          <label style={styles.label}>App Status</label>
+          <select style={styles.select}>
+            <option>ON</option>
+            <option>OFF</option>
+          </select>
 
-        <label style={styles.label}>Web Status</label>
-        <select style={styles.select}>
-          <option>ON</option>
-          <option>OFF</option>
-        </select>
+          <label style={styles.label}>Web Status</label>
+          <select style={styles.select}>
+            <option>ON</option>
+            <option>OFF</option>
+          </select>
 
-        <button style={styles.button}>Update</button>
-      </div>
+          <button style={styles.button}>Update</button>
+        </div>
 
-      <div style={styles.card}>
-        <div style={styles.title}>UPI Gateway Setting</div>
-        <label style={styles.label}>Callback URL</label>
-        <input
-          type="text"
-          placeholder="Enter Callback URL"
-          style={styles.input}
-        />
+        <div style={styles.card}>
+          <div style={styles.title}>UPI Gateway Setting</div>
+          <label style={styles.label}>Callback URL</label>
+          <input
+            type="text"
+            placeholder="Enter Callback URL"
+            style={styles.input}
+          />
 
-        <label style={styles.label}>Merchant Token</label>
-        <input
-          type="text"
-          placeholder="Enter Merchant Token"
-          style={styles.input}
-        />
+          <label style={styles.label}>Merchant Token</label>
+          <input
+            type="text"
+            placeholder="Enter Merchant Token"
+            style={styles.input}
+          />
 
-        <label style={styles.label}>App Status</label>
-        <select style={styles.select}>
-          <option>ON</option>
-          <option>OFF</option>
-        </select>
+          <label style={styles.label}>App Status</label>
+          <select style={styles.select}>
+            <option>ON</option>
+            <option>OFF</option>
+          </select>
 
-        <label style={styles.label}>Web Status</label>
-        <select style={styles.select}>
-          <option>ON</option>
-          <option>OFF</option>
-        </select>
+          <label style={styles.label}>Web Status</label>
+          <select style={styles.select}>
+            <option>ON</option>
+            <option>OFF</option>
+          </select>
 
-        <button style={styles.button}>Update</button>
-      </div>
-    </div>
+          <button style={styles.button}>Update</button>
+        </div>
+      </div>{" "}
+    </>
   );
 }

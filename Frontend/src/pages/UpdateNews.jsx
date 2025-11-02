@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../../Admin/Header";
 
 export default function UpdateNews() {
   const [newsContent, setNewsContent] = useState("");
@@ -12,93 +13,97 @@ export default function UpdateNews() {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <div style={styles.headerContent}>
-          <div style={styles.iconWrapper}>
-            <span style={styles.icon}>📰</span>
-          </div>
-          <div>
-            <h1 style={styles.title}>Set Alert/News</h1>
-            <p style={styles.subtitle}>
-              Create and manage alerts and news updates for users
-            </p>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <div style={styles.header}>
+          <div style={styles.headerContent}>
+            <div style={styles.iconWrapper}>
+              <span style={styles.icon}>📰</span>
+            </div>
+            <div>
+              <h1 style={styles.title}>Set Alert/News</h1>
+              <p style={styles.subtitle}>
+                Create and manage alerts and news updates for users
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div style={styles.content}>
-        <div style={styles.card}>
-          <div style={styles.cardHeader}>
-            <h3 style={styles.cardTitle}>News Editor</h3>
-            <span style={styles.badge}>Broadcast Message</span>
-          </div>
-
-          <div style={styles.formContent}>
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>
-                <span style={styles.labelIcon}>✍️</span>
-                News/Alert Content
-              </label>
-              <textarea
-                value={newsContent}
-                onChange={(e) => setNewsContent(e.target.value)}
-                placeholder="For Any Help and Support Contact us 08069578467."
-                style={styles.textarea}
-                rows={6}
-              />
-              <div style={styles.helperText}>
-                Enter your news or alert message. This will be visible to all
-                users.
-              </div>
+        <div style={styles.content}>
+          <div style={styles.card}>
+            <div style={styles.cardHeader}>
+              <h3 style={styles.cardTitle}>News Editor</h3>
+              <span style={styles.badge}>Broadcast Message</span>
             </div>
 
-            <div style={styles.infoBox}>
-              <span style={styles.infoIcon}>💡</span>
-              <div>
-                <div style={styles.infoTitle}>Quick Tips</div>
-                <div style={styles.infoText}>
-                  Keep messages clear and concise. Include contact information
-                  for support queries. Preview your message before submitting.
+            <div style={styles.formContent}>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>
+                  <span style={styles.labelIcon}>✍️</span>
+                  News/Alert Content
+                </label>
+                <textarea
+                  value={newsContent}
+                  onChange={(e) => setNewsContent(e.target.value)}
+                  placeholder="For Any Help and Support Contact us 08069578467."
+                  style={styles.textarea}
+                  rows={6}
+                />
+                <div style={styles.helperText}>
+                  Enter your news or alert message. This will be visible to all
+                  users.
                 </div>
               </div>
-            </div>
 
-            <div style={styles.buttonGroup}>
-              <button onClick={handleSubmit} style={styles.primaryButton}>
-                <span style={styles.buttonIcon}>📤</span>
-                Submit
-              </button>
-              <button onClick={handleClear} style={styles.secondaryButton}>
-                <span style={styles.buttonIcon}>🔄</span>
-                Clear
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div style={styles.previewCard}>
-          <div style={styles.previewHeader}>
-            <h3 style={styles.previewTitle}>Preview</h3>
-          </div>
-          <div style={styles.previewContent}>
-            {newsContent ? (
-              <div style={styles.previewMessage}>
-                <span style={styles.previewIcon}>📢</span>
-                <div style={styles.previewText}>{newsContent}</div>
-              </div>
-            ) : (
-              <div style={styles.emptyPreview}>
-                <div style={styles.emptyIcon}>📝</div>
-                <div style={styles.emptyText}>
-                  Your message preview will appear here
+              <div style={styles.infoBox}>
+                <span style={styles.infoIcon}>💡</span>
+                <div>
+                  <div style={styles.infoTitle}>Quick Tips</div>
+                  <div style={styles.infoText}>
+                    Keep messages clear and concise. Include contact information
+                    for support queries. Preview your message before submitting.
+                  </div>
                 </div>
               </div>
-            )}
+
+              <div style={styles.buttonGroup}>
+                <button onClick={handleSubmit} style={styles.primaryButton}>
+                  <span style={styles.buttonIcon}>📤</span>
+                  Submit
+                </button>
+                <button onClick={handleClear} style={styles.secondaryButton}>
+                  <span style={styles.buttonIcon}>🔄</span>
+                  Clear
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div style={styles.previewCard}>
+            <div style={styles.previewHeader}>
+              <h3 style={styles.previewTitle}>Preview</h3>
+            </div>
+            <div style={styles.previewContent}>
+              {newsContent ? (
+                <div style={styles.previewMessage}>
+                  <span style={styles.previewIcon}>📢</span>
+                  <div style={styles.previewText}>{newsContent}</div>
+                </div>
+              ) : (
+                <div style={styles.emptyPreview}>
+                  <div style={styles.emptyIcon}>📝</div>
+                  <div style={styles.emptyText}>
+                    Your message preview will appear here
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 }
 
