@@ -31,7 +31,8 @@ const MasterDistributorRegistration = () => {
 
  const handleSubmit = async () => {
   try {
-    const res = await axios.post(`${API_URL}/masterDistributor/register`, formData);
+    const res = await axios.post(`${API_URL}/api/masterDistributor/register`, formData);
+
     alert(`Master Distributor Created Successfully!
 UserID: ${res.data.userId}
 Password: ${res.data.password}`);
