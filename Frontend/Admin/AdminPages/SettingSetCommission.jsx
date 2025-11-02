@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function SettingSetCommission() {
   const [operator, setOperator] = useState("");
@@ -7,41 +8,66 @@ export default function SettingSetCommission() {
   const [search, setSearch] = useState("");
   const [sortField, setSortField] = useState("operator");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [data, setData] = useState([]);
 
-  const operators = [
-    "Airtel",
-    "Airtel Digital TV",
-    "Axis Bank Fastag",
-    "BSNL Postpaid",
-    "Google Pay",
-    "ICICI Bank Fastag",
-    "Jio Postpaid",
-    "Paytm",
-    "Vodafone Postpaid",
-  ];
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-  const softwares = ["DISTRIBUTORS", "RETAILERS"];
+  // Fetch operator list dynamically (from backend)
+  const [operators, setOperators] = useState([]);
+  const [softwares, setSoftwares] = useState([]);
 
-  const [data, setData] = useState([
-    { operator: "Airtel", commission: 0.1, software: "DISTRIBUTORS" },
-    { operator: "Jio Postpaid", commission: 0.0, software: "DISTRIBUTORS" },
-    { operator: "Airtel", commission: 1.25, software: "RETAILERS" },
-    { operator: "BSNL Postpaid", commission: 4.0, software: "RETAILERS" },
-    { operator: "Idea", commission: 2.4, software: "RETAILERS" },
-  ]);
+  useEffect(() => {
+    fetchOperators();
+    fetchSoftwares();
+    fetchData();
+  }, []);
 
-  const handleSubmit = (e) => {
+  const fetchOperators = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/api/operators`);
+      setOperators(res.data || []);
+    } catch (err) {
+      console.error("Error fetching operators:", err);
+    }
+  };
+
+  const fetchSoftwares = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/api/softwares`);
+      setSoftwares(res.data || []);
+    } catch (err) {
+      console.error("Error fetching softwares:", err);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/api/commission/all`);
+      if (res.data.success) setData(res.data.data);
+    } catch (err) {
+      console.error("Error fetching commissions:", err);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!operator || !commission || !software) {
       alert("Please fill all fields!");
       return;
     }
-    const newEntry = { operator, commission: parseFloat(commission), software };
-    setData([...data, newEntry]);
-    setOperator("");
-    setCommission("");
-    setSoftware("");
-    alert("Commission added successfully!");
+
+    try {
+      const payload = { operator, commission: parseFloat(commission), software };
+      const res = await axios.post(`${API_URL}/api/commission/set`, payload);
+      alert(res.data.message);
+      fetchData();
+      setOperator("");
+      setCommission("");
+      setSoftware("");
+    } catch (err) {
+      console.error("Error saving commission:", err);
+      alert("Failed to save commission");
+    }
   };
 
   const handleSort = (field) => {
@@ -55,11 +81,8 @@ export default function SettingSetCommission() {
     .sort((a, b) => {
       const valA = a[sortField];
       const valB = b[sortField];
-      if (sortOrder === "asc") {
-        return valA > valB ? 1 : -1;
-      } else {
-        return valA < valB ? 1 : -1;
-      }
+      if (sortOrder === "asc") return valA > valB ? 1 : -1;
+      else return valA < valB ? 1 : -1;
     });
 
   return (
@@ -76,7 +99,9 @@ export default function SettingSetCommission() {
             >
               <option value="">Select Operator</option>
               {operators.map((op, i) => (
-                <option key={i}>{op}</option>
+                <option key={i} value={op}>
+                  {op}
+                </option>
               ))}
             </select>
           </div>
@@ -101,7 +126,9 @@ export default function SettingSetCommission() {
             >
               <option value="">Select Software</option>
               {softwares.map((sw, i) => (
-                <option key={i}>{sw}</option>
+                <option key={i} value={sw}>
+                  {sw}
+                </option>
               ))}
             </select>
           </div>
@@ -110,7 +137,15 @@ export default function SettingSetCommission() {
             <button type="submit" style={styles.btnSave}>
               Save
             </button>
-            <button type="reset" style={styles.btnCancel}>
+            <button
+              type="reset"
+              style={styles.btnCancel}
+              onClick={() => {
+                setOperator("");
+                setCommission("");
+                setSoftware("");
+              }}
+            >
               Cancel
             </button>
           </div>
@@ -155,7 +190,16 @@ export default function SettingSetCommission() {
                   <td style={styles.td}>{row.commission.toFixed(2)}</td>
                   <td style={styles.td}>{row.software}</td>
                   <td style={styles.td}>
-                    <button style={styles.btnEdit}>Edit</button>
+                    <button
+                      style={styles.btnEdit}
+                      onClick={() => {
+                        setOperator(row.operator);
+                        setCommission(row.commission);
+                        setSoftware(row.software);
+                      }}
+                    >
+                      Edit
+                    </button>
                   </td>
                 </tr>
               ))
@@ -269,9 +313,7 @@ const styles = {
     color: "#444",
     cursor: "pointer",
   },
-  tr: {
-    transition: "background 0.2s",
-  },
+  tr: { transition: "background 0.2s" },
   td: {
     padding: "12px 15px",
     borderBottom: "1px solid #eee",
