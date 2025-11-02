@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../Header";
 
 export default function SettingChangeLogo() {
   const [fileName, setFileName] = useState("No file chosen");
@@ -63,25 +64,29 @@ export default function SettingChangeLogo() {
   };
 
   return (
-    <div style={containerStyle}>
-      <div style={headerStyle}>Upload Logo</div>
-      <div style={boxStyle}>
-        <input
-          type="file"
-          style={inputStyle}
-          onChange={handleFileChange}
-          id="fileInput"
-        />
-        <span style={fileNameStyle}>{fileName}</span>
-        <button
-          style={buttonStyle}
-          onMouseOver={(e) => (e.target.style.backgroundColor = "#286090")}
-          onMouseOut={(e) => (e.target.style.backgroundColor = "#337ab7")}
-          onClick={handleUpload}
-        >
-          Upload
-        </button>
-      </div>
-    </div>
+    <>
+      {" "}
+      <Header />
+      <div style={containerStyle}>
+        <div style={headerStyle}>Upload Logo</div>
+        <div style={boxStyle}>
+          <input
+            type="file"
+            style={inputStyle}
+            onChange={handleFileChange}
+            id="fileInput"
+          />
+          <span style={fileNameStyle}>{fileName}</span>
+          <button
+            style={buttonStyle}
+            onMouseOver={(e) => (e.target.style.backgroundColor = "#286090")}
+            onMouseOut={(e) => (e.target.style.backgroundColor = "#337ab7")}
+            onClick={handleUpload}
+          >
+            Upload
+          </button>
+        </div>
+      </div>{" "}
+    </>
   );
 }

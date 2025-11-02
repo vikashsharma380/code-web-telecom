@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../Header";
 
 const SettingChangePassword = () => {
   const [formData, setFormData] = useState({
@@ -158,105 +159,113 @@ const SettingChangePassword = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>Change Password</div>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <div style={styles.header}>Change Password</div>
 
-      <div style={styles.formSection}>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Old Password :</label>
-          <input
-            type="password"
-            name="oldPassword"
-            value={formData.oldPassword}
-            onChange={handleChange}
-            style={{
-              ...styles.input,
-              ...(errors.oldPassword ? styles.inputError : {}),
-            }}
-            onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-            onBlur={(e) => {
-              if (!errors.oldPassword) {
-                e.target.style.border = "2px solid #e2e8f0";
+        <div style={styles.formSection}>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Old Password :</label>
+            <input
+              type="password"
+              name="oldPassword"
+              value={formData.oldPassword}
+              onChange={handleChange}
+              style={{
+                ...styles.input,
+                ...(errors.oldPassword ? styles.inputError : {}),
+              }}
+              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+              onBlur={(e) => {
+                if (!errors.oldPassword) {
+                  e.target.style.border = "2px solid #e2e8f0";
+                }
+              }}
+            />
+            {errors.oldPassword && (
+              <div style={styles.errorText}>{errors.oldPassword}</div>
+            )}
+          </div>
+
+          <div style={styles.formGroup}>
+            <label style={styles.label}>New Password :</label>
+            <input
+              type="password"
+              name="newPassword"
+              value={formData.newPassword}
+              onChange={handleChange}
+              style={{
+                ...styles.input,
+                ...(errors.newPassword ? styles.inputError : {}),
+              }}
+              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+              onBlur={(e) => {
+                if (!errors.newPassword) {
+                  e.target.style.border = "2px solid #e2e8f0";
+                }
+              }}
+            />
+            {errors.newPassword && (
+              <div style={styles.errorText}>{errors.newPassword}</div>
+            )}
+          </div>
+
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Confirm Password :</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              style={{
+                ...styles.input,
+                ...(errors.confirmPassword ? styles.inputError : {}),
+              }}
+              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+              onBlur={(e) => {
+                if (!errors.confirmPassword) {
+                  e.target.style.border = "2px solid #e2e8f0";
+                }
+              }}
+            />
+            {errors.confirmPassword && (
+              <div style={styles.errorText}>{errors.confirmPassword}</div>
+            )}
+          </div>
+
+          <div style={styles.buttonGroup}>
+            <button
+              onClick={handleSubmit}
+              style={styles.submitBtn}
+              onMouseOver={(e) => {
+                e.target.style.transform = "translateY(-2px)";
+                e.target.style.boxShadow =
+                  "0 6px 20px rgba(102, 126, 234, 0.5)";
+              }}
+              onMouseOut={(e) => {
+                e.target.style.transform = "translateY(0)";
+                e.target.style.boxShadow =
+                  "0 4px 15px rgba(102, 126, 234, 0.4)";
+              }}
+            >
+              Submit
+            </button>
+            <button
+              onClick={handleCancel}
+              style={styles.cancelBtn}
+              onMouseOver={(e) =>
+                (e.target.style.transform = "translateY(-2px)")
               }
-            }}
-          />
-          {errors.oldPassword && (
-            <div style={styles.errorText}>{errors.oldPassword}</div>
-          )}
+              onMouseOut={(e) => (e.target.style.transform = "translateY(0)")}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
-
-        <div style={styles.formGroup}>
-          <label style={styles.label}>New Password :</label>
-          <input
-            type="password"
-            name="newPassword"
-            value={formData.newPassword}
-            onChange={handleChange}
-            style={{
-              ...styles.input,
-              ...(errors.newPassword ? styles.inputError : {}),
-            }}
-            onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-            onBlur={(e) => {
-              if (!errors.newPassword) {
-                e.target.style.border = "2px solid #e2e8f0";
-              }
-            }}
-          />
-          {errors.newPassword && (
-            <div style={styles.errorText}>{errors.newPassword}</div>
-          )}
-        </div>
-
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Confirm Password :</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            style={{
-              ...styles.input,
-              ...(errors.confirmPassword ? styles.inputError : {}),
-            }}
-            onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-            onBlur={(e) => {
-              if (!errors.confirmPassword) {
-                e.target.style.border = "2px solid #e2e8f0";
-              }
-            }}
-          />
-          {errors.confirmPassword && (
-            <div style={styles.errorText}>{errors.confirmPassword}</div>
-          )}
-        </div>
-
-        <div style={styles.buttonGroup}>
-          <button
-            onClick={handleSubmit}
-            style={styles.submitBtn}
-            onMouseOver={(e) => {
-              e.target.style.transform = "translateY(-2px)";
-              e.target.style.boxShadow = "0 6px 20px rgba(102, 126, 234, 0.5)";
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = "translateY(0)";
-              e.target.style.boxShadow = "0 4px 15px rgba(102, 126, 234, 0.4)";
-            }}
-          >
-            Submit
-          </button>
-          <button
-            onClick={handleCancel}
-            style={styles.cancelBtn}
-            onMouseOver={(e) => (e.target.style.transform = "translateY(-2px)")}
-            onMouseOut={(e) => (e.target.style.transform = "translateY(0)")}
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 };
 

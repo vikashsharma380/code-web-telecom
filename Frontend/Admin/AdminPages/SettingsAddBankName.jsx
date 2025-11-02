@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Edit2 } from "lucide-react";
+import Header from "../Header";
 
 const SettingsAddBankName = () => {
   const [bankName, setBankName] = useState("");
@@ -222,130 +223,138 @@ const SettingsAddBankName = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>Insert Bank Name</div>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <div style={styles.header}>Insert Bank Name</div>
 
-      {/* Form Section */}
-      <div style={styles.formSection}>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Bank Name :</label>
-          <input
-            type="text"
-            value={bankName}
-            onChange={(e) => setBankName(e.target.value)}
-            style={styles.input}
-            placeholder="Enter bank name"
-            onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-            onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-          />
-        </div>
+        {/* Form Section */}
+        <div style={styles.formSection}>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Bank Name :</label>
+            <input
+              type="text"
+              value={bankName}
+              onChange={(e) => setBankName(e.target.value)}
+              style={styles.input}
+              placeholder="Enter bank name"
+              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+            />
+          </div>
 
-        <div style={styles.buttonGroup}>
-          <button
-            onClick={handleSubmit}
-            style={styles.submitBtn}
-            onMouseOver={(e) => {
-              e.target.style.transform = "translateY(-2px)";
-              e.target.style.boxShadow = "0 6px 20px rgba(102, 126, 234, 0.5)";
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = "translateY(0)";
-              e.target.style.boxShadow = "0 4px 15px rgba(102, 126, 234, 0.4)";
-            }}
-          >
-            Submit
-          </button>
-          <button
-            onClick={handleCancel}
-            style={styles.cancelBtn}
-            onMouseOver={(e) => (e.target.style.transform = "translateY(-2px)")}
-            onMouseOut={(e) => (e.target.style.transform = "translateY(0)")}
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-
-      {/* Bank List Section */}
-      <div style={styles.listSection}>
-        <div style={styles.listHeader}>
-          <span style={styles.listTitle}>Bank Name</span>
-          <span style={styles.editHeader}>Edit</span>
-        </div>
-
-        <ul style={styles.bankList}>
-          {banks.map((bank, index) => (
-            <li
-              key={index}
-              style={styles.bankItem}
+          <div style={styles.buttonGroup}>
+            <button
+              onClick={handleSubmit}
+              style={styles.submitBtn}
               onMouseOver={(e) => {
-                e.currentTarget.style.backgroundColor = "#edf2f7";
-                e.currentTarget.style.borderColor = "#cbd5e0";
+                e.target.style.transform = "translateY(-2px)";
+                e.target.style.boxShadow =
+                  "0 6px 20px rgba(102, 126, 234, 0.5)";
               }}
               onMouseOut={(e) => {
-                e.currentTarget.style.backgroundColor = "#f7fafc";
-                e.currentTarget.style.borderColor = "#e2e8f0";
+                e.target.style.transform = "translateY(0)";
+                e.target.style.boxShadow =
+                  "0 4px 15px rgba(102, 126, 234, 0.4)";
               }}
             >
-              {editingIndex === index ? (
-                <div style={styles.editForm}>
-                  <input
-                    type="text"
-                    value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
-                    style={styles.editInput}
-                  />
-                  <button
-                    onClick={() => handleSaveEdit(index)}
-                    style={styles.saveBtn}
-                    onMouseOver={(e) =>
-                      (e.target.style.transform = "translateY(-2px)")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.transform = "translateY(0)")
-                    }
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={handleCancelEdit}
-                    style={styles.cancelEditBtn}
-                    onMouseOver={(e) =>
-                      (e.target.style.transform = "translateY(-2px)")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.transform = "translateY(0)")
-                    }
-                  >
-                    Cancel
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <span style={styles.bankName}>{bank}</span>
-                  <button
-                    onClick={() => handleEdit(index)}
-                    style={styles.editBtn}
-                    onMouseOver={(e) => {
-                      e.target.style.background =
-                        "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
-                      e.target.style.color = "white";
-                    }}
-                    onMouseOut={(e) => {
-                      e.target.style.background = "transparent";
-                      e.target.style.color = "#667eea";
-                    }}
-                  >
-                    <Edit2 size={16} />
-                    Edit
-                  </button>
-                </>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+              Submit
+            </button>
+            <button
+              onClick={handleCancel}
+              style={styles.cancelBtn}
+              onMouseOver={(e) =>
+                (e.target.style.transform = "translateY(-2px)")
+              }
+              onMouseOut={(e) => (e.target.style.transform = "translateY(0)")}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        {/* Bank List Section */}
+        <div style={styles.listSection}>
+          <div style={styles.listHeader}>
+            <span style={styles.listTitle}>Bank Name</span>
+            <span style={styles.editHeader}>Edit</span>
+          </div>
+
+          <ul style={styles.bankList}>
+            {banks.map((bank, index) => (
+              <li
+                key={index}
+                style={styles.bankItem}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = "#edf2f7";
+                  e.currentTarget.style.borderColor = "#cbd5e0";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = "#f7fafc";
+                  e.currentTarget.style.borderColor = "#e2e8f0";
+                }}
+              >
+                {editingIndex === index ? (
+                  <div style={styles.editForm}>
+                    <input
+                      type="text"
+                      value={editValue}
+                      onChange={(e) => setEditValue(e.target.value)}
+                      style={styles.editInput}
+                    />
+                    <button
+                      onClick={() => handleSaveEdit(index)}
+                      style={styles.saveBtn}
+                      onMouseOver={(e) =>
+                        (e.target.style.transform = "translateY(-2px)")
+                      }
+                      onMouseOut={(e) =>
+                        (e.target.style.transform = "translateY(0)")
+                      }
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={handleCancelEdit}
+                      style={styles.cancelEditBtn}
+                      onMouseOver={(e) =>
+                        (e.target.style.transform = "translateY(-2px)")
+                      }
+                      onMouseOut={(e) =>
+                        (e.target.style.transform = "translateY(0)")
+                      }
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <span style={styles.bankName}>{bank}</span>
+                    <button
+                      onClick={() => handleEdit(index)}
+                      style={styles.editBtn}
+                      onMouseOver={(e) => {
+                        e.target.style.background =
+                          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+                        e.target.style.color = "white";
+                      }}
+                      onMouseOut={(e) => {
+                        e.target.style.background = "transparent";
+                        e.target.style.color = "#667eea";
+                      }}
+                    >
+                      <Edit2 size={16} />
+                      Edit
+                    </button>
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>{" "}
+    </>
   );
 };
 

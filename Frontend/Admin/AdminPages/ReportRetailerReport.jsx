@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../Header";
 
 export default function ReportRetailerReport() {
   const [retailer, setRetailer] = useState("");
@@ -15,43 +16,47 @@ export default function ReportRetailerReport() {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>Retailer Recharge Report</div>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <div style={styles.header}>Retailer Recharge Report</div>
 
-      <div style={styles.formContainer}>
-        <label style={styles.label}>Select Retailer:</label>
-        <select
-          style={styles.select}
-          value={retailer}
-          onChange={(e) => setRetailer(e.target.value)}
-        >
-          <option value="">--Select--</option>
-          <option value="Retailer 1">Retailer 1</option>
-          <option value="Retailer 2">Retailer 2</option>
-          <option value="Retailer 3">Retailer 3</option>
-        </select>
+        <div style={styles.formContainer}>
+          <label style={styles.label}>Select Retailer:</label>
+          <select
+            style={styles.select}
+            value={retailer}
+            onChange={(e) => setRetailer(e.target.value)}
+          >
+            <option value="">--Select--</option>
+            <option value="Retailer 1">Retailer 1</option>
+            <option value="Retailer 2">Retailer 2</option>
+            <option value="Retailer 3">Retailer 3</option>
+          </select>
 
-        <label style={styles.label}>From Date:</label>
-        <input
-          type="date"
-          style={styles.input}
-          value={fromDate}
-          onChange={(e) => setFromDate(e.target.value)}
-        />
+          <label style={styles.label}>From Date:</label>
+          <input
+            type="date"
+            style={styles.input}
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+          />
 
-        <label style={styles.label}>To Date:</label>
-        <input
-          type="date"
-          style={styles.input}
-          value={toDate}
-          onChange={(e) => setToDate(e.target.value)}
-        />
+          <label style={styles.label}>To Date:</label>
+          <input
+            type="date"
+            style={styles.input}
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+          />
 
-        <button style={styles.button} onClick={handleSearch}>
-          Search
-        </button>
-      </div>
-    </div>
+          <button style={styles.button} onClick={handleSearch}>
+            Search
+          </button>
+        </div>
+      </div>{" "}
+    </>
   );
 }
 

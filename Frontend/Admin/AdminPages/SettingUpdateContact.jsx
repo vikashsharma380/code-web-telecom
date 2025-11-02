@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
+import Header from "../Header";
 
 export default function SettingUpdateContact() {
   const editorRef = useRef(null);
@@ -176,187 +177,191 @@ export default function SettingUpdateContact() {
   };
 
   return (
-    <div style={containerStyle}>
-      <div style={headerStyle}>Update Contact</div>
+    <>
+      {" "}
+      <Header />
+      <div style={containerStyle}>
+        <div style={headerStyle}>Update Contact</div>
 
-      <div style={boxStyle}>
-        {/* Toolbar */}
-        <div style={toolbarStyle}>
-          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-            <button
-              type="button"
-              style={tbtn}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => exec("bold")}
-              title="Bold"
-            >
-              B
-            </button>
-            <button
-              type="button"
-              style={tbtn}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => exec("italic")}
-              title="Italic"
-            >
-              I
-            </button>
-            <button
-              type="button"
-              style={tbtn}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => exec("underline")}
-              title="Underline"
-            >
-              U
-            </button>
+        <div style={boxStyle}>
+          {/* Toolbar */}
+          <div style={toolbarStyle}>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+              <button
+                type="button"
+                style={tbtn}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => exec("bold")}
+                title="Bold"
+              >
+                B
+              </button>
+              <button
+                type="button"
+                style={tbtn}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => exec("italic")}
+                title="Italic"
+              >
+                I
+              </button>
+              <button
+                type="button"
+                style={tbtn}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => exec("underline")}
+                title="Underline"
+              >
+                U
+              </button>
 
-            <button
-              type="button"
-              style={tbtn}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => exec("insertUnorderedList")}
-              title="Bullet list"
-            >
-              • List
-            </button>
-            <button
-              type="button"
-              style={tbtn}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => exec("insertOrderedList")}
-              title="Numbered list"
-            >
-              1. List
-            </button>
+              <button
+                type="button"
+                style={tbtn}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => exec("insertUnorderedList")}
+                title="Bullet list"
+              >
+                • List
+              </button>
+              <button
+                type="button"
+                style={tbtn}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => exec("insertOrderedList")}
+                title="Numbered list"
+              >
+                1. List
+              </button>
 
-            <button
-              type="button"
-              style={tbtn}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => exec("justifyLeft")}
-              title="Align left"
-            >
-              ⟵
-            </button>
-            <button
-              type="button"
-              style={tbtn}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => exec("justifyCenter")}
-              title="Center"
-            >
-              ⤒
-            </button>
-            <button
-              type="button"
-              style={tbtn}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => exec("justifyRight")}
-              title="Align right"
-            >
-              ⟶
-            </button>
+              <button
+                type="button"
+                style={tbtn}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => exec("justifyLeft")}
+                title="Align left"
+              >
+                ⟵
+              </button>
+              <button
+                type="button"
+                style={tbtn}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => exec("justifyCenter")}
+                title="Center"
+              >
+                ⤒
+              </button>
+              <button
+                type="button"
+                style={tbtn}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => exec("justifyRight")}
+                title="Align right"
+              >
+                ⟶
+              </button>
 
-            <button
-              type="button"
-              style={tbtn}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={handleLink}
-              title="Insert link"
-            >
-              🔗 Link
-            </button>
+              <button
+                type="button"
+                style={tbtn}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={handleLink}
+                title="Insert link"
+              >
+                🔗 Link
+              </button>
 
-            <button
-              type="button"
-              style={tbtn}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={handleImage}
-              title="Insert image"
-            >
-              🖼 Image
-            </button>
+              <button
+                type="button"
+                style={tbtn}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={handleImage}
+                title="Insert image"
+              >
+                🖼 Image
+              </button>
 
-            <button
-              type="button"
-              style={tbtn}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => exec("undo")}
-              title="Undo"
-            >
-              ↶
-            </button>
-            <button
-              type="button"
-              style={tbtn}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => exec("redo")}
-              title="Redo"
-            >
-              ↷
-            </button>
+              <button
+                type="button"
+                style={tbtn}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => exec("undo")}
+                title="Undo"
+              >
+                ↶
+              </button>
+              <button
+                type="button"
+                style={tbtn}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => exec("redo")}
+                title="Redo"
+              >
+                ↷
+              </button>
 
-            <button
-              type="button"
-              style={tbtn}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={handleFontSize}
-              title="Font size"
-            >
-              A+
-            </button>
+              <button
+                type="button"
+                style={tbtn}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={handleFontSize}
+                title="Font size"
+              >
+                A+
+              </button>
+            </div>
+
+            {/* small spacer to push toolbar right actions to end */}
+            <div style={{ flex: 1 }} />
+
+            <div style={{ display: "flex", gap: "8px" }}>
+              <button
+                type="button"
+                style={{ ...tbtn, background: "rgba(255,255,255,0.08)" }}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => {
+                  // Clear content and state
+                  if (window.confirm("Clear all content?")) {
+                    if (editorRef.current) editorRef.current.innerHTML = "";
+                    setHtml("");
+                  }
+                }}
+              >
+                Clear
+              </button>
+            </div>
           </div>
 
-          {/* small spacer to push toolbar right actions to end */}
-          <div style={{ flex: 1 }} />
+          {/* Editor */}
+          <div
+            ref={editorRef}
+            contentEditable
+            onInput={() => setHtml(editorRef.current.innerHTML)}
+            onMouseUp={saveSelection}
+            onKeyUp={saveSelection}
+            style={editorAreaStyle}
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
 
-          <div style={{ display: "flex", gap: "8px" }}>
+          {/* Footer/buttons */}
+          <div style={footerStyle}>
             <button
               type="button"
-              style={{ ...tbtn, background: "rgba(255,255,255,0.08)" }}
-              onMouseDown={(e) => e.preventDefault()}
+              style={secondaryBtnStyle}
               onClick={() => {
-                // Clear content and state
-                if (window.confirm("Clear all content?")) {
-                  if (editorRef.current) editorRef.current.innerHTML = "";
-                  setHtml("");
-                }
+                // revert to last saved html (simple demo)
+                if (editorRef.current) editorRef.current.innerHTML = html;
               }}
             >
-              Clear
+              Revert
+            </button>
+            <button type="button" style={submitBtnStyle} onClick={handleSubmit}>
+              Submit
             </button>
           </div>
         </div>
-
-        {/* Editor */}
-        <div
-          ref={editorRef}
-          contentEditable
-          onInput={() => setHtml(editorRef.current.innerHTML)}
-          onMouseUp={saveSelection}
-          onKeyUp={saveSelection}
-          style={editorAreaStyle}
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
-
-        {/* Footer/buttons */}
-        <div style={footerStyle}>
-          <button
-            type="button"
-            style={secondaryBtnStyle}
-            onClick={() => {
-              // revert to last saved html (simple demo)
-              if (editorRef.current) editorRef.current.innerHTML = html;
-            }}
-          >
-            Revert
-          </button>
-          <button type="button" style={submitBtnStyle} onClick={handleSubmit}>
-            Submit
-          </button>
-        </div>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 }

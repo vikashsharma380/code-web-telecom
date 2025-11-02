@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../Header";
 
 export default function ReportMasterDistributorReport() {
   const [selectedDistributor, setSelectedDistributor] = useState("");
@@ -6,101 +7,107 @@ export default function ReportMasterDistributorReport() {
   const [toDate, setToDate] = useState("");
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <div style={styles.headerContent}>
-          <div style={styles.iconWrapper}>
-            <span style={styles.icon}>📈</span>
-          </div>
-          <div>
-            <h1 style={styles.title}>Master Distributor Recharge Report</h1>
-            <p style={styles.subtitle}>
-              Comprehensive distributor analytics and insights
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div style={styles.content}>
-        <div style={styles.card}>
-          <div style={styles.cardHeader}>
-            <h3 style={styles.cardTitle}>Filter Parameters</h3>
-            <span style={styles.requiredText}>* All fields required</span>
-          </div>
-
-          <div style={styles.filterGrid}>
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>
-                <span style={styles.labelIcon}>👤</span>
-                Select Master Distributor
-              </label>
-              <div style={styles.selectWrapper}>
-                <select
-                  value={selectedDistributor}
-                  onChange={(e) => setSelectedDistributor(e.target.value)}
-                  style={styles.select}
-                >
-                  <option value="">Choose a distributor...</option>
-                  <option value="distributor1">Premium Distributor A</option>
-                  <option value="distributor2">Enterprise Distributor B</option>
-                  <option value="distributor3">Master Distributor C</option>
-                  <option value="distributor4">Elite Distributor D</option>
-                </select>
-                <span style={styles.selectArrow}>▼</span>
-              </div>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <div style={styles.header}>
+          <div style={styles.headerContent}>
+            <div style={styles.iconWrapper}>
+              <span style={styles.icon}>📈</span>
             </div>
-
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>
-                <span style={styles.labelIcon}>📅</span>
-                From Date
-              </label>
-              <input
-                type="date"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-                style={styles.input}
-              />
-            </div>
-
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>
-                <span style={styles.labelIcon}>📅</span>
-                To Date
-              </label>
-              <input
-                type="date"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-                style={styles.input}
-              />
-            </div>
-
-            <div style={styles.buttonGroup}>
-              <button style={styles.primaryButton}>
-                <span style={styles.buttonIcon}>🔍</span>
-                Generate Report
-              </button>
-              <button style={styles.secondaryButton}>
-                <span style={styles.buttonIcon}>🔄</span>
-                Reset
-              </button>
-            </div>
-          </div>
-
-          <div style={styles.infoBox}>
-            <span style={styles.infoIcon}>ℹ️</span>
             <div>
-              <div style={styles.infoTitle}>Quick Tips</div>
-              <div style={styles.infoText}>
-                Select a date range up to 90 days for optimal performance.
-                Reports are generated in real-time.
+              <h1 style={styles.title}>Master Distributor Recharge Report</h1>
+              <p style={styles.subtitle}>
+                Comprehensive distributor analytics and insights
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div style={styles.content}>
+          <div style={styles.card}>
+            <div style={styles.cardHeader}>
+              <h3 style={styles.cardTitle}>Filter Parameters</h3>
+              <span style={styles.requiredText}>* All fields required</span>
+            </div>
+
+            <div style={styles.filterGrid}>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>
+                  <span style={styles.labelIcon}>👤</span>
+                  Select Master Distributor
+                </label>
+                <div style={styles.selectWrapper}>
+                  <select
+                    value={selectedDistributor}
+                    onChange={(e) => setSelectedDistributor(e.target.value)}
+                    style={styles.select}
+                  >
+                    <option value="">Choose a distributor...</option>
+                    <option value="distributor1">Premium Distributor A</option>
+                    <option value="distributor2">
+                      Enterprise Distributor B
+                    </option>
+                    <option value="distributor3">Master Distributor C</option>
+                    <option value="distributor4">Elite Distributor D</option>
+                  </select>
+                  <span style={styles.selectArrow}>▼</span>
+                </div>
+              </div>
+
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>
+                  <span style={styles.labelIcon}>📅</span>
+                  From Date
+                </label>
+                <input
+                  type="date"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                  style={styles.input}
+                />
+              </div>
+
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>
+                  <span style={styles.labelIcon}>📅</span>
+                  To Date
+                </label>
+                <input
+                  type="date"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                  style={styles.input}
+                />
+              </div>
+
+              <div style={styles.buttonGroup}>
+                <button style={styles.primaryButton}>
+                  <span style={styles.buttonIcon}>🔍</span>
+                  Generate Report
+                </button>
+                <button style={styles.secondaryButton}>
+                  <span style={styles.buttonIcon}>🔄</span>
+                  Reset
+                </button>
+              </div>
+            </div>
+
+            <div style={styles.infoBox}>
+              <span style={styles.infoIcon}>ℹ️</span>
+              <div>
+                <div style={styles.infoTitle}>Quick Tips</div>
+                <div style={styles.infoText}>
+                  Select a date range up to 90 days for optimal performance.
+                  Reports are generated in real-time.
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 }
 

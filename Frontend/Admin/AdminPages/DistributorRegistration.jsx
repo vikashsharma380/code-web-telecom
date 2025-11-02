@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import Header from "../Header";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const DistributorRegistration = () => {
@@ -69,14 +70,14 @@ const DistributorRegistration = () => {
       }
     } catch (err) {
       console.error(err);
-      console.log(err.response.data)
+      console.log(err.response.data);
 
       alert("❌ Server Error! Please try again.");
     }
   };
   const styles = {
     container: {
-      maxWidth: "900px",
+      maxWidth: "1300px",
       margin: "30px auto",
       backgroundColor: "#fff",
       borderRadius: "16px",
@@ -176,250 +177,261 @@ const DistributorRegistration = () => {
   };
 
   return (
-    <div style={styles.container}>
-      {" "}
-      <div style={styles.header}>Distributor Registration Form</div>{" "}
-      <div style={styles.formBody}>
+    <>
+      <Header />
+      <div style={styles.container}>
         {" "}
-        <div style={styles.formGrid}>
+        <div style={styles.header}>Distributor Registration Form</div>{" "}
+        <div style={styles.formBody}>
           {" "}
-          <div style={styles.formGroupFull}>
+          <div style={styles.formGrid}>
             {" "}
-            <label style={styles.label}>Distributor Name</label>{" "}
-            <input
-              type="text"
-              name="distributorName"
-              value={formData.distributorName}
-              onChange={handleChange}
-              style={styles.input}
-              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />{" "}
-          </div>{" "}
-          <div style={styles.formGroupFull}>
-            {" "}
-            <label style={styles.label}>Select Parent</label>{" "}
-            <select
-              name="selectParent"
-              value={formData.selectParent}
-              onChange={handleChange}
-              style={styles.select}
-              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+            <div style={styles.formGroupFull}>
+              {" "}
+              <label style={styles.label}>Distributor Name</label>{" "}
+              <input
+                type="text"
+                name="distributorName"
+                value={formData.distributorName}
+                onChange={handleChange}
+                style={styles.input}
+                onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+                onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+              />{" "}
+            </div>{" "}
+            <div style={styles.formGroupFull}>
+              {" "}
+              <label style={styles.label}>Select Parent</label>{" "}
+              <select
+                name="selectParent"
+                value={formData.selectParent}
+                onChange={handleChange}
+                style={styles.select}
+                onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+                onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+              >
+                {" "}
+                <option value="">Select Parent</option>{" "}
+                <option value="Master Distributor 1">
+                  Master Distributor 1
+                </option>{" "}
+                <option value="Master Distributor 2">
+                  Master Distributor 2
+                </option>{" "}
+                <option value="Master Distributor 3">
+                  Master Distributor 3
+                </option>{" "}
+              </select>{" "}
+            </div>{" "}
+            <div style={styles.formGroupFull}>
+              {" "}
+              <label style={styles.label}>Postal Address</label>{" "}
+              <textarea
+                name="postalAddress"
+                value={formData.postalAddress}
+                onChange={handleChange}
+                style={styles.textarea}
+                onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+                onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+              />{" "}
+            </div>{" "}
+            <div style={styles.formGroup}>
+              {" "}
+              <label style={styles.label}>Pin Code</label>{" "}
+              <input
+                type="text"
+                name="pinCode"
+                value={formData.pinCode}
+                onChange={handleChange}
+                style={styles.input}
+                onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+                onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+              />{" "}
+            </div>{" "}
+            <div style={styles.formGroup}>
+              {" "}
+              <label style={styles.label}>State</label>{" "}
+              <select
+                name="state"
+                value={formData.state}
+                onChange={handleChange}
+                style={styles.select}
+                onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+                onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+              >
+                {" "}
+                <option value="">Select State</option>{" "}
+                <option value="Bihar">Bihar</option>{" "}
+                <option value="Uttar Pradesh">Uttar Pradesh</option>{" "}
+                <option value="Maharashtra">Maharashtra</option>{" "}
+                <option value="Delhi">Delhi</option>{" "}
+              </select>{" "}
+            </div>{" "}
+            <div style={styles.formGroup}>
+              {" "}
+              <label style={styles.label}>City/District</label>{" "}
+              <select
+                name="cityDistrict"
+                value={formData.cityDistrict}
+                onChange={handleChange}
+                style={styles.select}
+                onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+                onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+              >
+                {" "}
+                <option value="">Select City/District</option>{" "}
+                <option value="Patna">Patna</option>{" "}
+                <option value="Gaya">Gaya</option>{" "}
+                <option value="Muzaffarpur">Muzaffarpur</option>{" "}
+              </select>{" "}
+            </div>{" "}
+            <div style={styles.formGroup}>
+              {" "}
+              <label style={styles.label}>Mobile No</label>{" "}
+              <input
+                type="tel"
+                name="mobileNo"
+                value={formData.mobileNo}
+                onChange={handleChange}
+                style={styles.input}
+                onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+                onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+              />{" "}
+            </div>{" "}
+            <div style={styles.formGroup}>
+              {" "}
+              <label style={styles.label}>Alternate Number</label>{" "}
+              <input
+                type="tel"
+                name="alternateNumber"
+                value={formData.alternateNumber}
+                onChange={handleChange}
+                style={styles.input}
+                onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+                onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+              />{" "}
+            </div>{" "}
+            <div style={styles.formGroup}>
+              {" "}
+              <label style={styles.label}>Business Type</label>{" "}
+              <select
+                name="businessType"
+                value={formData.businessType}
+                onChange={handleChange}
+                style={styles.select}
+                onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+                onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+              >
+                {" "}
+                <option value="">Select Business Type</option>{" "}
+                <option value="Proprietorship">Proprietorship</option>{" "}
+                <option value="Partnership">Partnership</option>{" "}
+                <option value="Private Limited">Private Limited</option>{" "}
+              </select>{" "}
+            </div>{" "}
+            <div style={styles.formGroup}>
+              {" "}
+              <label style={styles.label}>Email</label>{" "}
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                style={styles.input}
+                onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+                onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+              />{" "}
+            </div>{" "}
+            <div style={styles.formGroup}>
+              {" "}
+              <label style={styles.label}>Pan No</label>{" "}
+              <input
+                type="text"
+                name="panNo"
+                value={formData.panNo}
+                onChange={handleChange}
+                style={styles.input}
+                onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+                onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+              />{" "}
+            </div>{" "}
+            <div style={styles.formGroup}>
+              {" "}
+              <label style={styles.label}>Contact Person</label>{" "}
+              <input
+                type="text"
+                name="contactPerson"
+                value={formData.contactPerson}
+                onChange={handleChange}
+                style={styles.input}
+                onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+                onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+              />{" "}
+            </div>{" "}
+            <div style={styles.formGroup}>
+              {" "}
+              <label style={styles.label}>Scheme</label>{" "}
+              <select
+                name="scheme"
+                value={formData.scheme}
+                onChange={handleChange}
+                style={styles.select}
+                onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+                onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+              >
+                {" "}
+                <option value="">Select Scheme</option>{" "}
+                <option value="Scheme A">Scheme A</option>{" "}
+                <option value="Scheme B">Scheme B</option>{" "}
+                <option value="Scheme C">Scheme C</option>{" "}
+              </select>{" "}
+            </div>{" "}
+            <div style={styles.formGroup}>
+              {" "}
+              <label style={styles.label}>Opening Balance</label>{" "}
+              <input
+                type="number"
+                name="openingBalance"
+                value={formData.openingBalance}
+                onChange={handleChange}
+                style={styles.input}
+                onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+                onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+              />
+            </div>
+          </div>
+          <div style={styles.buttonGroup}>
+            <button
+              onClick={handleCancel}
+              style={styles.cancelBtn}
+              onMouseOver={(e) =>
+                (e.target.style.transform = "translateY(-2px)")
+              }
+              onMouseOut={(e) => (e.target.style.transform = "translateY(0)")}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSubmit}
+              style={styles.submitBtn}
+              onMouseOver={(e) => {
+                e.target.style.transform = "translateY(-2px)";
+                e.target.style.boxShadow =
+                  "0 6px 20px rgba(102, 126, 234, 0.5)";
+              }}
+              onMouseOut={(e) => {
+                e.target.style.transform = "translateY(0)";
+                e.target.style.boxShadow =
+                  "0 4px 15px rgba(102, 126, 234, 0.4)";
+              }}
             >
               {" "}
-              <option value="">Select Parent</option>{" "}
-              <option value="Master Distributor 1">Master Distributor 1</option>{" "}
-              <option value="Master Distributor 2">Master Distributor 2</option>{" "}
-              <option value="Master Distributor 3">Master Distributor 3</option>{" "}
-            </select>{" "}
+              Submit Details{" "}
+            </button>{" "}
           </div>{" "}
-          <div style={styles.formGroupFull}>
-            {" "}
-            <label style={styles.label}>Postal Address</label>{" "}
-            <textarea
-              name="postalAddress"
-              value={formData.postalAddress}
-              onChange={handleChange}
-              style={styles.textarea}
-              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />{" "}
-          </div>{" "}
-          <div style={styles.formGroup}>
-            {" "}
-            <label style={styles.label}>Pin Code</label>{" "}
-            <input
-              type="text"
-              name="pinCode"
-              value={formData.pinCode}
-              onChange={handleChange}
-              style={styles.input}
-              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />{" "}
-          </div>{" "}
-          <div style={styles.formGroup}>
-            {" "}
-            <label style={styles.label}>State</label>{" "}
-            <select
-              name="state"
-              value={formData.state}
-              onChange={handleChange}
-              style={styles.select}
-              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            >
-              {" "}
-              <option value="">Select State</option>{" "}
-              <option value="Bihar">Bihar</option>{" "}
-              <option value="Uttar Pradesh">Uttar Pradesh</option>{" "}
-              <option value="Maharashtra">Maharashtra</option>{" "}
-              <option value="Delhi">Delhi</option>{" "}
-            </select>{" "}
-          </div>{" "}
-          <div style={styles.formGroup}>
-            {" "}
-            <label style={styles.label}>City/District</label>{" "}
-            <select
-              name="cityDistrict"
-              value={formData.cityDistrict}
-              onChange={handleChange}
-              style={styles.select}
-              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            >
-              {" "}
-              <option value="">Select City/District</option>{" "}
-              <option value="Patna">Patna</option>{" "}
-              <option value="Gaya">Gaya</option>{" "}
-              <option value="Muzaffarpur">Muzaffarpur</option>{" "}
-            </select>{" "}
-          </div>{" "}
-          <div style={styles.formGroup}>
-            {" "}
-            <label style={styles.label}>Mobile No</label>{" "}
-            <input
-              type="tel"
-              name="mobileNo"
-              value={formData.mobileNo}
-              onChange={handleChange}
-              style={styles.input}
-              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />{" "}
-          </div>{" "}
-          <div style={styles.formGroup}>
-            {" "}
-            <label style={styles.label}>Alternate Number</label>{" "}
-            <input
-              type="tel"
-              name="alternateNumber"
-              value={formData.alternateNumber}
-              onChange={handleChange}
-              style={styles.input}
-              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />{" "}
-          </div>{" "}
-          <div style={styles.formGroup}>
-            {" "}
-            <label style={styles.label}>Business Type</label>{" "}
-            <select
-              name="businessType"
-              value={formData.businessType}
-              onChange={handleChange}
-              style={styles.select}
-              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            >
-              {" "}
-              <option value="">Select Business Type</option>{" "}
-              <option value="Proprietorship">Proprietorship</option>{" "}
-              <option value="Partnership">Partnership</option>{" "}
-              <option value="Private Limited">Private Limited</option>{" "}
-            </select>{" "}
-          </div>{" "}
-          <div style={styles.formGroup}>
-            {" "}
-            <label style={styles.label}>Email</label>{" "}
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              style={styles.input}
-              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />{" "}
-          </div>{" "}
-          <div style={styles.formGroup}>
-            {" "}
-            <label style={styles.label}>Pan No</label>{" "}
-            <input
-              type="text"
-              name="panNo"
-              value={formData.panNo}
-              onChange={handleChange}
-              style={styles.input}
-              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />{" "}
-          </div>{" "}
-          <div style={styles.formGroup}>
-            {" "}
-            <label style={styles.label}>Contact Person</label>{" "}
-            <input
-              type="text"
-              name="contactPerson"
-              value={formData.contactPerson}
-              onChange={handleChange}
-              style={styles.input}
-              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />{" "}
-          </div>{" "}
-          <div style={styles.formGroup}>
-            {" "}
-            <label style={styles.label}>Scheme</label>{" "}
-            <select
-              name="scheme"
-              value={formData.scheme}
-              onChange={handleChange}
-              style={styles.select}
-              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            >
-              {" "}
-              <option value="">Select Scheme</option>{" "}
-              <option value="Scheme A">Scheme A</option>{" "}
-              <option value="Scheme B">Scheme B</option>{" "}
-              <option value="Scheme C">Scheme C</option>{" "}
-            </select>{" "}
-          </div>{" "}
-          <div style={styles.formGroup}>
-            {" "}
-            <label style={styles.label}>Opening Balance</label>{" "}
-            <input
-              type="number"
-              name="openingBalance"
-              value={formData.openingBalance}
-              onChange={handleChange}
-              style={styles.input}
-              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />{" "}
-          </div>{" "}
-        </div>{" "}
-        <div style={styles.buttonGroup}>
-          {" "}
-          <button
-            onClick={handleCancel}
-            style={styles.cancelBtn}
-            onMouseOver={(e) => (e.target.style.transform = "translateY(-2px)")}
-            onMouseOut={(e) => (e.target.style.transform = "translateY(0)")}
-          >
-            {" "}
-            Cancel{" "}
-          </button>{" "}
-          <button
-            onClick={handleSubmit}
-            style={styles.submitBtn}
-            onMouseOver={(e) => {
-              e.target.style.transform = "translateY(-2px)";
-              e.target.style.boxShadow = "0 6px 20px rgba(102, 126, 234, 0.5)";
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = "translateY(0)";
-              e.target.style.boxShadow = "0 4px 15px rgba(102, 126, 234, 0.4)";
-            }}
-          >
-            {" "}
-            Submit Details{" "}
-          </button>{" "}
         </div>{" "}
       </div>{" "}
-    </div>
+    </>
   );
 };
 export default DistributorRegistration;

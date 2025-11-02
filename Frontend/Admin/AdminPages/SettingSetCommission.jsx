@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Header from "../Header";
 
 export default function SettingSetCommission() {
   const [operator, setOperator] = useState("");
@@ -57,7 +58,11 @@ export default function SettingSetCommission() {
     }
 
     try {
-      const payload = { operator, commission: parseFloat(commission), software };
+      const payload = {
+        operator,
+        commission: parseFloat(commission),
+        software,
+      };
       const res = await axios.post(`${API_URL}/api/commission/set`, payload);
       alert(res.data.message);
       fetchData();
@@ -86,134 +91,140 @@ export default function SettingSetCommission() {
     });
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h2 style={styles.title}>Set Software Commission</h2>
-        <form style={styles.form} onSubmit={handleSubmit}>
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Operator Name</label>
-            <select
-              value={operator}
-              onChange={(e) => setOperator(e.target.value)}
-              style={styles.select}
-            >
-              <option value="">Select Operator</option>
-              {operators.map((op, i) => (
-                <option key={i} value={op}>
-                  {op}
-                </option>
-              ))}
-            </select>
-          </div>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <div style={styles.card}>
+          <h2 style={styles.title}>Set Software Commission</h2>
+          <form style={styles.form} onSubmit={handleSubmit}>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Operator Name</label>
+              <select
+                value={operator}
+                onChange={(e) => setOperator(e.target.value)}
+                style={styles.select}
+              >
+                <option value="">Select Operator</option>
+                {operators.map((op, i) => (
+                  <option key={i} value={op}>
+                    {op}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Commission (%)</label>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Commission (%)</label>
+              <input
+                type="number"
+                placeholder="Enter percentage"
+                value={commission}
+                onChange={(e) => setCommission(e.target.value)}
+                style={styles.input}
+              />
+            </div>
+
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Software Name</label>
+              <select
+                value={software}
+                onChange={(e) => setSoftware(e.target.value)}
+                style={styles.select}
+              >
+                <option value="">Select Software</option>
+                {softwares.map((sw, i) => (
+                  <option key={i} value={sw}>
+                    {sw}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div style={styles.btnGroup}>
+              <button type="submit" style={styles.btnSave}>
+                Save
+              </button>
+              <button
+                type="reset"
+                style={styles.btnCancel}
+                onClick={() => {
+                  setOperator("");
+                  setCommission("");
+                  setSoftware("");
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div style={styles.card}>
+          <div style={styles.tableHeader}>
+            <h3 style={styles.tableTitle}>List of Operator Commissions</h3>
             <input
-              type="number"
-              placeholder="Enter percentage"
-              value={commission}
-              onChange={(e) => setCommission(e.target.value)}
-              style={styles.input}
+              type="text"
+              placeholder="🔍 Search operator..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={styles.searchBox}
             />
           </div>
-
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Software Name</label>
-            <select
-              value={software}
-              onChange={(e) => setSoftware(e.target.value)}
-              style={styles.select}
-            >
-              <option value="">Select Software</option>
-              {softwares.map((sw, i) => (
-                <option key={i} value={sw}>
-                  {sw}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div style={styles.btnGroup}>
-            <button type="submit" style={styles.btnSave}>
-              Save
-            </button>
-            <button
-              type="reset"
-              style={styles.btnCancel}
-              onClick={() => {
-                setOperator("");
-                setCommission("");
-                setSoftware("");
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-
-      <div style={styles.card}>
-        <div style={styles.tableHeader}>
-          <h3 style={styles.tableTitle}>List of Operator Commissions</h3>
-          <input
-            type="text"
-            placeholder="🔍 Search operator..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={styles.searchBox}
-          />
-        </div>
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th} onClick={() => handleSort("operator")}>
-                Operator Name{" "}
-                {sortField === "operator" && (sortOrder === "asc" ? "▲" : "▼")}
-              </th>
-              <th style={styles.th} onClick={() => handleSort("commission")}>
-                Commission (%){" "}
-                {sortField === "commission" &&
-                  (sortOrder === "asc" ? "▲" : "▼")}
-              </th>
-              <th style={styles.th} onClick={() => handleSort("software")}>
-                Software{" "}
-                {sortField === "software" && (sortOrder === "asc" ? "▲" : "▼")}
-              </th>
-              <th style={styles.th}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredData.length > 0 ? (
-              filteredData.map((row, index) => (
-                <tr key={index} style={styles.tr}>
-                  <td style={styles.td}>{row.operator}</td>
-                  <td style={styles.td}>{row.commission.toFixed(2)}</td>
-                  <td style={styles.td}>{row.software}</td>
-                  <td style={styles.td}>
-                    <button
-                      style={styles.btnEdit}
-                      onClick={() => {
-                        setOperator(row.operator);
-                        setCommission(row.commission);
-                        setSoftware(row.software);
-                      }}
-                    >
-                      Edit
-                    </button>
+          <table style={styles.table}>
+            <thead>
+              <tr>
+                <th style={styles.th} onClick={() => handleSort("operator")}>
+                  Operator Name{" "}
+                  {sortField === "operator" &&
+                    (sortOrder === "asc" ? "▲" : "▼")}
+                </th>
+                <th style={styles.th} onClick={() => handleSort("commission")}>
+                  Commission (%){" "}
+                  {sortField === "commission" &&
+                    (sortOrder === "asc" ? "▲" : "▼")}
+                </th>
+                <th style={styles.th} onClick={() => handleSort("software")}>
+                  Software{" "}
+                  {sortField === "software" &&
+                    (sortOrder === "asc" ? "▲" : "▼")}
+                </th>
+                <th style={styles.th}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredData.length > 0 ? (
+                filteredData.map((row, index) => (
+                  <tr key={index} style={styles.tr}>
+                    <td style={styles.td}>{row.operator}</td>
+                    <td style={styles.td}>{row.commission.toFixed(2)}</td>
+                    <td style={styles.td}>{row.software}</td>
+                    <td style={styles.td}>
+                      <button
+                        style={styles.btnEdit}
+                        onClick={() => {
+                          setOperator(row.operator);
+                          setCommission(row.commission);
+                          setSoftware(row.software);
+                        }}
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" style={styles.noData}>
+                    No matching records found
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" style={styles.noData}>
-                  No matching records found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>{" "}
+    </>
   );
 }
 

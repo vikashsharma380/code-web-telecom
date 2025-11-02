@@ -1,76 +1,81 @@
 import React from "react";
+import Header from "../Header";
 
 export default function SettingCreateCommissionPlan() {
   return (
-    <div style={styles.container}>
-      {/* Create Scheme Section */}
-      <div style={styles.card}>
-        <h2 style={styles.title}>Create Scheme</h2>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        {/* Create Scheme Section */}
+        <div style={styles.card}>
+          <h2 style={styles.title}>Create Scheme</h2>
 
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Scheme Name</label>
-          <input
-            type="text"
-            placeholder="Enter scheme name"
-            style={styles.input}
-          />
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Scheme Name</label>
+            <input
+              type="text"
+              placeholder="Enter scheme name"
+              style={styles.input}
+            />
+          </div>
+
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Scheme Detail</label>
+            <textarea
+              placeholder="Enter scheme details"
+              rows="4"
+              style={styles.textarea}
+            ></textarea>
+          </div>
+
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Scheme For</label>
+            <select style={styles.select}>
+              <option value="">Select</option>
+              <option value="Distributor">Distributor</option>
+              <option value="MasterDealer">Master Dealer</option>
+              <option value="Agent">Agent</option>
+            </select>
+          </div>
+
+          <div style={styles.buttonGroup}>
+            <button style={styles.submitBtn}>Submit</button>
+            <button style={styles.cancelBtn}>Cancel</button>
+          </div>
         </div>
 
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Scheme Detail</label>
-          <textarea
-            placeholder="Enter scheme details"
-            rows="4"
-            style={styles.textarea}
-          ></textarea>
-        </div>
+        {/* List Of Schemes Section */}
+        <div style={styles.card}>
+          <h2 style={styles.title}>List of Schemes</h2>
 
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Scheme For</label>
-          <select style={styles.select}>
-            <option value="">Select</option>
-            <option value="Distributor">Distributor</option>
-            <option value="MasterDealer">Master Dealer</option>
-            <option value="Agent">Agent</option>
-          </select>
-        </div>
-
-        <div style={styles.buttonGroup}>
-          <button style={styles.submitBtn}>Submit</button>
-          <button style={styles.cancelBtn}>Cancel</button>
-        </div>
-      </div>
-
-      {/* List Of Schemes Section */}
-      <div style={styles.card}>
-        <h2 style={styles.title}>List of Schemes</h2>
-
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>Scheme Name</th>
-              <th style={styles.th}>Scheme Detail</th>
-              <th style={styles.th}>Scheme Type</th>
-              <th style={styles.th}>Scheme For</th>
-              <th style={styles.th}>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {schemeData.map((scheme, index) => (
-              <tr key={index} style={styles.tr}>
-                <td style={styles.td}>{scheme.name}</td>
-                <td style={styles.td}>{scheme.detail}</td>
-                <td style={styles.td}>{scheme.type}</td>
-                <td style={styles.td}>{scheme.for}</td>
-                <td style={styles.td}>
-                  <button style={styles.actionBtn}>Set Commission</button>
-                </td>
+          <table style={styles.table}>
+            <thead>
+              <tr>
+                <th style={styles.th}>Scheme Name</th>
+                <th style={styles.th}>Scheme Detail</th>
+                <th style={styles.th}>Scheme Type</th>
+                <th style={styles.th}>Scheme For</th>
+                <th style={styles.th}>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+            </thead>
+            <tbody>
+              {schemeData.map((scheme, index) => (
+                <tr key={index} style={styles.tr}>
+                  <td style={styles.td}>{scheme.name}</td>
+                  <td style={styles.td}>{scheme.detail}</td>
+                  <td style={styles.td}>{scheme.type}</td>
+                  <td style={styles.td}>{scheme.for}</td>
+                  <td style={styles.td}>
+                    <button style={styles.actionBtn}>Set Commission</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>{" "}
+    </>
   );
 }
 

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../Header";
 
 export default function ReportPendingRecharge() {
   const [selectedDate, setSelectedDate] = useState("");
@@ -46,127 +47,142 @@ export default function ReportPendingRecharge() {
   ];
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <div style={styles.headerContent}>
-          <div style={styles.iconWrapper}>
-            <span style={styles.icon}>⏳</span>
-          </div>
-          <div>
-            <h1 style={styles.title}>List of Pending Recharge</h1>
-            <p style={styles.subtitle}>
-              Monitor and manage pending recharge transactions
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div style={styles.content}>
-        <div style={styles.filterCard}>
-          <div style={styles.filterRow}>
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>
-                <span style={styles.labelIcon}>📅</span>
-                Select Date
-              </label>
-              <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                style={styles.input}
-              />
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <div style={styles.header}>
+          <div style={styles.headerContent}>
+            <div style={styles.iconWrapper}>
+              <span style={styles.icon}>⏳</span>
             </div>
-            <button style={styles.primaryButton}>
-              <span style={styles.buttonIcon}>🔍</span>
-              Search
-            </button>
+            <div>
+              <h1 style={styles.title}>List of Pending Recharge</h1>
+              <p style={styles.subtitle}>
+                Monitor and manage pending recharge transactions
+              </p>
+            </div>
           </div>
         </div>
 
-        <div style={styles.tableCard}>
-          <div style={styles.tableHeader}>
-            <h3 style={styles.tableTitle}>Pending Transactions</h3>
-            <span style={styles.badge}>{pendingRecharges.length} Records</span>
+        <div style={styles.content}>
+          <div style={styles.filterCard}>
+            <div style={styles.filterRow}>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>
+                  <span style={styles.labelIcon}>📅</span>
+                  Select Date
+                </label>
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  style={styles.input}
+                />
+              </div>
+              <button style={styles.primaryButton}>
+                <span style={styles.buttonIcon}>🔍</span>
+                Search
+              </button>
+            </div>
           </div>
 
-          <div style={styles.tableWrapper}>
-            <table style={styles.table}>
-              <thead>
-                <tr>
-                  <th style={styles.th}>SR No.</th>
-                  <th style={styles.th}>Recharge Id</th>
-                  <th style={styles.th}>Recharge Date</th>
-                  <th style={styles.th}>Name</th>
-                  <th style={styles.th}>Company Name</th>
-                  <th style={styles.th}>Mobile No</th>
-                  <th style={styles.th}>Amount</th>
-                  <th style={styles.th}>API</th>
-                  <th style={styles.th}>Recharge By</th>
-                  <th style={styles.th}>Response</th>
-                  <th style={styles.th}>Status</th>
-                  <th style={styles.th}>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pendingRecharges.map((recharge) => (
-                  <tr key={recharge.id} style={styles.tableRow}>
-                    <td style={styles.td}>{recharge.id}</td>
-                    <td style={styles.td}>
-                      <span style={styles.idBadge}>{recharge.rechargeId}</span>
-                    </td>
-                    <td style={styles.td}>
-                      <div style={styles.dateCell}>{recharge.date}</div>
-                    </td>
-                    <td style={styles.td}>
-                      <div style={styles.nameCell}>{recharge.name}</div>
-                    </td>
-                    <td style={styles.td}>
-                      <span style={styles.companyBadge}>
-                        {recharge.company}
-                      </span>
-                    </td>
-                    <td style={styles.td}>
-                      <div style={styles.mobileCell}>📱 {recharge.mobile}</div>
-                    </td>
-                    <td style={styles.td}>
-                      <div style={styles.amountCell}>₹{recharge.amount}</div>
-                    </td>
-                    <td style={styles.td}>
-                      <span style={styles.apiBadge}>{recharge.api}</span>
-                    </td>
-                    <td style={styles.td}>{recharge.rechargeBy}</td>
-                    <td style={styles.td}>
-                      <div style={styles.responseCell}>{recharge.response}</div>
-                    </td>
-                    <td style={styles.td}>
-                      <span style={styles.statusPending}>
-                        ⏳ {recharge.status}
-                      </span>
-                    </td>
-                    <td style={styles.td}>
-                      <div style={styles.actionButtons}>
-                        <button style={styles.actionBtn} title="View Details">
-                          👁️
-                        </button>
-                        <button style={styles.actionBtn} title="Refresh Status">
-                          🔄
-                        </button>
-                      </div>
-                    </td>
+          <div style={styles.tableCard}>
+            <div style={styles.tableHeader}>
+              <h3 style={styles.tableTitle}>Pending Transactions</h3>
+              <span style={styles.badge}>
+                {pendingRecharges.length} Records
+              </span>
+            </div>
+
+            <div style={styles.tableWrapper}>
+              <table style={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={styles.th}>SR No.</th>
+                    <th style={styles.th}>Recharge Id</th>
+                    <th style={styles.th}>Recharge Date</th>
+                    <th style={styles.th}>Name</th>
+                    <th style={styles.th}>Company Name</th>
+                    <th style={styles.th}>Mobile No</th>
+                    <th style={styles.th}>Amount</th>
+                    <th style={styles.th}>API</th>
+                    <th style={styles.th}>Recharge By</th>
+                    <th style={styles.th}>Response</th>
+                    <th style={styles.th}>Status</th>
+                    <th style={styles.th}>Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {pendingRecharges.map((recharge) => (
+                    <tr key={recharge.id} style={styles.tableRow}>
+                      <td style={styles.td}>{recharge.id}</td>
+                      <td style={styles.td}>
+                        <span style={styles.idBadge}>
+                          {recharge.rechargeId}
+                        </span>
+                      </td>
+                      <td style={styles.td}>
+                        <div style={styles.dateCell}>{recharge.date}</div>
+                      </td>
+                      <td style={styles.td}>
+                        <div style={styles.nameCell}>{recharge.name}</div>
+                      </td>
+                      <td style={styles.td}>
+                        <span style={styles.companyBadge}>
+                          {recharge.company}
+                        </span>
+                      </td>
+                      <td style={styles.td}>
+                        <div style={styles.mobileCell}>
+                          📱 {recharge.mobile}
+                        </div>
+                      </td>
+                      <td style={styles.td}>
+                        <div style={styles.amountCell}>₹{recharge.amount}</div>
+                      </td>
+                      <td style={styles.td}>
+                        <span style={styles.apiBadge}>{recharge.api}</span>
+                      </td>
+                      <td style={styles.td}>{recharge.rechargeBy}</td>
+                      <td style={styles.td}>
+                        <div style={styles.responseCell}>
+                          {recharge.response}
+                        </div>
+                      </td>
+                      <td style={styles.td}>
+                        <span style={styles.statusPending}>
+                          ⏳ {recharge.status}
+                        </span>
+                      </td>
+                      <td style={styles.td}>
+                        <div style={styles.actionButtons}>
+                          <button style={styles.actionBtn} title="View Details">
+                            👁️
+                          </button>
+                          <button
+                            style={styles.actionBtn}
+                            title="Refresh Status"
+                          >
+                            🔄
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-          <div style={styles.pagination}>
-            <button style={styles.paginationBtn}>◀ Previous</button>
-            <span style={styles.pageInfo}>Page 1 of 1</span>
-            <button style={styles.paginationBtn}>Next ▶</button>
+            <div style={styles.pagination}>
+              <button style={styles.paginationBtn}>◀ Previous</button>
+              <span style={styles.pageInfo}>Page 1 of 1</span>
+              <button style={styles.paginationBtn}>Next ▶</button>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 }
 

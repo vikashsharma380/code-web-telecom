@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Nav from "../../hero/nav";
 
 const SearchTransaction = () => {
   const [mobileNumber, setMobileNumber] = useState("");
@@ -6,38 +7,39 @@ const SearchTransaction = () => {
   const [showResults, setShowResults] = useState(false);
   const [searched, setSearched] = useState(false);
 
-const handleSubmit = async () => {
-  if (!mobileNumber) {
-    alert("Please enter a mobile number");
-    return;
-  }
-
-  if (mobileNumber.length !== 10) {
-    alert("Please enter a valid 10-digit mobile number");
-    return;
-  }
-
-  try {
-// Change in SearchTransaction.jsx
-const response = await fetch(`http://localhost:5000/api/search?mobileNumber=${mobileNumber}`);
-
-    const data = await response.json();
-
-    if (data.success) {
-      setSearchResults(data.transactions);
-    } else {
-      setSearchResults([]);
-      alert(data.message || "No transactions found");
+  const handleSubmit = async () => {
+    if (!mobileNumber) {
+      alert("Please enter a mobile number");
+      return;
     }
 
-    setShowResults(true);
-    setSearched(true);
-  } catch (error) {
-    console.error(error);
-    alert("Error fetching transactions");
-  }
-};
+    if (mobileNumber.length !== 10) {
+      alert("Please enter a valid 10-digit mobile number");
+      return;
+    }
 
+    try {
+      // Change in SearchTransaction.jsx
+      const response = await fetch(
+        `http://localhost:5000/api/search?mobileNumber=${mobileNumber}`
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSearchResults(data.transactions);
+      } else {
+        setSearchResults([]);
+        alert(data.message || "No transactions found");
+      }
+
+      setShowResults(true);
+      setSearched(true);
+    } catch (error) {
+      console.error(error);
+      alert("Error fetching transactions");
+    }
+  };
 
   const styles = {
     container: {
@@ -249,151 +251,155 @@ const response = await fetch(`http://localhost:5000/api/search?mobileNumber=${mo
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.bgPattern} />
-      <div style={styles.content}>
-        <div style={styles.header}>
-          <h1 style={styles.title}>Search Transaction</h1>
-          <p style={styles.subtitle}>Find transactions by mobile number</p>
-        </div>
-
-        <div style={styles.searchCard}>
-          <div style={styles.searchHeader}>
-            <h2 style={styles.searchTitle}>Search Number</h2>
+    <>
+      {" "}
+      <Nav />
+      <div style={styles.container}>
+        <div style={styles.bgPattern} />
+        <div style={styles.content}>
+          <div style={styles.header}>
+            <h1 style={styles.title}>Search Transaction</h1>
+            <p style={styles.subtitle}>Find transactions by mobile number</p>
           </div>
-          <div style={styles.searchForm}>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Enter Mobile No:</label>
-              <input
-                type="text"
-                style={styles.input}
-                placeholder="Enter 10-digit mobile number"
-                value={mobileNumber}
-                onChange={(e) => {
-                  const value = e.target.value.replace(/\D/g, "");
-                  if (value.length <= 10) {
-                    setMobileNumber(value);
-                  }
-                }}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    handleSubmit();
-                  }
-                }}
-              />
-            </div>
-            <button
-              style={styles.submitBtn}
-              onClick={handleSubmit}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow =
-                  "0 12px 32px rgba(52, 152, 219, 0.5)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow =
-                  "0 8px 24px rgba(52, 152, 219, 0.4)";
-              }}
-            >
-              Submit
-            </button>
-          </div>
-        </div>
 
-        {showResults && (
-          <div style={styles.card}>
-            <div style={styles.cardHeader}>
-              <h2 style={styles.cardTitle}>
-                Search Results for {mobileNumber}{" "}
-                {searchResults.length > 0 && `(${searchResults.length})`}
-              </h2>
+          <div style={styles.searchCard}>
+            <div style={styles.searchHeader}>
+              <h2 style={styles.searchTitle}>Search Number</h2>
             </div>
-
-            {searchResults.length === 0 ? (
-              <div style={styles.emptyState}>
-                <div style={styles.emptyIcon}>🔍</div>
-                <p style={styles.emptyText}>No transactions found</p>
-                <p style={styles.emptySubtext}>
-                  No records found for mobile number {mobileNumber}
-                </p>
+            <div style={styles.searchForm}>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Enter Mobile No:</label>
+                <input
+                  type="text"
+                  style={styles.input}
+                  placeholder="Enter 10-digit mobile number"
+                  value={mobileNumber}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, "");
+                    if (value.length <= 10) {
+                      setMobileNumber(value);
+                    }
+                  }}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      handleSubmit();
+                    }
+                  }}
+                />
               </div>
-            ) : (
-              <div style={styles.tableWrapper}>
-                <table style={styles.table}>
-                  <thead style={styles.thead}>
-                    <tr>
-                      <th style={styles.th}>Recharge ID</th>
-                      <th style={styles.th}>Operator</th>
-                      <th style={styles.th}>Number</th>
-                      <th style={styles.th}>Amount</th>
-                      <th style={styles.th}>Profit</th>
-                      <th style={styles.th}>Balance</th>
-                      <th style={styles.th}>Status</th>
-                      <th style={styles.th}>Operator ID</th>
-                      <th style={styles.th}>Date Time</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {searchResults.map((txn, index) => (
-                      <tr
-                        key={index}
-                        style={{
-                          ...styles.tr,
-                          background:
-                            index % 2 === 0
-                              ? "rgba(255, 255, 255, 0.02)"
-                              : "transparent",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background =
-                            "rgba(102, 126, 234, 0.1)";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background =
-                            index % 2 === 0
-                              ? "rgba(255, 255, 255, 0.02)"
-                              : "transparent";
-                        }}
-                      >
-                        <td style={styles.td}>{txn.id}</td>
-                        <td style={{ ...styles.td, ...styles.operatorCell }}>
-                          {txn.operator}
-                        </td>
-                        <td style={styles.td}>{txn.number}</td>
-                        <td style={{ ...styles.td, ...styles.amountCell }}>
-                          ₹{txn.amount}
-                        </td>
-                        <td style={{ ...styles.td, ...styles.profitCell }}>
-                          ₹{txn.profit}
-                        </td>
-                        <td style={{ ...styles.td, ...styles.balanceCell }}>
-                          ₹{txn.balance}
-                        </td>
-                        <td style={styles.td}>
-                          <span
-                            style={{
-                              ...styles.statusBadge,
-                              ...(txn.status === "Success"
-                                ? styles.successBadge
-                                : styles.failedBadge),
-                            }}
-                          >
-                            {txn.status}
-                          </span>
-                        </td>
-                        <td style={styles.td}>{txn.operatorId}</td>
-                        <td style={styles.td}>{txn.dateTime}</td>
+              <button
+                style={styles.submitBtn}
+                onClick={handleSubmit}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 12px 32px rgba(52, 152, 219, 0.5)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 24px rgba(52, 152, 219, 0.4)";
+                }}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+
+          {showResults && (
+            <div style={styles.card}>
+              <div style={styles.cardHeader}>
+                <h2 style={styles.cardTitle}>
+                  Search Results for {mobileNumber}{" "}
+                  {searchResults.length > 0 && `(${searchResults.length})`}
+                </h2>
+              </div>
+
+              {searchResults.length === 0 ? (
+                <div style={styles.emptyState}>
+                  <div style={styles.emptyIcon}>🔍</div>
+                  <p style={styles.emptyText}>No transactions found</p>
+                  <p style={styles.emptySubtext}>
+                    No records found for mobile number {mobileNumber}
+                  </p>
+                </div>
+              ) : (
+                <div style={styles.tableWrapper}>
+                  <table style={styles.table}>
+                    <thead style={styles.thead}>
+                      <tr>
+                        <th style={styles.th}>Recharge ID</th>
+                        <th style={styles.th}>Operator</th>
+                        <th style={styles.th}>Number</th>
+                        <th style={styles.th}>Amount</th>
+                        <th style={styles.th}>Profit</th>
+                        <th style={styles.th}>Balance</th>
+                        <th style={styles.th}>Status</th>
+                        <th style={styles.th}>Operator ID</th>
+                        <th style={styles.th}>Date Time</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
+                    </thead>
+                    <tbody>
+                      {searchResults.map((txn, index) => (
+                        <tr
+                          key={index}
+                          style={{
+                            ...styles.tr,
+                            background:
+                              index % 2 === 0
+                                ? "rgba(255, 255, 255, 0.02)"
+                                : "transparent",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background =
+                              "rgba(102, 126, 234, 0.1)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background =
+                              index % 2 === 0
+                                ? "rgba(255, 255, 255, 0.02)"
+                                : "transparent";
+                          }}
+                        >
+                          <td style={styles.td}>{txn.id}</td>
+                          <td style={{ ...styles.td, ...styles.operatorCell }}>
+                            {txn.operator}
+                          </td>
+                          <td style={styles.td}>{txn.number}</td>
+                          <td style={{ ...styles.td, ...styles.amountCell }}>
+                            ₹{txn.amount}
+                          </td>
+                          <td style={{ ...styles.td, ...styles.profitCell }}>
+                            ₹{txn.profit}
+                          </td>
+                          <td style={{ ...styles.td, ...styles.balanceCell }}>
+                            ₹{txn.balance}
+                          </td>
+                          <td style={styles.td}>
+                            <span
+                              style={{
+                                ...styles.statusBadge,
+                                ...(txn.status === "Success"
+                                  ? styles.successBadge
+                                  : styles.failedBadge),
+                              }}
+                            >
+                              {txn.status}
+                            </span>
+                          </td>
+                          <td style={styles.td}>{txn.operatorId}</td>
+                          <td style={styles.td}>{txn.dateTime}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>{" "}
+    </>
   );
 };
 

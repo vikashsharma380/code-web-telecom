@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../Header";
 
 const BalanceTransferMasterDistributor = () => {
   // Sample data - replace with actual API call
@@ -76,58 +77,62 @@ const BalanceTransferMasterDistributor = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>Credit/Debit</div>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <div style={styles.header}>Credit/Debit</div>
 
-      <div style={styles.tableContainer}>
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>User ID</th>
-              <th style={styles.th}>Name</th>
-              <th style={styles.th}>Add Balance</th>
-              <th style={styles.th}>Revert Balance</th>
-              <th style={styles.th}>Login</th>
-            </tr>
-          </thead>
-          <tbody>
-            {masterDistributors.map((distributor, index) => (
-              <tr key={index}>
-                <td style={styles.td}>{distributor.userId}</td>
-                <td style={styles.td}>{distributor.name}</td>
-                <td style={styles.td}>
-                  <button
-                    style={{ ...styles.button, ...styles.addBalanceBtn }}
-                    onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
-                    onMouseLeave={(e) => (e.target.style.opacity = "1")}
-                  >
-                    Add Balance
-                  </button>
-                </td>
-                <td style={styles.td}>
-                  <button
-                    style={{ ...styles.button, ...styles.revertBalanceBtn }}
-                    onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
-                    onMouseLeave={(e) => (e.target.style.opacity = "1")}
-                  >
-                    Revert Balance
-                  </button>
-                </td>
-                <td style={styles.td}>
-                  <button
-                    style={{ ...styles.button, ...styles.loginBtn }}
-                    onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
-                    onMouseLeave={(e) => (e.target.style.opacity = "1")}
-                  >
-                    Login
-                  </button>
-                </td>
+        <div style={styles.tableContainer}>
+          <table style={styles.table}>
+            <thead>
+              <tr>
+                <th style={styles.th}>User ID</th>
+                <th style={styles.th}>Name</th>
+                <th style={styles.th}>Add Balance</th>
+                <th style={styles.th}>Revert Balance</th>
+                <th style={styles.th}>Login</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+            </thead>
+            <tbody>
+              {masterDistributors.map((distributor, index) => (
+                <tr key={index}>
+                  <td style={styles.td}>{distributor.userId}</td>
+                  <td style={styles.td}>{distributor.name}</td>
+                  <td style={styles.td}>
+                    <button
+                      style={{ ...styles.button, ...styles.addBalanceBtn }}
+                      onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
+                      onMouseLeave={(e) => (e.target.style.opacity = "1")}
+                    >
+                      Add Balance
+                    </button>
+                  </td>
+                  <td style={styles.td}>
+                    <button
+                      style={{ ...styles.button, ...styles.revertBalanceBtn }}
+                      onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
+                      onMouseLeave={(e) => (e.target.style.opacity = "1")}
+                    >
+                      Revert Balance
+                    </button>
+                  </td>
+                  <td style={styles.td}>
+                    <button
+                      style={{ ...styles.button, ...styles.loginBtn }}
+                      onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
+                      onMouseLeave={(e) => (e.target.style.opacity = "1")}
+                    >
+                      Login
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>{" "}
+    </>
   );
 };
 

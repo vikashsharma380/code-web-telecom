@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Search, Calendar } from "lucide-react";
+import Header from "../Header";
 
 export default function SupportTicket() {
   const [fromDate, setFromDate] = useState("");
@@ -33,10 +34,7 @@ export default function SupportTicket() {
       const date = new Date(c.date);
       const from = fromDate ? new Date(fromDate) : null;
       const to = toDate ? new Date(toDate) : null;
-      return (
-        (!from || date >= from) &&
-        (!to || date <= to)
-      );
+      return (!from || date >= from) && (!to || date <= to);
     });
     setComplaints(filtered);
   };
@@ -44,11 +42,14 @@ export default function SupportTicket() {
   // ✅ Update complaint status (Solved/Unsolved)
   const handleActionChange = async (id, newStatus) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/tickets/update/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
-      });
+      const res = await fetch(
+        `http://localhost:5000/api/tickets/update/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: newStatus }),
+        }
+      );
       const data = await res.json();
       if (data.success) {
         setComplaints((prev) =>
@@ -61,118 +62,121 @@ export default function SupportTicket() {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h1 style={styles.title}>Complaint Management</h1>
-        <div style={styles.subtitle}>Track and manage customer complaints</div>
-      </div>
-
-      <div style={styles.card}>
-        {/* 🔍 Filter Section */}
-        <div style={styles.filterSection}>
-          <div style={styles.dateInputGroup}>
-            <label style={styles.label}>
-              <Calendar size={16} style={styles.icon} />
-              From Date
-            </label>
-            <input
-              type="date"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-              style={styles.dateInput}
-            />
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <div style={styles.header}>
+          <h1 style={styles.title}>Complaint Management</h1>
+          <div style={styles.subtitle}>
+            Track and manage customer complaints
           </div>
-
-          <div style={styles.dateInputGroup}>
-            <label style={styles.label}>
-              <Calendar size={16} style={styles.icon} />
-              To Date
-            </label>
-            <input
-              type="date"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-              style={styles.dateInput}
-            />
-          </div>
-
-          <button style={styles.searchButton} onClick={handleSearch}>
-            <Search size={18} />
-            Search
-          </button>
         </div>
 
-        {/* 🧾 Table Section */}
-        <div style={styles.tableContainer}>
-          {loading ? (
-            <p style={{ padding: 20 }}>Loading complaints...</p>
-          ) : complaints.length === 0 ? (
-            <p style={{ padding: 20 }}>No complaints found</p>
-          ) : (
-            <table style={styles.table}>
-              <thead>
-                <tr style={styles.tableHeader}>
-                  <th style={styles.th}>ID</th>
-                  <th style={styles.th}>Date</th>
-                  <th style={styles.th}>User</th>
-                  <th style={styles.th}>Subject</th>
-                  <th style={styles.th}>Message</th>
-                  <th style={styles.th}>Status</th>
-                  <th style={styles.th}>Response</th>
-                  <th style={styles.th}>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {complaints.map((c) => (
-                  <tr key={c._id} style={styles.tableRow}>
-                    <td style={styles.td}>{c._id.slice(-6)}</td>
-                    <td style={styles.td}>
-                      {new Date(c.date).toLocaleDateString()}
-                    </td>
-                    <td style={styles.td}>{c.userId?.name || "User"}</td>
-                    <td style={styles.td}>{c.subject}</td>
-                    <td style={styles.td}>{c.message}</td>
-                    <td style={styles.td}>
-                      <span
-                        style={{
-                          ...styles.statusBadge,
-                          ...(c.status === "Solved"
-                            ? styles.statusSolved
-                            : styles.statusUnsolved),
-                        }}
-                      >
-                        {c.status}
-                      </span>
-                    </td>
-                    <td style={styles.td}>{c.response || "-"}</td>
-                    <td style={styles.td}>
-                      <select
-                        style={styles.select}
-                        onChange={(e) =>
-                          handleActionChange(c._id, e.target.value)
-                        }
-                        defaultValue=""
-                      >
-                        <option value="" disabled>
-                          Select
-                        </option>
-                        <option value="Solved">Solved</option>
-                        <option value="Unsolved">Unsolved</option>
-                      </select>
-                    </td>
+        <div style={styles.card}>
+          {/* 🔍 Filter Section */}
+          <div style={styles.filterSection}>
+            <div style={styles.dateInputGroup}>
+              <label style={styles.label}>
+                <Calendar size={16} style={styles.icon} />
+                From Date
+              </label>
+              <input
+                type="date"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+                style={styles.dateInput}
+              />
+            </div>
+
+            <div style={styles.dateInputGroup}>
+              <label style={styles.label}>
+                <Calendar size={16} style={styles.icon} />
+                To Date
+              </label>
+              <input
+                type="date"
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+                style={styles.dateInput}
+              />
+            </div>
+
+            <button style={styles.searchButton} onClick={handleSearch}>
+              <Search size={18} />
+              Search
+            </button>
+          </div>
+
+          {/* 🧾 Table Section */}
+          <div style={styles.tableContainer}>
+            {loading ? (
+              <p style={{ padding: 20 }}>Loading complaints...</p>
+            ) : complaints.length === 0 ? (
+              <p style={{ padding: 20 }}>No complaints found</p>
+            ) : (
+              <table style={styles.table}>
+                <thead>
+                  <tr style={styles.tableHeader}>
+                    <th style={styles.th}>ID</th>
+                    <th style={styles.th}>Date</th>
+                    <th style={styles.th}>User</th>
+                    <th style={styles.th}>Subject</th>
+                    <th style={styles.th}>Message</th>
+                    <th style={styles.th}>Status</th>
+                    <th style={styles.th}>Response</th>
+                    <th style={styles.th}>Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+                </thead>
+                <tbody>
+                  {complaints.map((c) => (
+                    <tr key={c._id} style={styles.tableRow}>
+                      <td style={styles.td}>{c._id.slice(-6)}</td>
+                      <td style={styles.td}>
+                        {new Date(c.date).toLocaleDateString()}
+                      </td>
+                      <td style={styles.td}>{c.userId?.name || "User"}</td>
+                      <td style={styles.td}>{c.subject}</td>
+                      <td style={styles.td}>{c.message}</td>
+                      <td style={styles.td}>
+                        <span
+                          style={{
+                            ...styles.statusBadge,
+                            ...(c.status === "Solved"
+                              ? styles.statusSolved
+                              : styles.statusUnsolved),
+                          }}
+                        >
+                          {c.status}
+                        </span>
+                      </td>
+                      <td style={styles.td}>{c.response || "-"}</td>
+                      <td style={styles.td}>
+                        <select
+                          style={styles.select}
+                          onChange={(e) =>
+                            handleActionChange(c._id, e.target.value)
+                          }
+                          defaultValue=""
+                        >
+                          <option value="" disabled>
+                            Select
+                          </option>
+                          <option value="Solved">Solved</option>
+                          <option value="Unsolved">Unsolved</option>
+                        </select>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 }
-
-
-
 
 const styles = {
   container: {

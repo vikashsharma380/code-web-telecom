@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../Header";
 
 export default function ReportRechargeHistory() {
   const [fromDate, setFromDate] = useState("");
@@ -6,101 +7,105 @@ export default function ReportRechargeHistory() {
   const [searchText, setSearchText] = useState("");
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <div style={styles.headerContent}>
-          <h1 style={styles.title}>Recharge History</h1>
-          <p style={styles.subtitle}>
-            View and manage all recharge transactions
-          </p>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <div style={styles.header}>
+          <div style={styles.headerContent}>
+            <h1 style={styles.title}>Recharge History</h1>
+            <p style={styles.subtitle}>
+              View and manage all recharge transactions
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div style={styles.content}>
-        <div style={styles.filterCard}>
-          <div style={styles.filterSection}>
-            <div style={styles.filterGroup}>
-              <label style={styles.label}>From Date</label>
-              <input
-                type="date"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-                style={styles.input}
-              />
+        <div style={styles.content}>
+          <div style={styles.filterCard}>
+            <div style={styles.filterSection}>
+              <div style={styles.filterGroup}>
+                <label style={styles.label}>From Date</label>
+                <input
+                  type="date"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                  style={styles.input}
+                />
+              </div>
+
+              <div style={styles.filterGroup}>
+                <label style={styles.label}>To Date</label>
+                <input
+                  type="date"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                  style={styles.input}
+                />
+              </div>
+
+              <button style={styles.button}>
+                <span style={styles.buttonIcon}>🔍</span>
+                Search
+              </button>
             </div>
 
-            <div style={styles.filterGroup}>
-              <label style={styles.label}>To Date</label>
+            <div style={styles.searchSection}>
+              <label style={styles.label}>Quick Search</label>
               <input
-                type="date"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-                style={styles.input}
+                type="text"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                style={styles.searchInput}
+                placeholder="Search by TxID, Name, Number..."
               />
             </div>
-
-            <button style={styles.button}>
-              <span style={styles.buttonIcon}>🔍</span>
-              Search
-            </button>
           </div>
 
-          <div style={styles.searchSection}>
-            <label style={styles.label}>Quick Search</label>
-            <input
-              type="text"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              style={styles.searchInput}
-              placeholder="Search by TxID, Name, Number..."
-            />
-          </div>
-        </div>
+          <div style={styles.tableCard}>
+            <div style={styles.tableHeader}>
+              <h3 style={styles.tableTitle}>Transaction Records</h3>
+              <span style={styles.badge}>0 Records</span>
+            </div>
 
-        <div style={styles.tableCard}>
-          <div style={styles.tableHeader}>
-            <h3 style={styles.tableTitle}>Transaction Records</h3>
-            <span style={styles.badge}>0 Records</span>
-          </div>
-
-          <div style={styles.tableWrapper}>
-            <table style={styles.table}>
-              <thead>
-                <tr>
-                  <th style={styles.th}>Sr</th>
-                  <th style={styles.th}>TxID</th>
-                  <th style={styles.th}>Wallet</th>
-                  <th style={styles.th}>Operator Id</th>
-                  <th style={styles.th}>Date</th>
-                  <th style={styles.th}>Name</th>
-                  <th style={styles.th}>Balance</th>
-                  <th style={styles.th}>Operator</th>
-                  <th style={styles.th}>Number</th>
-                  <th style={styles.th}>Amount</th>
-                  <th style={styles.th}>API</th>
-                  <th style={styles.th}>By</th>
-                  <th style={styles.th}>Status</th>
-                  <th style={styles.th}>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colSpan="14" style={styles.emptyState}>
-                    <div style={styles.emptyIcon}>📊</div>
-                    <div style={styles.emptyText}>
-                      No transaction records found
-                    </div>
-                    <div style={styles.emptySubtext}>
-                      Try adjusting your search criteria
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div style={styles.tableWrapper}>
+              <table style={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={styles.th}>Sr</th>
+                    <th style={styles.th}>TxID</th>
+                    <th style={styles.th}>Wallet</th>
+                    <th style={styles.th}>Operator Id</th>
+                    <th style={styles.th}>Date</th>
+                    <th style={styles.th}>Name</th>
+                    <th style={styles.th}>Balance</th>
+                    <th style={styles.th}>Operator</th>
+                    <th style={styles.th}>Number</th>
+                    <th style={styles.th}>Amount</th>
+                    <th style={styles.th}>API</th>
+                    <th style={styles.th}>By</th>
+                    <th style={styles.th}>Status</th>
+                    <th style={styles.th}>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colSpan="14" style={styles.emptyState}>
+                      <div style={styles.emptyIcon}>📊</div>
+                      <div style={styles.emptyText}>
+                        No transaction records found
+                      </div>
+                      <div style={styles.emptySubtext}>
+                        Try adjusting your search criteria
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 }
 
