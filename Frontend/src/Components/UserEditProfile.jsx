@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import Header from "../../Admin/Header";
+import Nav from "../../hero/nav";
 
 export default function UserEditProfile() {
   const [formData, setFormData] = useState({
@@ -31,155 +33,159 @@ export default function UserEditProfile() {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.wrapper}>
-        {/* Header */}
-        <div style={styles.header}>
-          <h2 style={styles.headerTitle}>Profile Edit</h2>
-        </div>
+    <>
+      {" "}
+      <Nav />
+      <div style={styles.container}>
+        <div style={styles.wrapper}>
+          {/* Header */}
+          <div style={styles.header}>
+            <h2 style={styles.headerTitle}>Profile Edit</h2>
+          </div>
 
-        {/* Form Section */}
-        <div style={styles.formCard}>
-          <div style={styles.formContent}>
-            {/* Legal Name */}
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Legal Name :</label>
-              <input
-                type="text"
-                name="legalName"
-                value={formData.legalName}
-                onChange={handleInputChange}
-                style={styles.input}
-              />
-            </div>
+          {/* Form Section */}
+          <div style={styles.formCard}>
+            <div style={styles.formContent}>
+              {/* Legal Name */}
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Legal Name :</label>
+                <input
+                  type="text"
+                  name="legalName"
+                  value={formData.legalName}
+                  onChange={handleInputChange}
+                  style={styles.input}
+                />
+              </div>
 
-            {/* Postal Address */}
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Postal Address :</label>
-              <textarea
-                name="postalAddress"
-                value={formData.postalAddress}
-                onChange={handleInputChange}
-                rows="3"
-                style={styles.textarea}
-              />
-            </div>
+              {/* Postal Address */}
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Postal Address :</label>
+                <textarea
+                  name="postalAddress"
+                  value={formData.postalAddress}
+                  onChange={handleInputChange}
+                  rows="3"
+                  style={styles.textarea}
+                />
+              </div>
 
-            {/* Pin Code */}
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Pin Code :</label>
-              <input
-                type="text"
-                name="pinCode"
-                value={formData.pinCode}
-                onChange={handleInputChange}
-                style={styles.input}
-              />
-            </div>
+              {/* Pin Code */}
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Pin Code :</label>
+                <input
+                  type="text"
+                  name="pinCode"
+                  value={formData.pinCode}
+                  onChange={handleInputChange}
+                  style={styles.input}
+                />
+              </div>
 
-            {/* City/District */}
-            <div style={styles.formGroup}>
-              <label style={styles.label}>City/District :</label>
-              <input
-                type="text"
-                name="cityDistrict"
-                value={formData.cityDistrict}
-                onChange={handleInputChange}
-                style={styles.input}
-              />
-            </div>
+              {/* City/District */}
+              <div style={styles.formGroup}>
+                <label style={styles.label}>City/District :</label>
+                <input
+                  type="text"
+                  name="cityDistrict"
+                  value={formData.cityDistrict}
+                  onChange={handleInputChange}
+                  style={styles.input}
+                />
+              </div>
 
-            {/* State */}
-            <div style={styles.formGroup}>
-              <label style={styles.label}>State :</label>
-              <input
-                type="text"
-                name="state"
-                value={formData.state}
-                onChange={handleInputChange}
-                style={styles.input}
-              />
-            </div>
+              {/* State */}
+              <div style={styles.formGroup}>
+                <label style={styles.label}>State :</label>
+                <input
+                  type="text"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleInputChange}
+                  style={styles.input}
+                />
+              </div>
 
-            {/* Mobile No */}
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Mobile No :</label>
-              <input
-                type="tel"
-                name="mobileNo"
-                value={formData.mobileNo}
-                onChange={handleInputChange}
-                style={styles.input}
-              />
-            </div>
+              {/* Mobile No */}
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Mobile No :</label>
+                <input
+                  type="tel"
+                  name="mobileNo"
+                  value={formData.mobileNo}
+                  onChange={handleInputChange}
+                  style={styles.input}
+                />
+              </div>
 
-            {/* Alternate Number */}
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Alternate Number :</label>
-              <input
-                type="tel"
-                name="alternateNumber"
-                value={formData.alternateNumber}
-                onChange={handleInputChange}
-                style={styles.input}
-              />
-            </div>
+              {/* Alternate Number */}
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Alternate Number :</label>
+                <input
+                  type="tel"
+                  name="alternateNumber"
+                  value={formData.alternateNumber}
+                  onChange={handleInputChange}
+                  style={styles.input}
+                />
+              </div>
 
-            {/* Email */}
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Email :</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                style={styles.input}
-              />
-            </div>
+              {/* Email */}
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Email :</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  style={styles.input}
+                />
+              </div>
 
-            {/* GSTN or PAN Number */}
-            <div style={styles.formGroup}>
-              <label style={styles.label}>GSTN or PAN Number :</label>
-              <input
-                type="text"
-                name="gstnPan"
-                value={formData.gstnPan}
-                onChange={handleInputChange}
-                style={styles.input}
-              />
-            </div>
+              {/* GSTN or PAN Number */}
+              <div style={styles.formGroup}>
+                <label style={styles.label}>GSTN or PAN Number :</label>
+                <input
+                  type="text"
+                  name="gstnPan"
+                  value={formData.gstnPan}
+                  onChange={handleInputChange}
+                  style={styles.input}
+                />
+              </div>
 
-            {/* Action Buttons */}
-            <div style={styles.buttonGroup}>
-              <button
-                onClick={handleUpdateDetails}
-                style={{ ...styles.button, ...styles.updateButton }}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = "#2874a6")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "#3498db")
-                }
-              >
-                Update Details
-              </button>
-              <button
-                onClick={handleCancel}
-                style={{ ...styles.button, ...styles.cancelButton }}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = "#d5d8dc")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "#ecf0f1")
-                }
-              >
-                Cancel
-              </button>
+              {/* Action Buttons */}
+              <div style={styles.buttonGroup}>
+                <button
+                  onClick={handleUpdateDetails}
+                  style={{ ...styles.button, ...styles.updateButton }}
+                  onMouseEnter={(e) =>
+                    (e.target.style.backgroundColor = "#2874a6")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.target.style.backgroundColor = "#3498db")
+                  }
+                >
+                  Update Details
+                </button>
+                <button
+                  onClick={handleCancel}
+                  style={{ ...styles.button, ...styles.cancelButton }}
+                  onMouseEnter={(e) =>
+                    (e.target.style.backgroundColor = "#d5d8dc")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.target.style.backgroundColor = "#ecf0f1")
+                  }
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 }
 
