@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../Header";
 
 export default function SettingApiSetting() {
   const [selectedProvider, setSelectedProvider] = useState("A1Topup");
@@ -26,96 +27,100 @@ export default function SettingApiSetting() {
     alert(`✅ Updated settings for ${selectedProvider}`);
 
   return (
-    <div style={styles.page}>
-      <h1 style={styles.pageTitle}>API Settings</h1>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.page}>
+        <h1 style={styles.pageTitle}>API Settings</h1>
 
-      {/* List of API Section */}
-      <div style={styles.card}>
-        <div style={styles.header}>List of API</div>
-        <div style={styles.body}>
-          <table style={styles.table}>
-            <thead>
-              <tr>
-                <th>API Provider</th>
-                <th>User ID</th>
-                <th>Token</th>
-                <th>Balance</th>
-                <th>Edit</th>
-              </tr>
-            </thead>
-            <tbody>
-              {apiList.map((api, i) => (
-                <tr key={i}>
-                  <td>{api.provider}</td>
-                  <td>{api.userId}</td>
-                  <td style={styles.truncate}>{api.token}</td>
-                  <td>{api.balance}</td>
-                  <td>
-                    <button
-                      style={styles.editBtn}
-                      onClick={() => handleEdit(api.provider)}
-                    >
-                      Edit
-                    </button>
-                  </td>
+        {/* List of API Section */}
+        <div style={styles.card}>
+          <div style={styles.header}>List of API</div>
+          <div style={styles.body}>
+            <table style={styles.table}>
+              <thead>
+                <tr>
+                  <th>API Provider</th>
+                  <th>User ID</th>
+                  <th>Token</th>
+                  <th>Balance</th>
+                  <th>Edit</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {apiList.map((api, i) => (
+                  <tr key={i}>
+                    <td>{api.provider}</td>
+                    <td>{api.userId}</td>
+                    <td style={styles.truncate}>{api.token}</td>
+                    <td>{api.balance}</td>
+                    <td>
+                      <button
+                        style={styles.editBtn}
+                        onClick={() => handleEdit(api.provider)}
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
 
-      {/* API Configuration Section */}
-      <div style={styles.card}>
-        <div style={styles.header}>API Configuration</div>
-        <div style={styles.body}>
-          <div style={styles.formGroup}>
-            <label>API Provider</label>
-            <input
-              type="text"
-              value={selectedProvider}
-              disabled
-              style={styles.inputDisabled}
-            />
-          </div>
-
-          <div style={styles.formGroup}>
-            <label>User Name</label>
-            <input
-              type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              style={styles.input}
-            />
-          </div>
-
-          <div style={styles.formGroup}>
-            <label>Password</label>
-            <div style={styles.passwordBox}>
+        {/* API Configuration Section */}
+        <div style={styles.card}>
+          <div style={styles.header}>API Configuration</div>
+          <div style={styles.body}>
+            <div style={styles.formGroup}>
+              <label>API Provider</label>
               <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={styles.inputPassword}
+                type="text"
+                value={selectedProvider}
+                disabled
+                style={styles.inputDisabled}
               />
-              <button
-                type="button"
-                style={styles.showBtn}
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? "Hide" : "Show"}
+            </div>
+
+            <div style={styles.formGroup}>
+              <label>User Name</label>
+              <input
+                type="text"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                style={styles.input}
+              />
+            </div>
+
+            <div style={styles.formGroup}>
+              <label>Password</label>
+              <div style={styles.passwordBox}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  style={styles.inputPassword}
+                />
+                <button
+                  type="button"
+                  style={styles.showBtn}
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+
+            <div style={styles.btnContainer}>
+              <button onClick={handleUpdate} style={styles.updateBtn}>
+                Update Settings
               </button>
             </div>
           </div>
-
-          <div style={styles.btnContainer}>
-            <button onClick={handleUpdate} style={styles.updateBtn}>
-              Update Settings
-            </button>
-          </div>
         </div>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 }
 

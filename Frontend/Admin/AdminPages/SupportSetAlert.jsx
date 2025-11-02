@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Bell, Send, Info } from "lucide-react";
+import Header from "../Header";
 
 export default function SupportSetAlert() {
   const [message, setMessage] = useState("");
@@ -21,123 +22,127 @@ export default function SupportSetAlert() {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <div style={styles.headerContent}>
-          <Bell size={40} style={styles.headerIcon} />
-          <div>
-            <h1 style={styles.title}>Set Alert / News</h1>
-            <p style={styles.subtitle}>
-              Broadcast important messages and alerts to users
-            </p>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <div style={styles.header}>
+          <div style={styles.headerContent}>
+            <Bell size={40} style={styles.headerIcon} />
+            <div>
+              <h1 style={styles.title}>Set Alert / News</h1>
+              <p style={styles.subtitle}>
+                Broadcast important messages and alerts to users
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div style={styles.mainContent}>
-        <div style={styles.card}>
-          <div style={styles.cardHeader}>
-            <div style={styles.cardTitle}>
-              <Bell size={24} style={styles.cardTitleIcon} />
-              Create New Alert
-            </div>
-            <p style={styles.cardDescription}>
-              Compose your alert message that will be sent to all users
-            </p>
-          </div>
-
-          <div style={styles.formContent}>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>
-                Alert Message
-                <span style={styles.required}>*</span>
-              </label>
-              <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="For Any Help and Support Contact us 08069578467"
-                style={styles.textarea}
-                rows={6}
-              />
-              <div style={styles.charCount}>{message.length} characters</div>
+        <div style={styles.mainContent}>
+          <div style={styles.card}>
+            <div style={styles.cardHeader}>
+              <div style={styles.cardTitle}>
+                <Bell size={24} style={styles.cardTitleIcon} />
+                Create New Alert
+              </div>
+              <p style={styles.cardDescription}>
+                Compose your alert message that will be sent to all users
+              </p>
             </div>
 
-            <div style={styles.infoBox}>
-              <Info size={18} style={styles.infoIcon} />
-              <div style={styles.infoText}>
-                <strong>Note:</strong> This message will be visible to all
-                active users across the platform.
+            <div style={styles.formContent}>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>
+                  Alert Message
+                  <span style={styles.required}>*</span>
+                </label>
+                <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="For Any Help and Support Contact us 08069578467"
+                  style={styles.textarea}
+                  rows={6}
+                />
+                <div style={styles.charCount}>{message.length} characters</div>
+              </div>
+
+              <div style={styles.infoBox}>
+                <Info size={18} style={styles.infoIcon} />
+                <div style={styles.infoText}>
+                  <strong>Note:</strong> This message will be visible to all
+                  active users across the platform.
+                </div>
+              </div>
+
+              <div style={styles.buttonGroup}>
+                <button
+                  type="button"
+                  style={styles.clearButton}
+                  onClick={() => setMessage("")}
+                >
+                  Clear
+                </button>
+                <button
+                  type="button"
+                  style={{
+                    ...styles.submitButton,
+                    ...(isSubmitting || !message.trim()
+                      ? styles.submitButtonDisabled
+                      : {}),
+                  }}
+                  onClick={handleSubmit}
+                  disabled={isSubmitting || !message.trim()}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div style={styles.spinner}></div>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send size={18} />
+                      Submit Alert
+                    </>
+                  )}
+                </button>
               </div>
             </div>
 
-            <div style={styles.buttonGroup}>
-              <button
-                type="button"
-                style={styles.clearButton}
-                onClick={() => setMessage("")}
-              >
-                Clear
-              </button>
-              <button
-                type="button"
-                style={{
-                  ...styles.submitButton,
-                  ...(isSubmitting || !message.trim()
-                    ? styles.submitButtonDisabled
-                    : {}),
-                }}
-                onClick={handleSubmit}
-                disabled={isSubmitting || !message.trim()}
-              >
-                {isSubmitting ? (
-                  <>
-                    <div style={styles.spinner}></div>
-                    Sending...
-                  </>
-                ) : (
-                  <>
-                    <Send size={18} />
-                    Submit Alert
-                  </>
-                )}
-              </button>
-            </div>
+            {showSuccess && (
+              <div style={styles.successMessage}>
+                <div style={styles.successIcon}>✓</div>
+                Alert sent successfully!
+              </div>
+            )}
           </div>
 
-          {showSuccess && (
-            <div style={styles.successMessage}>
-              <div style={styles.successIcon}>✓</div>
-              Alert sent successfully!
+          <div style={styles.sideCard}>
+            <div style={styles.sideCardHeader}>
+              <Info size={20} />
+              Quick Tips
             </div>
-          )}
-        </div>
-
-        <div style={styles.sideCard}>
-          <div style={styles.sideCardHeader}>
-            <Info size={20} />
-            Quick Tips
+            <ul style={styles.tipsList}>
+              <li style={styles.tipItem}>
+                <span style={styles.arrow}>→</span>
+                Keep messages clear and concise
+              </li>
+              <li style={styles.tipItem}>
+                <span style={styles.arrow}>→</span>
+                Include contact information when needed
+              </li>
+              <li style={styles.tipItem}>
+                <span style={styles.arrow}>→</span>
+                Use professional language
+              </li>
+              <li style={styles.tipItem}>
+                <span style={styles.arrow}>→</span>
+                Double-check before sending
+              </li>
+            </ul>
           </div>
-          <ul style={styles.tipsList}>
-            <li style={styles.tipItem}>
-              <span style={styles.arrow}>→</span>
-              Keep messages clear and concise
-            </li>
-            <li style={styles.tipItem}>
-              <span style={styles.arrow}>→</span>
-              Include contact information when needed
-            </li>
-            <li style={styles.tipItem}>
-              <span style={styles.arrow}>→</span>
-              Use professional language
-            </li>
-            <li style={styles.tipItem}>
-              <span style={styles.arrow}>→</span>
-              Double-check before sending
-            </li>
-          </ul>
         </div>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 }
 

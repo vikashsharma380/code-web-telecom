@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../Header";
 
 const SettingUpiSetting = () => {
   const [upiId, setUpiId] = useState("");
@@ -70,39 +71,43 @@ const SettingUpiSetting = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>Update UPI</div>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <div style={styles.header}>Update UPI</div>
 
-      <div style={styles.formSection}>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>UPI ID:</label>
-          <input
-            type="text"
-            value={upiId}
-            onChange={(e) => setUpiId(e.target.value)}
-            style={styles.input}
-            placeholder="codeweb@paib"
-            onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-            onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-          />
+        <div style={styles.formSection}>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>UPI ID:</label>
+            <input
+              type="text"
+              value={upiId}
+              onChange={(e) => setUpiId(e.target.value)}
+              style={styles.input}
+              placeholder="codeweb@paib"
+              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+            />
+          </div>
+
+          <button
+            onClick={handleUpdate}
+            style={styles.updateBtn}
+            onMouseOver={(e) => {
+              e.target.style.transform = "translateY(-2px)";
+              e.target.style.boxShadow = "0 6px 20px rgba(72, 187, 120, 0.5)";
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = "translateY(0)";
+              e.target.style.boxShadow = "0 4px 15px rgba(72, 187, 120, 0.4)";
+            }}
+          >
+            Update
+          </button>
         </div>
-
-        <button
-          onClick={handleUpdate}
-          style={styles.updateBtn}
-          onMouseOver={(e) => {
-            e.target.style.transform = "translateY(-2px)";
-            e.target.style.boxShadow = "0 6px 20px rgba(72, 187, 120, 0.5)";
-          }}
-          onMouseOut={(e) => {
-            e.target.style.transform = "translateY(0)";
-            e.target.style.boxShadow = "0 4px 15px rgba(72, 187, 120, 0.4)";
-          }}
-        >
-          Update
-        </button>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 };
 

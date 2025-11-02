@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../Header";
 
 const BalanceTransferRetailer = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -147,110 +148,115 @@ const BalanceTransferRetailer = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>Credit/Debit</div>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <div style={styles.header}>Credit/Debit</div>
 
-      <div style={styles.tableContainer}>
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>User ID</th>
-              <th style={styles.th}>Name</th>
-              <th style={styles.th}>Add Balance</th>
-              <th style={styles.th}>Revert Balance</th>
-              <th style={styles.th}>Login</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentRetailers.map((retailer, index) => (
-              <tr key={index}>
-                <td style={styles.td}>{retailer.userId}</td>
-                <td style={styles.td}>{retailer.name}</td>
-                <td style={styles.td}>
-                  <button
-                    style={{ ...styles.button, ...styles.addBalanceBtn }}
-                    onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
-                    onMouseLeave={(e) => (e.target.style.opacity = "1")}
-                  >
-                    Add Balance
-                  </button>
-                </td>
-                <td style={styles.td}>
-                  <button
-                    style={{ ...styles.button, ...styles.revertBalanceBtn }}
-                    onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
-                    onMouseLeave={(e) => (e.target.style.opacity = "1")}
-                  >
-                    Revert Balance
-                  </button>
-                </td>
-                <td style={styles.td}>
-                  <button
-                    style={{ ...styles.button, ...styles.loginBtn }}
-                    onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
-                    onMouseLeave={(e) => (e.target.style.opacity = "1")}
-                  >
-                    Login
-                  </button>
-                </td>
+        <div style={styles.tableContainer}>
+          <table style={styles.table}>
+            <thead>
+              <tr>
+                <th style={styles.th}>User ID</th>
+                <th style={styles.th}>Name</th>
+                <th style={styles.th}>Add Balance</th>
+                <th style={styles.th}>Revert Balance</th>
+                <th style={styles.th}>Login</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {currentRetailers.map((retailer, index) => (
+                <tr key={index}>
+                  <td style={styles.td}>{retailer.userId}</td>
+                  <td style={styles.td}>{retailer.name}</td>
+                  <td style={styles.td}>
+                    <button
+                      style={{ ...styles.button, ...styles.addBalanceBtn }}
+                      onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
+                      onMouseLeave={(e) => (e.target.style.opacity = "1")}
+                    >
+                      Add Balance
+                    </button>
+                  </td>
+                  <td style={styles.td}>
+                    <button
+                      style={{ ...styles.button, ...styles.revertBalanceBtn }}
+                      onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
+                      onMouseLeave={(e) => (e.target.style.opacity = "1")}
+                    >
+                      Revert Balance
+                    </button>
+                  </td>
+                  <td style={styles.td}>
+                    <button
+                      style={{ ...styles.button, ...styles.loginBtn }}
+                      onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
+                      onMouseLeave={(e) => (e.target.style.opacity = "1")}
+                    >
+                      Login
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-      {/* Pagination */}
-      <div style={styles.pagination}>
-        <button
-          style={styles.pageButton}
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          onMouseEnter={(e) =>
-            !e.target.disabled && (e.target.style.background = "#f0f0f0")
-          }
-          onMouseLeave={(e) =>
-            !e.target.disabled && (e.target.style.background = "white")
-          }
-        >
-          Previous
-        </button>
-
-        {[...Array(totalPages)].map((_, index) => (
+        {/* Pagination */}
+        <div style={styles.pagination}>
           <button
-            key={index + 1}
-            style={
-              currentPage === index + 1
-                ? { ...styles.pageButton, ...styles.activePageButton }
-                : styles.pageButton
-            }
-            onClick={() => handlePageChange(index + 1)}
+            style={styles.pageButton}
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
             onMouseEnter={(e) =>
-              currentPage !== index + 1 &&
-              (e.target.style.background = "#f0f0f0")
+              !e.target.disabled && (e.target.style.background = "#f0f0f0")
             }
             onMouseLeave={(e) =>
-              currentPage !== index + 1 && (e.target.style.background = "white")
+              !e.target.disabled && (e.target.style.background = "white")
             }
           >
-            {index + 1}
+            Previous
           </button>
-        ))}
 
-        <button
-          style={styles.pageButton}
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          onMouseEnter={(e) =>
-            !e.target.disabled && (e.target.style.background = "#f0f0f0")
-          }
-          onMouseLeave={(e) =>
-            !e.target.disabled && (e.target.style.background = "white")
-          }
-        >
-          Next
-        </button>
-      </div>
-    </div>
+          {[...Array(totalPages)].map((_, index) => (
+            <button
+              key={index + 1}
+              style={
+                currentPage === index + 1
+                  ? { ...styles.pageButton, ...styles.activePageButton }
+                  : styles.pageButton
+              }
+              onClick={() => handlePageChange(index + 1)}
+              onMouseEnter={(e) =>
+                currentPage !== index + 1 &&
+                (e.target.style.background = "#f0f0f0")
+              }
+              onMouseLeave={(e) =>
+                currentPage !== index + 1 &&
+                (e.target.style.background = "white")
+              }
+            >
+              {index + 1}
+            </button>
+          ))}
+
+          <button
+            style={styles.pageButton}
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            onMouseEnter={(e) =>
+              !e.target.disabled && (e.target.style.background = "#f0f0f0")
+            }
+            onMouseLeave={(e) =>
+              !e.target.disabled && (e.target.style.background = "white")
+            }
+          >
+            Next
+          </button>
+        </div>
+      </div>{" "}
+    </>
   );
 };
 

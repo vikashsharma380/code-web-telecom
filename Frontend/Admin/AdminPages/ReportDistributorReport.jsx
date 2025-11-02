@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../Header";
 
 export default function ReportDistributorReport() {
   const [selectedDistributor, setSelectedDistributor] = useState("");
@@ -6,155 +7,159 @@ export default function ReportDistributorReport() {
   const [toDate, setToDate] = useState("");
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <div style={styles.headerContent}>
-          <div style={styles.iconWrapper}>
-            <span style={styles.icon}>📊</span>
-          </div>
-          <div>
-            <h1 style={styles.title}>Distributor Recharge Report</h1>
-            <p style={styles.subtitle}>
-              Track and analyze distributor performance metrics
-            </p>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <div style={styles.header}>
+          <div style={styles.headerContent}>
+            <div style={styles.iconWrapper}>
+              <span style={styles.icon}>📊</span>
+            </div>
+            <div>
+              <h1 style={styles.title}>Distributor Recharge Report</h1>
+              <p style={styles.subtitle}>
+                Track and analyze distributor performance metrics
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div style={styles.content}>
-        <div style={styles.card}>
-          <div style={styles.cardHeader}>
-            <h3 style={styles.cardTitle}>Report Filters</h3>
-            <span style={styles.badge}>Generate Custom Reports</span>
-          </div>
+        <div style={styles.content}>
+          <div style={styles.card}>
+            <div style={styles.cardHeader}>
+              <h3 style={styles.cardTitle}>Report Filters</h3>
+              <span style={styles.badge}>Generate Custom Reports</span>
+            </div>
 
-          <div style={styles.filterGrid}>
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>
-                <span style={styles.labelIcon}>🏢</span>
-                Select Distributor
-              </label>
-              <div style={styles.selectWrapper}>
-                <select
-                  value={selectedDistributor}
-                  onChange={(e) => setSelectedDistributor(e.target.value)}
-                  style={styles.select}
-                >
-                  <option value="">--Select--</option>
-                  <option value="dist1">Distributor Alpha</option>
-                  <option value="dist2">Distributor Beta</option>
-                  <option value="dist3">Distributor Gamma</option>
-                  <option value="dist4">Distributor Delta</option>
-                </select>
-                <span style={styles.selectArrow}>▼</span>
+            <div style={styles.filterGrid}>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>
+                  <span style={styles.labelIcon}>🏢</span>
+                  Select Distributor
+                </label>
+                <div style={styles.selectWrapper}>
+                  <select
+                    value={selectedDistributor}
+                    onChange={(e) => setSelectedDistributor(e.target.value)}
+                    style={styles.select}
+                  >
+                    <option value="">--Select--</option>
+                    <option value="dist1">Distributor Alpha</option>
+                    <option value="dist2">Distributor Beta</option>
+                    <option value="dist3">Distributor Gamma</option>
+                    <option value="dist4">Distributor Delta</option>
+                  </select>
+                  <span style={styles.selectArrow}>▼</span>
+                </div>
+              </div>
+
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>
+                  <span style={styles.labelIcon}>📅</span>
+                  From Date
+                </label>
+                <input
+                  type="date"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                  style={styles.input}
+                />
+              </div>
+
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>
+                  <span style={styles.labelIcon}>📅</span>
+                  To Date
+                </label>
+                <input
+                  type="date"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                  style={styles.input}
+                />
+              </div>
+
+              <div style={styles.buttonGroup}>
+                <button style={styles.primaryButton}>
+                  <span style={styles.buttonIcon}>🔍</span>
+                  Search
+                </button>
+                <button style={styles.secondaryButton}>
+                  <span style={styles.buttonIcon}>📥</span>
+                  Export
+                </button>
               </div>
             </div>
 
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>
-                <span style={styles.labelIcon}>📅</span>
-                From Date
-              </label>
-              <input
-                type="date"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-                style={styles.input}
-              />
-            </div>
-
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>
-                <span style={styles.labelIcon}>📅</span>
-                To Date
-              </label>
-              <input
-                type="date"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-                style={styles.input}
-              />
-            </div>
-
-            <div style={styles.buttonGroup}>
-              <button style={styles.primaryButton}>
-                <span style={styles.buttonIcon}>🔍</span>
-                Search
-              </button>
-              <button style={styles.secondaryButton}>
-                <span style={styles.buttonIcon}>📥</span>
-                Export
-              </button>
+            <div style={styles.statsGrid}>
+              <div style={styles.statCard}>
+                <div style={styles.statIcon}>💰</div>
+                <div style={styles.statValue}>₹0</div>
+                <div style={styles.statLabel}>Total Amount</div>
+              </div>
+              <div style={styles.statCard}>
+                <div style={styles.statIcon}>📱</div>
+                <div style={styles.statValue}>0</div>
+                <div style={styles.statLabel}>Transactions</div>
+              </div>
+              <div style={styles.statCard}>
+                <div style={styles.statIcon}>✅</div>
+                <div style={styles.statValue}>0</div>
+                <div style={styles.statLabel}>Success Rate</div>
+              </div>
+              <div style={styles.statCard}>
+                <div style={styles.statIcon}>⚡</div>
+                <div style={styles.statValue}>0</div>
+                <div style={styles.statLabel}>Pending</div>
+              </div>
             </div>
           </div>
 
-          <div style={styles.statsGrid}>
-            <div style={styles.statCard}>
-              <div style={styles.statIcon}>💰</div>
-              <div style={styles.statValue}>₹0</div>
-              <div style={styles.statLabel}>Total Amount</div>
+          <div style={styles.tableCard}>
+            <div style={styles.tableHeader}>
+              <h3 style={styles.tableTitle}>Recharge Records</h3>
+              <div style={styles.tableActions}>
+                <button style={styles.iconButton}>🔄</button>
+                <button style={styles.iconButton}>⚙️</button>
+              </div>
             </div>
-            <div style={styles.statCard}>
-              <div style={styles.statIcon}>📱</div>
-              <div style={styles.statValue}>0</div>
-              <div style={styles.statLabel}>Transactions</div>
-            </div>
-            <div style={styles.statCard}>
-              <div style={styles.statIcon}>✅</div>
-              <div style={styles.statValue}>0</div>
-              <div style={styles.statLabel}>Success Rate</div>
-            </div>
-            <div style={styles.statCard}>
-              <div style={styles.statIcon}>⚡</div>
-              <div style={styles.statValue}>0</div>
-              <div style={styles.statLabel}>Pending</div>
-            </div>
-          </div>
-        </div>
 
-        <div style={styles.tableCard}>
-          <div style={styles.tableHeader}>
-            <h3 style={styles.tableTitle}>Recharge Records</h3>
-            <div style={styles.tableActions}>
-              <button style={styles.iconButton}>🔄</button>
-              <button style={styles.iconButton}>⚙️</button>
+            <div style={styles.tableWrapper}>
+              <table style={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={styles.th}>Sr</th>
+                    <th style={styles.th}>Date & Time</th>
+                    <th style={styles.th}>Distributor Name</th>
+                    <th style={styles.th}>Mobile Number</th>
+                    <th style={styles.th}>Operator</th>
+                    <th style={styles.th}>Amount</th>
+                    <th style={styles.th}>Commission</th>
+                    <th style={styles.th}>Balance</th>
+                    <th style={styles.th}>Status</th>
+                    <th style={styles.th}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colSpan="10" style={styles.emptyState}>
+                      <div style={styles.emptyIcon}>📋</div>
+                      <div style={styles.emptyText}>
+                        No recharge records found
+                      </div>
+                      <div style={styles.emptySubtext}>
+                        Select a distributor and date range to view records
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-          </div>
-
-          <div style={styles.tableWrapper}>
-            <table style={styles.table}>
-              <thead>
-                <tr>
-                  <th style={styles.th}>Sr</th>
-                  <th style={styles.th}>Date & Time</th>
-                  <th style={styles.th}>Distributor Name</th>
-                  <th style={styles.th}>Mobile Number</th>
-                  <th style={styles.th}>Operator</th>
-                  <th style={styles.th}>Amount</th>
-                  <th style={styles.th}>Commission</th>
-                  <th style={styles.th}>Balance</th>
-                  <th style={styles.th}>Status</th>
-                  <th style={styles.th}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colSpan="10" style={styles.emptyState}>
-                    <div style={styles.emptyIcon}>📋</div>
-                    <div style={styles.emptyText}>
-                      No recharge records found
-                    </div>
-                    <div style={styles.emptySubtext}>
-                      Select a distributor and date range to view records
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </div>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 }
 

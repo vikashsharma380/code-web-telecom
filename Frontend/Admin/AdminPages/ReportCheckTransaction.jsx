@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Search } from "lucide-react";
+import Header from "../Header";
 
 const ReportCheckTransaction = () => {
   const [rechargeId, setRechargeId] = useState("");
@@ -171,98 +172,105 @@ const ReportCheckTransaction = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>Search Transaction by Recharge ID</div>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <div style={styles.header}>Search Transaction by Recharge ID</div>
 
-      <div style={styles.searchSection}>
-        <div style={styles.formGroup}>
-          <div style={styles.inputWrapper}>
-            <label style={styles.label}>Recharge ID:</label>
-            <input
-              type="text"
-              value={rechargeId}
-              onChange={(e) => setRechargeId(e.target.value)}
-              onKeyPress={handleKeyPress}
-              style={styles.input}
-              placeholder="Enter Recharge ID"
-              onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
-              onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
-            />
-          </div>
-          <button
-            onClick={handleSearch}
-            style={styles.searchBtn}
-            disabled={isSearching}
-            onMouseOver={(e) => {
-              if (!isSearching) {
-                e.target.style.transform = "translateY(-2px)";
+        <div style={styles.searchSection}>
+          <div style={styles.formGroup}>
+            <div style={styles.inputWrapper}>
+              <label style={styles.label}>Recharge ID:</label>
+              <input
+                type="text"
+                value={rechargeId}
+                onChange={(e) => setRechargeId(e.target.value)}
+                onKeyPress={handleKeyPress}
+                style={styles.input}
+                placeholder="Enter Recharge ID"
+                onFocus={(e) => (e.target.style.border = "2px solid #667eea")}
+                onBlur={(e) => (e.target.style.border = "2px solid #e2e8f0")}
+              />
+            </div>
+            <button
+              onClick={handleSearch}
+              style={styles.searchBtn}
+              disabled={isSearching}
+              onMouseOver={(e) => {
+                if (!isSearching) {
+                  e.target.style.transform = "translateY(-2px)";
+                  e.target.style.boxShadow =
+                    "0 6px 20px rgba(102, 126, 234, 0.5)";
+                }
+              }}
+              onMouseOut={(e) => {
+                e.target.style.transform = "translateY(0)";
                 e.target.style.boxShadow =
-                  "0 6px 20px rgba(102, 126, 234, 0.5)";
-              }
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = "translateY(0)";
-              e.target.style.boxShadow = "0 4px 15px rgba(102, 126, 234, 0.4)";
-            }}
-          >
-            <Search size={18} />
-            Search
-          </button>
+                  "0 4px 15px rgba(102, 126, 234, 0.4)";
+              }}
+            >
+              <Search size={18} />
+              Search
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div style={styles.resultSection}>
-        {isSearching ? (
-          <div style={styles.loadingSpinner}>Searching...</div>
-        ) : searchResult ? (
-          <div style={styles.resultCard}>
-            <div style={styles.resultTitle}>Transaction Details</div>
-            <div style={styles.resultGrid}>
-              <div style={styles.resultItem}>
-                <span style={styles.resultLabel}>Recharge ID</span>
-                <span style={styles.resultValue}>
-                  {searchResult.rechargeId}
-                </span>
-              </div>
-              <div style={styles.resultItem}>
-                <span style={styles.resultLabel}>Status</span>
-                <span style={styles.statusBadge}>{searchResult.status}</span>
-              </div>
-              <div style={styles.resultItem}>
-                <span style={styles.resultLabel}>Amount</span>
-                <span style={styles.resultValue}>{searchResult.amount}</span>
-              </div>
-              <div style={styles.resultItem}>
-                <span style={styles.resultLabel}>Transaction Date</span>
-                <span style={styles.resultValue}>
-                  {searchResult.transactionDate}
-                </span>
-              </div>
-              <div style={styles.resultItem}>
-                <span style={styles.resultLabel}>Operator</span>
-                <span style={styles.resultValue}>{searchResult.operator}</span>
-              </div>
-              <div style={styles.resultItem}>
-                <span style={styles.resultLabel}>Mobile Number</span>
-                <span style={styles.resultValue}>
-                  {searchResult.mobileNumber}
-                </span>
-              </div>
-              <div style={{ ...styles.resultItem, gridColumn: "1 / -1" }}>
-                <span style={styles.resultLabel}>API Response</span>
-                <span style={styles.resultValue}>
-                  {searchResult.apiResponse}
-                </span>
+        <div style={styles.resultSection}>
+          {isSearching ? (
+            <div style={styles.loadingSpinner}>Searching...</div>
+          ) : searchResult ? (
+            <div style={styles.resultCard}>
+              <div style={styles.resultTitle}>Transaction Details</div>
+              <div style={styles.resultGrid}>
+                <div style={styles.resultItem}>
+                  <span style={styles.resultLabel}>Recharge ID</span>
+                  <span style={styles.resultValue}>
+                    {searchResult.rechargeId}
+                  </span>
+                </div>
+                <div style={styles.resultItem}>
+                  <span style={styles.resultLabel}>Status</span>
+                  <span style={styles.statusBadge}>{searchResult.status}</span>
+                </div>
+                <div style={styles.resultItem}>
+                  <span style={styles.resultLabel}>Amount</span>
+                  <span style={styles.resultValue}>{searchResult.amount}</span>
+                </div>
+                <div style={styles.resultItem}>
+                  <span style={styles.resultLabel}>Transaction Date</span>
+                  <span style={styles.resultValue}>
+                    {searchResult.transactionDate}
+                  </span>
+                </div>
+                <div style={styles.resultItem}>
+                  <span style={styles.resultLabel}>Operator</span>
+                  <span style={styles.resultValue}>
+                    {searchResult.operator}
+                  </span>
+                </div>
+                <div style={styles.resultItem}>
+                  <span style={styles.resultLabel}>Mobile Number</span>
+                  <span style={styles.resultValue}>
+                    {searchResult.mobileNumber}
+                  </span>
+                </div>
+                <div style={{ ...styles.resultItem, gridColumn: "1 / -1" }}>
+                  <span style={styles.resultLabel}>API Response</span>
+                  <span style={styles.resultValue}>
+                    {searchResult.apiResponse}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        ) : (
-          <div style={styles.noResult}>
-            Enter a Recharge ID and click Search to view transaction details
-          </div>
-        )}
-      </div>
-    </div>
+          ) : (
+            <div style={styles.noResult}>
+              Enter a Recharge ID and click Search to view transaction details
+            </div>
+          )}
+        </div>
+      </div>{" "}
+    </>
   );
 };
 

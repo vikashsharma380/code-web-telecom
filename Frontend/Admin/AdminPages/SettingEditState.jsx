@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../Header";
 
 export default function SettingEditState() {
   const [state, setState] = useState({ name: "", code: "", circle: "" });
@@ -14,76 +15,80 @@ export default function SettingEditState() {
   ];
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h2 style={styles.title}>State Master / Edit</h2>
-        <div style={styles.formGrid}>
-          <div style={styles.formGroup}>
-            <label style={styles.label}>State Name:</label>
-            <input
-              type="text"
-              placeholder="Enter state name"
-              value={state.name}
-              onChange={(e) => setState({ ...state, name: e.target.value })}
-              style={styles.input}
-            />
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <div style={styles.card}>
+          <h2 style={styles.title}>State Master / Edit</h2>
+          <div style={styles.formGrid}>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>State Name:</label>
+              <input
+                type="text"
+                placeholder="Enter state name"
+                value={state.name}
+                onChange={(e) => setState({ ...state, name: e.target.value })}
+                style={styles.input}
+              />
+            </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>State Code:</label>
+              <input
+                type="text"
+                placeholder="Enter code"
+                value={state.code}
+                onChange={(e) => setState({ ...state, code: e.target.value })}
+                style={styles.input}
+              />
+            </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Circle Code:</label>
+              <input
+                type="text"
+                placeholder="Enter circle code"
+                value={state.circle}
+                onChange={(e) => setState({ ...state, circle: e.target.value })}
+                style={styles.input}
+              />
+            </div>
           </div>
-          <div style={styles.formGroup}>
-            <label style={styles.label}>State Code:</label>
-            <input
-              type="text"
-              placeholder="Enter code"
-              value={state.code}
-              onChange={(e) => setState({ ...state, code: e.target.value })}
-              style={styles.input}
-            />
-          </div>
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Circle Code:</label>
-            <input
-              type="text"
-              placeholder="Enter circle code"
-              value={state.circle}
-              onChange={(e) => setState({ ...state, circle: e.target.value })}
-              style={styles.input}
-            />
+          <div style={styles.btnRow}>
+            <button style={styles.btnPrimary}>Submit</button>
+            <button style={styles.btnSecondary}>Cancel</button>
           </div>
         </div>
-        <div style={styles.btnRow}>
-          <button style={styles.btnPrimary}>Submit</button>
-          <button style={styles.btnSecondary}>Cancel</button>
-        </div>
-      </div>
 
-      <div style={styles.tableCard}>
-        <h3 style={styles.tableTitle}>State List</h3>
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>#</th>
-              <th style={styles.th}>State Name</th>
-              <th style={styles.th}>State Code</th>
-              <th style={styles.th}>Circle Code</th>
-              <th style={styles.th}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {stateList.map((item, index) => (
-              <tr key={index} style={styles.tr}>
-                <td style={styles.td}>{index + 1}</td>
-                <td style={styles.td}>{item.name}</td>
-                <td style={styles.td}>{item.code}</td>
-                <td style={styles.td}>{item.circle}</td>
-                <td style={styles.td}>
-                  <button style={styles.iconBtn}>✏️</button>
-                  <button style={styles.iconBtn}>🗑️</button>
-                </td>
+        <div style={styles.tableCard}>
+          <h3 style={styles.tableTitle}>State List</h3>
+          <table style={styles.table}>
+            <thead>
+              <tr>
+                <th style={styles.th}>#</th>
+                <th style={styles.th}>State Name</th>
+                <th style={styles.th}>State Code</th>
+                <th style={styles.th}>Circle Code</th>
+                <th style={styles.th}>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+            </thead>
+            <tbody>
+              {stateList.map((item, index) => (
+                <tr key={index} style={styles.tr}>
+                  <td style={styles.td}>{index + 1}</td>
+                  <td style={styles.td}>{item.name}</td>
+                  <td style={styles.td}>{item.code}</td>
+                  <td style={styles.td}>{item.circle}</td>
+                  <td style={styles.td}>
+                    <button style={styles.iconBtn}>✏️</button>
+                    <button style={styles.iconBtn}>🗑️</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>{" "}
+    </>
   );
 }
 
