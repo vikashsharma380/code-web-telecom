@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../../Admin/Header";
 
 const styles = {
   container: {
@@ -175,77 +176,81 @@ export default function SiteEnquiry() {
   ]);
 
   return (
-    <div style={styles.container}>
-      <header style={styles.header}>
-        <div style={styles.headerContent}>
-          <div style={styles.logoSection}>
-            <div style={styles.logo}>SE</div>
-            <div style={styles.brandInfo}>
-              <h1 style={styles.brandTitle}>Site Enquiry</h1>
-              <p style={styles.brandSubtitle}>Contact Form Management</p>
+    <>
+      {" "}
+      <Header />
+      <div style={styles.container}>
+        <header style={styles.header}>
+          <div style={styles.headerContent}>
+            <div style={styles.logoSection}>
+              <div style={styles.logo}>SE</div>
+              <div style={styles.brandInfo}>
+                <h1 style={styles.brandTitle}>Site Enquiry</h1>
+                <p style={styles.brandSubtitle}>Contact Form Management</p>
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <section style={styles.heroSection}>
-        <div style={styles.heroContent}>
-          <div style={styles.greetingSection}>
-            <h2 style={styles.greeting}>Contact Form Submissions</h2>
-            <p style={styles.subtitle}>
-              Manage and review all enquiries submitted from your website
-            </p>
+        <section style={styles.heroSection}>
+          <div style={styles.heroContent}>
+            <div style={styles.greetingSection}>
+              <h2 style={styles.greeting}>Contact Form Submissions</h2>
+              <p style={styles.subtitle}>
+                Manage and review all enquiries submitted from your website
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <div style={styles.dataSection}>
+          <div style={styles.sectionHeader}>
+            <h3 style={styles.sectionTitle}>
+              List of Contact Form Submitted from Website
+            </h3>
+          </div>
+          <div style={styles.tableContainer}>
+            <table style={styles.table}>
+              <thead style={styles.thead}>
+                <tr>
+                  <th style={styles.th}>Sr No</th>
+                  <th style={styles.th}>Name</th>
+                  <th style={styles.th}>Email</th>
+                  <th style={styles.th}>Contact Number</th>
+                  <th style={styles.th}>Message</th>
+                </tr>
+              </thead>
+              <tbody>
+                {enquiries.map((enquiry) => (
+                  <tr
+                    key={enquiry.srNo}
+                    style={styles.tr}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.background = "#f7fafc")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.background = "white")
+                    }
+                  >
+                    <td style={styles.td}>{enquiry.srNo}</td>
+                    <td style={styles.td}>{enquiry.name}</td>
+                    <td style={styles.td}>{enquiry.email}</td>
+                    <td style={styles.td}>{enquiry.contactNumber}</td>
+                    <td style={styles.td}>{enquiry.message}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
-      </section>
 
-      <div style={styles.dataSection}>
-        <div style={styles.sectionHeader}>
-          <h3 style={styles.sectionTitle}>
-            List of Contact Form Submitted from Website
-          </h3>
-        </div>
-        <div style={styles.tableContainer}>
-          <table style={styles.table}>
-            <thead style={styles.thead}>
-              <tr>
-                <th style={styles.th}>Sr No</th>
-                <th style={styles.th}>Name</th>
-                <th style={styles.th}>Email</th>
-                <th style={styles.th}>Contact Number</th>
-                <th style={styles.th}>Message</th>
-              </tr>
-            </thead>
-            <tbody>
-              {enquiries.map((enquiry) => (
-                <tr
-                  key={enquiry.srNo}
-                  style={styles.tr}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.background = "#f7fafc")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.background = "white")
-                  }
-                >
-                  <td style={styles.td}>{enquiry.srNo}</td>
-                  <td style={styles.td}>{enquiry.name}</td>
-                  <td style={styles.td}>{enquiry.email}</td>
-                  <td style={styles.td}>{enquiry.contactNumber}</td>
-                  <td style={styles.td}>{enquiry.message}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <footer style={styles.footer}>
-        <p style={styles.footerText}>
-          <span style={styles.footerStrong}>Site Enquiry</span> - Powered by
-          Your Company © 2025
-        </p>
-      </footer>
-    </div>
+        <footer style={styles.footer}>
+          <p style={styles.footerText}>
+            <span style={styles.footerStrong}>Site Enquiry</span> - Powered by
+            Your Company © 2025
+          </p>
+        </footer>
+      </div>{" "}
+    </>
   );
 }
