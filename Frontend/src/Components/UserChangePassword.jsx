@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, Lock, Shield, Check } from "lucide-react";
+import Nav from "../../hero/nav";
 
 export default function UserChangePassword() {
   const [formData, setFormData] = useState({
@@ -98,148 +99,155 @@ export default function UserChangePassword() {
   };
 
   return (
-    <div className="container">
-      <div className="form-wrapper">
-        <div className="form-header">
-          <div className="icon-circle">
-            <Shield className="shield" />
-          </div>
-          <h1>Change Password</h1>
-          <p>Secure your account with a strong password</p>
-        </div>
-
-        <div className="form-body">
-          {success && (
-            <div className="success-box">
-              <Check className="success-icon" />
-              <div>
-                <p className="success-title">Password Changed Successfully!</p>
-                <p className="success-text">
-                  Your password has been updated securely.
-                </p>
-              </div>
+    <>
+      {" "}
+      <Nav />
+      <div className="container">
+        <div className="form-wrapper">
+          <div className="form-header">
+            <div className="icon-circle">
+              <Shield className="shield" />
             </div>
-          )}
-
-          <div className="input-group">
-            <label>Current Password</label>
-            <div className="input-container">
-              <Lock className="input-icon" />
-              <input
-                type={showPasswords.old ? "text" : "password"}
-                name="oldPassword"
-                value={formData.oldPassword}
-                onChange={handleChange}
-                onKeyPress={handleKeyPress}
-                placeholder="Enter current password"
-                className={errors.oldPassword ? "error" : ""}
-              />
-              <button
-                type="button"
-                onClick={() => togglePasswordVisibility("old")}
-                className="eye-btn"
-              >
-                {showPasswords.old ? <EyeOff /> : <Eye />}
-              </button>
-            </div>
-            {errors.oldPassword && (
-              <p className="error-text">{errors.oldPassword}</p>
-            )}
+            <h1>Change Password</h1>
+            <p>Secure your account with a strong password</p>
           </div>
 
-          <div className="input-group">
-            <label>New Password</label>
-            <div className="input-container">
-              <Lock className="input-icon" />
-              <input
-                type={showPasswords.new ? "text" : "password"}
-                name="newPassword"
-                value={formData.newPassword}
-                onChange={handleChange}
-                onKeyPress={handleKeyPress}
-                placeholder="Enter new password"
-                className={errors.newPassword ? "error" : ""}
-              />
-              <button
-                type="button"
-                onClick={() => togglePasswordVisibility("new")}
-                className="eye-btn"
-              >
-                {showPasswords.new ? <EyeOff /> : <Eye />}
-              </button>
-            </div>
-
-            {formData.newPassword && (
-              <div className="strength">
-                <div className="strength-top">
-                  <span>Password Strength:</span>
-                  <span style={{ color: strength.color }}>{strength.text}</span>
-                </div>
-                <div className="strength-bar">
-                  <div
-                    className="strength-fill"
-                    style={{
-                      width: `${strength.strength}%`,
-                      backgroundColor: strength.color,
-                    }}
-                  ></div>
+          <div className="form-body">
+            {success && (
+              <div className="success-box">
+                <Check className="success-icon" />
+                <div>
+                  <p className="success-title">
+                    Password Changed Successfully!
+                  </p>
+                  <p className="success-text">
+                    Your password has been updated securely.
+                  </p>
                 </div>
               </div>
             )}
-            {errors.newPassword && (
-              <p className="error-text">{errors.newPassword}</p>
-            )}
-          </div>
 
-          <div className="input-group">
-            <label>Confirm New Password</label>
-            <div className="input-container">
-              <Lock className="input-icon" />
-              <input
-                type={showPasswords.confirm ? "text" : "password"}
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                onKeyPress={handleKeyPress}
-                placeholder="Confirm new password"
-                className={errors.confirmPassword ? "error" : ""}
-              />
-              <button
-                type="button"
-                onClick={() => togglePasswordVisibility("confirm")}
-                className="eye-btn"
-              >
-                {showPasswords.confirm ? <EyeOff /> : <Eye />}
-              </button>
+            <div className="input-group">
+              <label>Current Password</label>
+              <div className="input-container">
+                <Lock className="input-icon" />
+                <input
+                  type={showPasswords.old ? "text" : "password"}
+                  name="oldPassword"
+                  value={formData.oldPassword}
+                  onChange={handleChange}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Enter current password"
+                  className={errors.oldPassword ? "error" : ""}
+                />
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility("old")}
+                  className="eye-btn"
+                >
+                  {showPasswords.old ? <EyeOff /> : <Eye />}
+                </button>
+              </div>
+              {errors.oldPassword && (
+                <p className="error-text">{errors.oldPassword}</p>
+              )}
             </div>
-            {errors.confirmPassword && (
-              <p className="error-text">{errors.confirmPassword}</p>
-            )}
-          </div>
 
-          <div className="requirements">
-            <p>Password Requirements:</p>
-            <ul>
-              <li>At least 8 characters long</li>
-              <li>Include uppercase and lowercase letters</li>
-              <li>Include numbers and special characters</li>
-            </ul>
-          </div>
+            <div className="input-group">
+              <label>New Password</label>
+              <div className="input-container">
+                <Lock className="input-icon" />
+                <input
+                  type={showPasswords.new ? "text" : "password"}
+                  name="newPassword"
+                  value={formData.newPassword}
+                  onChange={handleChange}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Enter new password"
+                  className={errors.newPassword ? "error" : ""}
+                />
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility("new")}
+                  className="eye-btn"
+                >
+                  {showPasswords.new ? <EyeOff /> : <Eye />}
+                </button>
+              </div>
 
-          <button className="submit-btn" onClick={handleSubmit}>
-            Update Password
-          </button>
+              {formData.newPassword && (
+                <div className="strength">
+                  <div className="strength-top">
+                    <span>Password Strength:</span>
+                    <span style={{ color: strength.color }}>
+                      {strength.text}
+                    </span>
+                  </div>
+                  <div className="strength-bar">
+                    <div
+                      className="strength-fill"
+                      style={{
+                        width: `${strength.strength}%`,
+                        backgroundColor: strength.color,
+                      }}
+                    ></div>
+                  </div>
+                </div>
+              )}
+              {errors.newPassword && (
+                <p className="error-text">{errors.newPassword}</p>
+              )}
+            </div>
 
-          <div className="support-text">
-            <p>
-              Need help? <span className="support-link">Contact Support</span>
-            </p>
+            <div className="input-group">
+              <label>Confirm New Password</label>
+              <div className="input-container">
+                <Lock className="input-icon" />
+                <input
+                  type={showPasswords.confirm ? "text" : "password"}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Confirm new password"
+                  className={errors.confirmPassword ? "error" : ""}
+                />
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility("confirm")}
+                  className="eye-btn"
+                >
+                  {showPasswords.confirm ? <EyeOff /> : <Eye />}
+                </button>
+              </div>
+              {errors.confirmPassword && (
+                <p className="error-text">{errors.confirmPassword}</p>
+              )}
+            </div>
+
+            <div className="requirements">
+              <p>Password Requirements:</p>
+              <ul>
+                <li>At least 8 characters long</li>
+                <li>Include uppercase and lowercase letters</li>
+                <li>Include numbers and special characters</li>
+              </ul>
+            </div>
+
+            <button className="submit-btn" onClick={handleSubmit}>
+              Update Password
+            </button>
+
+            <div className="support-text">
+              <p>
+                Need help? <span className="support-link">Contact Support</span>
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* CSS Styles */}
-      <style>{`
+        {/* CSS Styles */}
+        <style>{`
         .container {
           min-height: 100vh;
           display: flex;
@@ -414,6 +422,7 @@ export default function UserChangePassword() {
         }
         .support-link:hover { color: #1e3a8a; }
       `}</style>
-    </div>
+      </div>{" "}
+    </>
   );
 }

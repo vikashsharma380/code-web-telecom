@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Nav from "../../hero/nav";
 
 export default function UserSupportTicket() {
   const [formData, setFormData] = useState({
@@ -6,9 +7,7 @@ export default function UserSupportTicket() {
     message: "",
   });
 
-  const [tickets, setTickets] = useState([
-  
-  ]);
+  const [tickets, setTickets] = useState([]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -17,7 +16,6 @@ export default function UserSupportTicket() {
       [name]: value,
     }));
   };
-
 
   const handleSubmit = () => {
     if (!formData.subject || !formData.message) {
@@ -60,116 +58,121 @@ export default function UserSupportTicket() {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.wrapper}>
-        {/* Header */}
-        <div style={styles.header}>
-          <h1 style={styles.headerTitle}>Raise Support Ticket</h1>
-        </div>
+    <>
+      {" "}
+      <Nav />
+      <div style={styles.container}>
+        <div style={styles.wrapper}>
+          {/* Header */}
+          <div style={styles.header}>
+            <h1 style={styles.headerTitle}>Raise Support Ticket</h1>
+          </div>
 
-        {/* Form Section */}
-        <div style={styles.formCard}>
-          <div style={styles.formContent}>
-            {/* Subject Field */}
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Subject :</label>
-              <select
-                name="subject"
-                value={formData.subject}
-                onChange={handleInputChange}
-                style={styles.select}
-              >
-                <option value="">----Select----</option>
-                <option value="Payment Issue">Payment Issue</option>
-                <option value="Account Access">Account Access</option>
-                <option value="Technical Problem">Technical Problem</option>
-                <option value="Feature Request">Feature Request</option>
-                <option value="Billing Question">Billing Question</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
+          {/* Form Section */}
+          <div style={styles.formCard}>
+            <div style={styles.formContent}>
+              {/* Subject Field */}
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Subject :</label>
+                <select
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  style={styles.select}
+                >
+                  <option value="">----Select----</option>
+                  <option value="Payment Issue">Payment Issue</option>
+                  <option value="Account Access">Account Access</option>
+                  <option value="Technical Problem">Technical Problem</option>
+                  <option value="Feature Request">Feature Request</option>
+                  <option value="Billing Question">Billing Question</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
 
-            {/* Message Field */}
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Message :</label>
-              <textarea
-                name="message"
-                value={formData.message}
-                onChange={handleInputChange}
-                placeholder="Describe your issue in detail..."
-                rows="6"
-                style={styles.textarea}
-              />
-            </div>
+              {/* Message Field */}
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Message :</label>
+                <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  placeholder="Describe your issue in detail..."
+                  rows="6"
+                  style={styles.textarea}
+                />
+              </div>
 
-            {/* Buttons */}
-            <div style={styles.buttonGroup}>
-              <button
-                onClick={handleSubmit}
-                style={{ ...styles.button, ...styles.submitButton }}
-              >
-                Submit
-              </button>
-              <button
-                onClick={handleCancel}
-                style={{ ...styles.button, ...styles.cancelButton }}
-              >
-                Cancel
-              </button>
+              {/* Buttons */}
+              <div style={styles.buttonGroup}>
+                <button
+                  onClick={handleSubmit}
+                  style={{ ...styles.button, ...styles.submitButton }}
+                >
+                  Submit
+                </button>
+                <button
+                  onClick={handleCancel}
+                  style={{ ...styles.button, ...styles.cancelButton }}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Tickets Table */}
-        <div style={styles.tableCard}>
-          <div style={styles.tableWrapper}>
-            <table style={styles.table}>
-              <thead style={styles.tableHead}>
-                <tr>
-                  <th style={styles.th}>Ticket ID</th>
-                  <th style={styles.th}>Subject</th>
-                  <th style={styles.th}>Message</th>
-                  <th style={styles.th}>Date</th>
-                  <th style={styles.th}>Response</th>
-                  <th style={styles.th}>Status</th>
-                </tr>
-              </thead>
-              <tbody style={styles.tbody}>
-                {tickets.map((ticket) => (
-                  <tr key={ticket.id} style={styles.tr}>
-                    <td style={styles.td}>{ticket.id}</td>
-                    <td style={styles.td}>{ticket.subject}</td>
-                    <td style={styles.td}>{ticket.message}</td>
-                    <td style={styles.td}>{ticket.date}</td>
-                    <td style={styles.td}>{ticket.response || "-"}</td>
-                    <td style={styles.td}>
-                      <span
-                        style={{
-                          ...styles.statusBadge,
-                          backgroundColor: getStatusColor(ticket.status) + "20",
-                          color: getStatusColor(ticket.status),
-                          border: `1px solid ${getStatusColor(
-                            ticket.status
-                          )}40`,
-                        }}
-                      >
-                        {ticket.status}
-                      </span>
-                    </td>
+          {/* Tickets Table */}
+          <div style={styles.tableCard}>
+            <div style={styles.tableWrapper}>
+              <table style={styles.table}>
+                <thead style={styles.tableHead}>
+                  <tr>
+                    <th style={styles.th}>Ticket ID</th>
+                    <th style={styles.th}>Subject</th>
+                    <th style={styles.th}>Message</th>
+                    <th style={styles.th}>Date</th>
+                    <th style={styles.th}>Response</th>
+                    <th style={styles.th}>Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {tickets.length === 0 && (
-            <div style={styles.emptyState}>
-              <p style={styles.emptyText}>No support tickets found</p>
+                </thead>
+                <tbody style={styles.tbody}>
+                  {tickets.map((ticket) => (
+                    <tr key={ticket.id} style={styles.tr}>
+                      <td style={styles.td}>{ticket.id}</td>
+                      <td style={styles.td}>{ticket.subject}</td>
+                      <td style={styles.td}>{ticket.message}</td>
+                      <td style={styles.td}>{ticket.date}</td>
+                      <td style={styles.td}>{ticket.response || "-"}</td>
+                      <td style={styles.td}>
+                        <span
+                          style={{
+                            ...styles.statusBadge,
+                            backgroundColor:
+                              getStatusColor(ticket.status) + "20",
+                            color: getStatusColor(ticket.status),
+                            border: `1px solid ${getStatusColor(
+                              ticket.status
+                            )}40`,
+                          }}
+                        >
+                          {ticket.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          )}
+
+            {tickets.length === 0 && (
+              <div style={styles.emptyState}>
+                <p style={styles.emptyText}>No support tickets found</p>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </div>
+      </div>{" "}
+    </>
   );
 }
 const styles = {

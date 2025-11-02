@@ -1,4 +1,5 @@
 import React from "react";
+import Nav from "../../hero/nav";
 
 const UserMyCommission = () => {
   const commissionData = [
@@ -29,8 +30,11 @@ const UserMyCommission = () => {
   ];
 
   return (
-    <div className="commission-container">
-      <style>{`
+    <>
+      {" "}
+      <Nav />
+      <div className="commission-container">
+        <style>{`
         * {
           margin: 0;
           padding: 0;
@@ -106,29 +110,30 @@ const UserMyCommission = () => {
         }
       `}</style>
 
-      <div className="commission-header">My Commission</div>
+        <div className="commission-header">My Commission</div>
 
-      <div className="commission-table-wrapper">
-        <table className="commission-table">
-          <thead>
-            <tr>
-              <th>Sr No.</th>
-              <th>Operator</th>
-              <th>Commission</th>
-            </tr>
-          </thead>
-          <tbody>
-            {commissionData.map((item) => (
-              <tr key={item.srNo}>
-                <td>{item.srNo}</td>
-                <td>{item.operator}</td>
-                <td>{item.commission}</td>
+        <div className="commission-table-wrapper">
+          <table className="commission-table">
+            <thead>
+              <tr>
+                <th>Sr No.</th>
+                <th>Operator</th>
+                <th>Commission</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+            </thead>
+            <tbody>
+              {commissionData.map((item) => (
+                <tr key={item.srNo}>
+                  <td>{item.srNo}</td>
+                  <td>{item.operator}</td>
+                  <td>{item.commission}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>{" "}
+    </>
   );
 };
 
