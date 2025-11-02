@@ -41,7 +41,7 @@ import SettingSwitchApi from "../Admin/AdminPages/SettingSwitchApi";
 import SettingApiSetting from "../Admin/AdminPages/SettingApiSetting";
 import SettingSetCommission from "../Admin/AdminPages/SettingSetCommission";
 import SettingCreateCommissionPlan from "../Admin/AdminPages/SettingCreateCommissionPlan";
-import SettingAddBankDetails from "../Admin/AdminPages/SettingAddBankDetails";
+import SettingAddBankDetails from "../Admin/AdminPages/SettingsAddBankName";
 import SettingBusinessType from "../Admin/AdminPages/SettingBusinessType";
 import SettingEditState from "../Admin/AdminPages/SettingEditState";
 import ReportPendingRecharge from "../Admin/AdminPages/ReportPendingRecharge";
