@@ -10,8 +10,10 @@ router.get("/operator-info/:mobile", async (req, res) => {
 
   try {
     const response = await axios.get(
-      `http://operatorcheck.mplan.in/api/operatorinfo.php?apikey=${API_KEY}&tel=${mobile}`
+      `https://www.nixinfo.in/api/operator-and-circle-api?status=status&emailid=vikashpandit380@gmail.com&ctrlkey=e510c57d498ae3302f5c61ba2ebff78ef08fd774774096683&mobnumber=${mobile}`
     );
+
+    res.json(response.data);
     console.log("Operator API called for:", mobile);
     console.log("Response from Mplan:", response.data);
 
