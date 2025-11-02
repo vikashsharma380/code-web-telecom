@@ -330,6 +330,10 @@ app.use("/api", simplePlan);
 const commissionRoutes = require("./routes/commissionRoutes");
 app.use("/api/commission", commissionRoutes);
 
+const distributorRoutes = require("./routes/distributor");
+app.use("/api/distributor", distributorRoutes);
+
+
 app.get("/myip", async (req, res) => {
   try {
     const response = await axios.get("https://api.ipify.org?format=json");
