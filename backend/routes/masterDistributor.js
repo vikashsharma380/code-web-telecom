@@ -68,7 +68,12 @@ router.post("/register", async (req, res) => {
    await newMD.save();
 
 // message correct variables se banao
-const message = `Welcome to Code Web Telecom!\nUserID: ${newMD.userId}\nMobile(Login): ${newMD.mobile}\nPassword: ${plainPassword}\nBalance: ₹${newMD.balance}\n\nLogin at: www.codewebtelecom.in/login`;
+const message = `Welcome to Code Web Telecom!
+UserID: ${newMD.userId}
+Mobile(Login): ${newMD.mobile}
+Password: ${plainPassword}
+Balance: ₹${newMD.balance ?? 0}
+Login at: www.codewebtelecom.in/login`;
 
 try {
   await sendWhatsAppMessage(newMD.mobile, message);

@@ -5,21 +5,23 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 
 const MasterDistributorRegistration = () => {
-  const [formData, setFormData] = useState({
-    masterDistributorName: "",
-    postalAddress: "",
-    pinCode: "",
-    state: "",
-    cityDistrict: "",
-    mobileNo: "",
-    alternateNumber: "",
-    businessType: "",
-    email: "",
-    panNo: "",
-    contactPerson: "",
-    selectScheme: "",
-    openingBalance: "",
-  });
+  const payload = {
+  masterDistributorName: formData.masterDistributorName,
+  postalAddress: formData.postalAddress,
+  pinCode: formData.pinCode,
+  state: formData.state,
+  cityDistrict: formData.cityDistrict,
+  mobile: formData.mobileNo,   // IMPORTANT FIX ✅
+  alternateNumber: formData.alternateNumber,
+  businessType: formData.businessType,
+  email: formData.email,
+  panNo: formData.panNo,
+  contactPerson: formData.contactPerson,
+  selectScheme: formData.selectScheme,
+  balance: formData.openingBalance // IMPORTANT FIX ✅
+};
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,7 +33,7 @@ const MasterDistributorRegistration = () => {
 
 const handleSubmit = async () => {
   try {
-    const res = await axios.post(`${API_URL}/api/master-distributor/register`, formData);
+    const res = await axios.post(`${API_URL}/api/master-distributor/register`, payload);
 
     alert(`Master Distributor Created Successfully!
 UserID: ${res.data.userId}
