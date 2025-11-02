@@ -29,17 +29,22 @@ const MasterDistributorRegistration = () => {
     }));
   };
 
- const handleSubmit = async () => {
+const handleSubmit = async () => {
   try {
-   axios.post(`${API_URL}/api/master-distributor/register`, formData);
+    const res = await axios.post(`${API_URL}/api/master-distributor/register`, formData);
 
     alert(`Master Distributor Created Successfully!
 UserID: ${res.data.userId}
 Password: ${res.data.password}`);
+    
+    // after success clear form
+    handleCancel();
   } catch (err) {
+    console.log(err);
     alert(err.response?.data?.message || "Something went wrong");
   }
 };
+
 
   const handleCancel = () => {
     setFormData({
