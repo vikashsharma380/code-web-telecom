@@ -65,11 +65,18 @@ router.post("/register", async (req, res) => {
       role: "master-distributor",
     });
 
-    await newMD.save();
+   await newMD.save();
 
-    const message = `Welcome to Code Web Telecom!\nUserID: ${newMD.userId}\nMobile(Login): ${newMD.mobile}\nPassword: ${plainPassword}\nBalance: ₹${newMD.balance}\n\nLogin at: www.codewebtelecom.in/login`;
+// message correct variables se banao
+const message = `Welcome to Code Web Telecom!\nUserID: ${newMD.userId}\nMobile(Login): ${newMD.mobile}\nPassword: ${plainPassword}\nBalance: ₹${newMD.balance}\n\nLogin at: www.codewebtelecom.in/login`;
 
-    await sendWhatsAppMessage(newMD.mobile, message);
+try {
+  await sendWhatsAppMessage(newMD.mobile, message);
+  console.log("WhatsApp sent for Master Distributor:", newMD.mobile);
+} catch (err) {
+  console.error("Failed to send WhatsApp message:", err.message || err);
+}
+
 
     res.status(201).json({
       message: "Master Distributor Created Successfully",
