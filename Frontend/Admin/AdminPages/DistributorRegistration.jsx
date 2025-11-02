@@ -41,11 +41,11 @@ const DistributorRegistration = () => {
     e.preventDefault();
     try {
       const payload = {
-        name: formData.distributorName,
+        name: formData.distributorName, // name must be name
         email: formData.email,
-        mobile: formData.mobileNo,
+        mobile: formData.mobileNo, // mobile must be mobile
         state: formData.state,
-        address: formData.cityDistrict,
+        address: formData.postalAddress, // city district nahi postal address use karo
         alternateNumber: formData.alternateNumber,
         postalAddress: formData.postalAddress,
         pinCode: formData.pinCode,
@@ -69,6 +69,8 @@ const DistributorRegistration = () => {
       }
     } catch (err) {
       console.error(err);
+      console.log(err.response.data)
+
       alert("❌ Server Error! Please try again.");
     }
   };
