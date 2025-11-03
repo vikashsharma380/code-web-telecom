@@ -4,183 +4,119 @@ import styles from "./Styles";
 
 export default function ActionButton() {
   const navigate = useNavigate();
-  const [hovered, setHovered] = useState(null);
+  const [popupOption, setPopupOption] = useState(null);
+  const [selectedCustomerType, setSelectedCustomerType] = useState("");
 
-  const handleNavigate = (type, path) => {
-    navigate(`/${type}/${path}`);
-    setHovered(null);
+  const handleClosePopup = () => {
+    setPopupOption(null);
+    setSelectedCustomerType("");
   };
 
-  const optionStyle = {
-    display: "block",
-    width: "100%",
-    textAlign: "left",
-    padding: "8px 12px",
-    background: "#fff",
-    border: "none",
-    cursor: "pointer",
-    transition: "0.2s",
-  };
-
-  const optionHoverStyle = {
-    background: "#f3f4f6",
-  };
-
-  const dropdownContainer = {
-    position: "absolute",
-    top: "100%",
-    left: 0,
-    background: "#fff",
-    border: "1px solid #ccc",
-    boxShadow: "0 4px 8px rgba(0,0,0,0.15)",
-    zIndex: 9999,
-    minWidth: "180px",
-    borderRadius: "6px",
-    overflow: "hidden",
-    opacity: 0,
-    transform: "translateY(5px)",
-    pointerEvents: "none",
-    transition: "opacity 0.2s ease, transform 0.2s ease",
-  };
-
-  const showDropdown = {
-    opacity: 1,
-    transform: "translateY(0)",
-    pointerEvents: "auto",
+  const handleConfirm = () => {
+    if (popupOption === "REGISTER") {
+      if (selectedCustomerType === "Master Distributor") {
+        navigate("/master-distributor-registration");
+      } else if (selectedCustomerType === "Distributor") {
+        navigate("/distributor-registration");
+      } else if (selectedCustomerType === "Retailer") {
+        navigate("/retailer-registration");
+      }
+    } else if (popupOption === "BALANCE TRANSFER") {
+      if (selectedCustomerType === "Master Distributor") {
+        navigate("/balance-transfer-master-distributor");
+      } else if (selectedCustomerType === "Distributor") {
+        navigate("/balance-transfer-distributor");
+      } else if (selectedCustomerType === "Retailer") {
+        navigate("/balance-transfer-retailer");
+      }
+    }
+    handleClosePopup();
   };
 
   return (
-    <div style={{ position: "relative" }}>
-      <div style={styles.actionButtons}>
-        {/* REGISTER */}
-        <div
-          style={{ position: "relative", display: "inline-block" }}
-          onMouseEnter={() => setHovered("register")}
-          onMouseLeave={() => setHovered(null)}
-        >
-          <button style={styles.actionBtn}>REGISTER</button>
-
-          <div
-            style={{
-              ...dropdownContainer,
-              ...(hovered === "register" ? showDropdown : {}),
-            }}
+    <>
+      <div style={{ position: "relative" }}>
+        <div style={styles.actionButtons}>
+          {/* REGISTER */}
+          <button
+            style={styles.actionBtn}
+            onClick={() => setPopupOption("REGISTER")}
           >
-            <button
-              style={optionStyle}
-              onMouseEnter={(e) =>
-                (e.target.style.background = optionHoverStyle.background)
-              }
-              onMouseLeave={(e) => (e.target.style.background = "#fff")}
-              onClick={() => handleNavigate("register", "master-distributor")}
-            >
-              Master Distributor
-            </button>
-            <button
-              style={optionStyle}
-              onMouseEnter={(e) =>
-                (e.target.style.background = optionHoverStyle.background)
-              }
-              onMouseLeave={(e) => (e.target.style.background = "#fff")}
-              onClick={() => handleNavigate("register", "distributor")}
-            >
-              Distributor
-            </button>
-            <button
-              style={optionStyle}
-              onMouseEnter={(e) =>
-                (e.target.style.background = optionHoverStyle.background)
-              }
-              onMouseLeave={(e) => (e.target.style.background = "#fff")}
-              onClick={() => handleNavigate("register", "retailer")}
-            >
-              Retailer
-            </button>
-          </div>
-        </div>
+            REGISTER
+          </button>
 
-        {/* BALANCE TRANSFER */}
-        <div
-          style={{
-            position: "relative",
-            display: "inline-block",
-            marginLeft: "10px",
-          }}
-          onMouseEnter={() => setHovered("balance-transfer")}
-          onMouseLeave={() => setHovered(null)}
-        >
-          <button style={styles.actionBtn}>BALANCE TRANSFER</button>
-
-          <div
-            style={{
-              ...dropdownContainer,
-              ...(hovered === "balance-transfer" ? showDropdown : {}),
-            }}
+          {/* BALANCE TRANSFER */}
+          <button
+            style={styles.actionBtn}
+            onClick={() => setPopupOption("BALANCE TRANSFER")}
           >
-            <button
-              style={optionStyle}
-              onMouseEnter={(e) =>
-                (e.target.style.background = optionHoverStyle.background)
-              }
-              onMouseLeave={(e) => (e.target.style.background = "#fff")}
-              onClick={() =>
-                handleNavigate("balance-transfer", "master-distributor")
-              }
-            >
-              Master Distributor
-            </button>
-            <button
-              style={optionStyle}
-              onMouseEnter={(e) =>
-                (e.target.style.background = optionHoverStyle.background)
-              }
-              onMouseLeave={(e) => (e.target.style.background = "#fff")}
-              onClick={() => handleNavigate("balance-transfer", "distributor")}
-            >
-              Distributor
-            </button>
-            <button
-              style={optionStyle}
-              onMouseEnter={(e) =>
-                (e.target.style.background = optionHoverStyle.background)
-              }
-              onMouseLeave={(e) => (e.target.style.background = "#fff")}
-              onClick={() => handleNavigate("balance-transfer", "retailer")}
-            >
-              Retailer
-            </button>
-          </div>
-        </div>
+            BALANCE TRANSFER
+          </button>
 
-        {/* Other buttons */}
-        <button
-          style={styles.actionBtn}
-          onClick={() => navigate("/update-news")}
-        >
-          UPDATE NEWS
-        </button>
-        <button
-          style={styles.actionBtn}
-          onClick={() => navigate("/site-enquiry")}
-        >
-          SITE ENQUIRY
-        </button>
-        <button style={styles.actionBtn} onClick={() => navigate("/add-api")}>
-          ADD API
-        </button>
-        <button
-          style={styles.actionBtn}
-          onClick={() => navigate("/upi-gateway")}
-        >
-          UPI GATEWAYY
-        </button>
-        <button
-          style={styles.actionBtn}
-          onClick={() => navigate("/recharge-history")}
-        >
-          RECHARGE HISTORY
-        </button>
+          {/* Other buttons */}
+          <button
+            style={styles.actionBtn}
+            onClick={() => navigate("/update-news")}
+          >
+            UPDATE NEWS
+          </button>
+          <button
+            style={styles.actionBtn}
+            onClick={() => navigate("/site-enquiry")}
+          >
+            SITE ENQUIRY
+          </button>
+          <button style={styles.actionBtn} onClick={() => navigate("/add-api")}>
+            ADD API
+          </button>
+          <button
+            style={styles.actionBtn}
+            onClick={() => navigate("/upi-gateway")}
+          >
+            UPI GATEWAYY
+          </button>
+          <button
+            style={styles.actionBtn}
+            onClick={() => navigate("/recharge-history")}
+          >
+            RECHARGE HISTORY
+          </button>
+        </div>
       </div>
-    </div>
+
+      {/* Popup for REGISTER and BALANCE TRANSFER */}
+      {popupOption && (
+        <div style={styles.overlay}>
+          <div style={styles.popup}>
+            <h3 style={styles.popupTitle}>
+              Please Select Customer Type ({popupOption})
+            </h3>
+            <select
+              style={styles.select}
+              value={selectedCustomerType}
+              onChange={(e) => setSelectedCustomerType(e.target.value)}
+            >
+              <option value="">Select...</option>
+              <option value="Master Distributor">Master Distributor</option>
+              <option value="Distributor">Distributor</option>
+              <option value="Retailer">Retailer</option>
+            </select>
+
+            <div style={styles.popupButtons}>
+              <button style={styles.closeBtn} onClick={handleClosePopup}>
+                Close
+              </button>
+              <button
+                style={styles.confirmBtn}
+                onClick={handleConfirm}
+                disabled={!selectedCustomerType}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
