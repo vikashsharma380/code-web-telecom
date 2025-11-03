@@ -8,14 +8,15 @@ router.get("/operator-info/:mobile", async (req, res) => {
   const mobile = req.params.mobile;
 
   try {
-       const response = await axios.get(
+    const response = await axios.get(
       `https://planapi.in/api/Mobile/OperatorFetchNew?ApiUserID=6650&ApiPassword=Ansari@2580&Mobileno=${mobile}`
     );
 
     const d = response.data;
 
-    const finalOperator = operatorMap[d.OpCode] || "";
-    const finalCircle = circleMap[d.CircleCode] || "";
+    const finalOperator = mapOperator(d.OpCode);
+    const finalCircle = mapCircle(d.CircleCode);
+
     console.log("Mapped Operator:", finalOperator);
     console.log("Mapped Circle:", finalCircle);
 
