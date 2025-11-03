@@ -16,7 +16,6 @@ import WaterBillRecharge from "./WaterBillRecharge";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-// ✅ Separated MobileRechargeForm to avoid recursion
 function MobileRechargeForm({ rechargeUser }) {
   const [formData, setFormData] = useState({
     number: "",
@@ -29,28 +28,9 @@ function MobileRechargeForm({ rechargeUser }) {
   const [result, setResult] = useState(null);
   const [balance, setBalance] = useState(0);
 
-
   const [plans, setPlans] = useState(null);
-const [activeCategory, setActiveCategory] = useState("");
-
-const fetchPlans = async () => {
-  const operatorMapped = formData.operatorcode;
-  const circleMapped = formData.circlecode;
-
-  const res = await fetch(`${API_URL}/api/fetch-mobile-plans?operatorcode=${operatorMapped}&circle=${circleMapped}`);
-  const data = await res.json();
-  setPlans(data.RDATA); // only RDATA store
-  setActiveCategory(Object.keys(data.RDATA)[0]); // default first tab
-};
-
-
-  const fetchSimplePlan = async () => {
-    const res = await fetch(
-      "https://code-web-telecom-production.up.railway.app/api/simple-plan?circle=Gujarat&operator=Jio"
-    );
-    const data = await res.json();
-    console.log(data);
-  };
+  const [activeCategory, setActiveCategory] = useState("");
+  const [showPlans, setShowPlans] = useState(false);
 
   const operators = [
     { code: "A", name: "Airtel" },
@@ -97,7 +77,7 @@ const fetchPlans = async () => {
     { code: "11", name: "Uttar Pradesh West" },
     { code: "3", name: "Mumbai" },
     { code: "5", name: "Delhi" },
-    { code: "7", name: "CHENNAI" },
+    { code: "7", name: "Chennai" },
     { code: "6", name: "Kolkata" },
     { code: "8", name: "Tamil Nadu" },
     { code: "1", name: "Punjab" },
@@ -134,9 +114,7 @@ const fetchPlans = async () => {
       const { username, pwd } = rechargeUser;
       if (!username || !pwd) return;
       const res = await fetch(
-        `${API_URL}/api/balance?username=${encodeURIComponent(
-          username
-        )}&pwd=${encodeURIComponent(pwd)}`
+        `${API_URL}/api/balance?username=${encodeURIComponent(username)}&pwd=${encodeURIComponent(pwd)}`
       );
       const data = await res.json();
       if (data.success) setBalance(data.balance);
@@ -157,8 +135,7 @@ const fetchPlans = async () => {
     try {
       const token = localStorage.getItem("token");
       const { number, operatorcode, circlecode, amount } = formData;
-      if (!number || !operatorcode || !circlecode || !amount)
-        throw new Error("All fields are required");
+      if (!number || !operatorcode || !circlecode || !amount) throw new Error("All fields are required");
 
       const res = await fetch(`${API_URL}/api/recharge`, {
         method: "POST",
@@ -180,16 +157,10 @@ const fetchPlans = async () => {
       console.log(data);
 
       if (data.status === "Success") {
-        setResult({
-          type: "success",
-          message: `Recharge Successful! TXID: ${data.txid}`,
-        });
+        setResult({ type: "success", message: `Recharge Successful! TXID: ${data.txid}` });
         fetchBalance();
       } else {
-        setResult({
-          type: "error",
-          message: `Recharge Failed: ${data.opid || "Unknown"}`,
-        });
+        setResult({ type: "error", message: `Recharge Failed: ${data.opid || "Unknown"}` });
       }
 
       setTransactions([
@@ -225,9 +196,7 @@ const fetchPlans = async () => {
             <Smartphone size={24} />
             <div>
               <h2 style={styles.cardTitle}>Mobile Recharge</h2>
-              <p style={styles.cardSubtitle}>
-                Recharge for all mobile operators
-              </p>
+              <p style={styles.cardSubtitle}>Recharge for all mobile operators</p>
             </div>
           </div>
           <div style={styles.cardBody}>
@@ -245,25 +214,13 @@ const fetchPlans = async () => {
 
                     if (value.length === 10) {
                       try {
-                        const res = await fetch(
-                          `${API_URL}/api/operator-info/${value}`
-                        );
+                        const res = await fetch(`${API_URL}/api/operator-info/${value}`);
                         const data = await res.json();
-
-                        if (data.operatorName && data.circleName) {
-                          const operatorMatch = operators.find(
-                            (op) => op.code === data.operatorCode
-                          );
-                          const circleMatch = circles.find(
-                            (c) => c.code === data.circleCode
-                          );
-
+                        if (data.operatorName && data.circleCode) {
                           setFormData((prev) => ({
                             ...prev,
-                            operatorcode: operatorMatch
-                              ? operatorMatch.code
-                              : "",
-                            circlecode: circleMatch ? circleMatch.code : "",
+                            operatorcode: data.operatorCode,
+                            circlecode: data.circleCode,
                           }));
                         }
                       } catch (err) {
@@ -275,14 +232,10 @@ const fetchPlans = async () => {
                   style={styles.input}
                 />
               </div>
+
               <div style={styles.formGroup}>
                 <label style={styles.label}>Operator</label>
-                <select
-                  name="operatorcode"
-                  value={formData.operatorcode}
-                  onChange={handleChange}
-                  style={styles.select}
-                >
+                <select name="operatorcode" value={formData.operatorcode} onChange={handleChange} style={styles.select}>
                   <option value="">Choose your operator</option>
                   {operators.map((op) => (
                     <option key={op.code} value={op.code}>
@@ -291,14 +244,10 @@ const fetchPlans = async () => {
                   ))}
                 </select>
               </div>
+
               <div style={styles.formGroup}>
                 <label style={styles.label}>Circle</label>
-                <select
-                  name="circlecode"
-                  value={formData.circlecode}
-                  onChange={handleChange}
-                  style={styles.select}
-                >
+                <select name="circlecode" value={formData.circlecode} onChange={handleChange} style={styles.select}>
                   <option value="">Choose your circle</option>
                   {circles.map((c) => (
                     <option key={c.code} value={c.code}>
@@ -310,28 +259,29 @@ const fetchPlans = async () => {
                   <button
                     type="button"
                     onClick={async () => {
-  try {
-    const operatorMapped = formData.operatorcode;
-    const circleMapped = formData.circlecode;
+                      try {
+                        const operatorMapped = formData.operatorcode;
+                        const circleMapped = formData.circlecode;
+                        if (!operatorMapped || !circleMapped) {
+                          alert("Please select operator and circle first");
+                          return;
+                        }
 
-    if (!operatorMapped || !circleMapped) {
-      alert("Please select operator and circle first");
-      return;
-    }
-
-    const res = await fetch(
-      `${API_URL}/api/fetch-mobile-plans?operatorcode=${operatorMapped}&circle=${circleMapped}`
-    );
-    const data = await res.json();
-
-    setPlans(data.RDATA);        // <-- update state
-    setActiveCategory(Object.keys(data.RDATA)[0]);  // <-- select first category
-
-  } catch (err) {
-    console.error("Plan fetch failed", err);
-  }
-}}
-
+                        const res = await fetch(
+                          `${API_URL}/api/fetch-mobile-plans?operatorcode=${operatorMapped}&circle=${circleMapped}`
+                        );
+                        const data = await res.json();
+                        if (!data || !data.RDATA) {
+                          alert("Plans not available");
+                          return;
+                        }
+                        setPlans({ ...data.RDATA });
+                        setActiveCategory(Object.keys(data.RDATA)[0]);
+                        setShowPlans(true);
+                      } catch (err) {
+                        console.error("Plan fetch failed", err);
+                      }
+                    }}
                     style={{
                       padding: "10px 15px",
                       backgroundColor: "#007bff",
@@ -346,6 +296,7 @@ const fetchPlans = async () => {
                   </button>
                 </div>
               </div>
+
               <div style={styles.formGroup}>
                 <label style={styles.label}>Amount</label>
                 <input
@@ -361,12 +312,7 @@ const fetchPlans = async () => {
                     <button
                       key={amt}
                       type="button"
-                      onClick={() =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          amount: amt.toString(),
-                        }))
-                      }
+                      onClick={() => setFormData((prev) => ({ ...prev, amount: amt.toString() }))}
                       style={styles.quickAmountBtn}
                     >
                       ₹{amt}
@@ -374,6 +320,7 @@ const fetchPlans = async () => {
                   ))}
                 </div>
               </div>
+
               <button
                 type="submit"
                 disabled={loading}
@@ -382,21 +329,14 @@ const fetchPlans = async () => {
                   ...(loading ? styles.btnDisabled : {}),
                 }}
               >
-                {loading ? (
-                  <div style={styles.loadingSpinner}></div>
-                ) : (
-                  <>
-                    <Zap size={20} /> Recharge Now
-                  </>
-                )}
+                {loading ? <div style={styles.loadingSpinner}></div> : <><Zap size={20} /> Recharge Now</>}
               </button>
+
               {result && (
                 <div
                   style={{
                     ...styles.resultBox,
-                    ...(result.type === "success"
-                      ? styles.successBox
-                      : styles.errorBox),
+                    ...(result.type === "success" ? styles.successBox : styles.errorBox),
                   }}
                 >
                   {result.message}
@@ -411,104 +351,92 @@ const fetchPlans = async () => {
       <div style={styles.transactionList}>
         {Array.isArray(transactions) &&
           transactions.slice(0, 5).map((t, i) => (
-            <div
-              key={`${t.rechargeId}-${t.number}-${i}`}
-              style={styles.transactionItem}
-            >
+            <div key={`${t.rechargeId}-${t.number}-${i}`} style={styles.transactionItem}>
               <div style={styles.transactionIcon}>{t.operator.charAt(0)}</div>
               <div style={styles.transactionDetails}>
                 <div style={styles.transactionOperator}>
                   {t.operator} (ID: {t.operatorId})
                 </div>
                 <div style={styles.transactionNumber}>{t.number}</div>
-                <div style={styles.transactionDate}>
-                  {new Date(t.dateTime).toLocaleString()}
-                </div>
+                <div style={styles.transactionDate}>{new Date(t.dateTime).toLocaleString()}</div>
               </div>
               <div style={styles.transactionRight}>
                 <div style={styles.transactionAmount}>₹{t.amount}</div>
                 <div style={styles.transactionProfit}>Profit: ₹{t.profit}</div>
-                <div style={styles.transactionBalance}>
-                  Balance: ₹{t.balance}
-                </div>
+                <div style={styles.transactionBalance}>Balance: ₹{t.balance}</div>
                 <div style={styles.transactionStatus}>{t.status}</div>
               </div>
             </div>
           ))}
       </div>
+
       {/* PLAN SECTION UI */}
-{plans && (
-  <div style={{ marginTop: "25px", gridColumn: "1 / span 2" }}>
-    <h3 style={{ marginBottom: "10px", fontWeight: "600" }}>
-      Best Plans For You
-    </h3>
+      {showPlans && plans && typeof plans === "object" && (
+        <div style={{ marginTop: "25px", gridColumn: "1 / span 2" }}>
+          <h3 style={{ marginBottom: "10px", fontWeight: "600" }}>Best Plans For You</h3>
 
-    {/* Tabs */}
-    <div style={{ display: "flex", gap: "10px", overflowX: "auto" }}>
-      {Object.keys(plans).map((cat) => (
-        <button
-          key={cat}
-          onClick={() => setActiveCategory(cat)}
-          style={{
-            padding: "6px 15px",
-            borderRadius: "6px",
-            cursor: "pointer",
-            background: activeCategory === cat ? "#007bff" : "#e9ecef",
-            color: activeCategory === cat ? "#fff" : "#000",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {cat}
-        </button>
-      ))}
-    </div>
+          {/* Tabs */}
+          <div style={{ display: "flex", gap: "10px", overflowX: "auto" }}>
+            {Object.keys(plans).map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                style={{
+                  padding: "6px 15px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  background: activeCategory === cat ? "#007bff" : "#e9ecef",
+                  color: activeCategory === cat ? "#fff" : "#000",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
 
-    {/* Cards */}
-    <div style={{ marginTop: "10px" }}>
-      {plans[activeCategory]?.map((p, i) => (
-        <div
-          key={i}
-          style={{
-            background: "#fff",
-            border: "1px solid #ddd",
-            padding: "15px",
-            marginBottom: "10px",
-            borderRadius: "8px",
-          }}
-        >
-          <h3>₹ {p.rs}</h3>
-          <p>
-            <b>Validity:</b> {p.validity}
-          </p>
-          <p>{p.desc}</p>
-          <button
-            type="button"
-            onClick={() =>
-              setFormData((prev) => ({ ...prev, amount: p.rs.toString() }))
-            }
-            style={{
-              marginTop: "8px",
-              background: "#28a745",
-              color: "#fff",
-              padding: "6px 12px",
-              borderRadius: "6px",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            Select Plan ₹{p.rs}
-          </button>
+          {/* Cards */}
+          <div style={{ marginTop: "10px" }}>
+            {plans[activeCategory]?.map((p, i) => (
+              <div
+                key={i}
+                style={{
+                  background: "#fff",
+                  border: "1px solid #ddd",
+                  padding: "15px",
+                  marginBottom: "10px",
+                  borderRadius: "8px",
+                }}
+              >
+                <h3>₹ {p.rs}</h3>
+                <p>
+                  <b>Validity:</b> {p.validity}
+                </p>
+                <p>{p.desc}</p>
+                <button
+                  type="button"
+                  onClick={() => setFormData((prev) => ({ ...prev, amount: p.rs.toString() }))}
+                  style={{
+                    marginTop: "8px",
+                    background: "#28a745",
+                    color: "#fff",
+                    padding: "6px 12px",
+                    borderRadius: "6px",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Select Plan ₹{p.rs}
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
-      ))}
-    </div>
-  </div>
-)}
-
+      )}
     </div>
   );
 }
 
-// ✅ Main Component
 export default function MobileRecharge() {
   const [activeTab, setActiveTab] = useState("mobile");
   const [rechargeUser, setRechargeUser] = useState({});
@@ -524,16 +452,10 @@ export default function MobileRecharge() {
   return (
     <div style={styles.container}>
       <Nav />
-      <Hero
-        title="Instant Mobile Recharge"
-        subtitle="Fast, secure, and reliable mobile recharges for all operators"
-      />
+      <Hero title="Instant Mobile Recharge" subtitle="Fast, secure, and reliable mobile recharges for all operators" />
       <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      {/* Tabs */}
-      {activeTab === "mobile" && (
-        <MobileRechargeForm rechargeUser={rechargeUser} />
-      )}
+      {activeTab === "mobile" && <MobileRechargeForm rechargeUser={rechargeUser} />}
       {activeTab === "dth" && <DTHRecharge />}
       {activeTab === "datacard" && <DataCardRecharge />}
       {activeTab === "postpaid" && <PostpaidRecharge />}
@@ -545,10 +467,7 @@ export default function MobileRecharge() {
       {activeTab === "water bill" && <WaterBillRecharge />}
 
       <footer style={styles.footer}>
-        <p style={styles.footerText}>
-          © 2025 <span style={styles.footerBrand}>CodeWeb Telecom</span> - All
-          Rights Reserved
-        </p>
+        <p style={styles.footerText}>© 2025 <span style={styles.footerBrand}>CodeWeb Telecom</span> - All Rights Reserved</p>
       </footer>
     </div>
   );
