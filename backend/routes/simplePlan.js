@@ -42,9 +42,9 @@ router.get("/fetch-mobile-plans", async (req, res) => {
     console.log("Final API URL:", url);
     const response = await axios.get(url);
 
-    if (response.data.RDATA) {
-      return res.json(response.data.RDATA);
-    }
+   if (response.data.RDATA) {
+  return res.json({ RDATA: response.data.RDATA });
+}
 
     return res.json(response.data);
 
