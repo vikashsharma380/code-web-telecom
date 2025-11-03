@@ -71,4 +71,26 @@ router.get("/fetch-mobile-plans", async (req, res) => {
   }
 });
 
+router.get("/fetch-best-offer", async (req, res) => {
+  const { operatorcode, mobile } = req.query;
+
+  const originalOperator = reverseOperatorMapping[operatorcode];
+  if (!originalOperator) {
+    return res.status(400).json({ error: "Operator mapping not found" });
+  }
+
+  const url = `https://planapi.in/api/Mobile/RofferCheck?apimember_id=${MEMBER_ID}&api_password=${PASSWORD}&operator_code=${originalOperator}&mobile_no=${mobile}`;
+
+  try {
+    console.log("BEST OFFER URL:", url);
+    const response = await axios.get(url);
+
+    return res.json(response.data);
+  } catch (error) {
+    console.error("BEST OFFER API Error:", error.message);
+    res.status(500).json({ error: "Failed to fetch best offer" });
+  }
+});
+
+
 module.exports = router;

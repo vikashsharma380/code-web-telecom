@@ -255,7 +255,54 @@ function MobileRechargeForm({ rechargeUser }) {
                     </option>
                   ))}
                 </select>
-                <div style={{ marginTop: "10px" }}>
+                
+                <div style={{ marginTop: "10px" , display: "flex", alignItems: "center" , justifyContent: "space-between"} }>
+                  <button
+    type="button"
+    onClick={async () => {
+      const { number, operatorcode } = formData;
+
+      if (!number || number.length !== 10) {
+        alert("Enter valid mobile number first");
+        return;
+      }
+      if (!operatorcode) {
+        alert("Select operator first");
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          `${API_URL}/api/fetch-best-offer?operatorcode=${operatorcode}&mobile=${number}`
+        );
+        const data = await res.json();
+
+        if (!data || !data.RDATA) {
+          alert("No Best Offer Found");
+          return;
+        }
+
+        setPlans({ BEST_OFFER: data.RDATA }); // ONLY best offer
+        setActiveCategory("BEST_OFFER");
+        setShowPlans(true);
+
+      } catch (err) {
+        console.log("Best Offer Fetch Failed", err);
+      }
+    }}
+    style={{
+      padding: "10px 15px",
+      backgroundColor:  "#007bff",
+      color: "#fff",
+      border: "none",
+      borderRadius: "6px",
+      cursor: "pointer",
+      fontWeight: "500",
+      marginRight: "10px"
+    }}
+  >
+    Best Offer
+  </button>
                   <button
                     type="button"
                     onClick={async () => {
