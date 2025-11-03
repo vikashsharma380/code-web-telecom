@@ -2,6 +2,7 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 
+
 const MEMBER_ID = "6650";
 const PASSWORD = "Ansari@2580";
 
@@ -89,6 +90,58 @@ router.get("/fetch-best-offer", async (req, res) => {
   } catch (error) {
     console.error("BEST OFFER API Error:", error.message);
     res.status(500).json({ error: "Failed to fetch best offer" });
+  }
+});
+
+
+const reverseDTHMapping = {
+  "ATV": "24", // Airtel dth
+  "DTV": "25", // Dish TV
+  "RBTV": "26", // Reliance Big TV (agar use krna ho future me)
+  "STV": "27", // Sun Direct
+  "TTV": "28", // Tata Sky
+  "VTV": "29", // Videocon D2H
+};
+
+router.get("/dth-info-check", async (req, res) => {
+  const { operatorcode, mobile } = req.query;
+
+  const originalOperator = reverseDTHMapping[operatorcode];
+
+  if (!originalOperator) {
+    return res.status(400).json({ error: "DTH Operator mapping not found" });
+  }
+
+  const url = `https://planapi.in/api/Mobile/DTHINFOCheck?apimember_id=${MEMBER_ID}&api_password=${PASSWORD}&mobile_no=${mobile}&Opcode=${originalOperator}`;
+
+  try {
+    console.log("DTH INFO CHECK URL:", url);
+    const response = await axios.get(url);
+
+    res.json(response.data);
+  } catch (error) {
+    console.log("DTH INFO CHECK ERROR =>", error);
+    res.status(500).json({ error: "Failed to DTH info check" });
+  }
+});
+router.get("/fetch-dth-plans", async (req, res) => {
+  const { operatorcode } = req.query;
+
+  const originalOperator = reverseDTHMapping[operatorcode];
+  if (!originalOperator) {
+    return res.status(400).json({ error: "DTH Operator mapping not found" });
+  }
+
+  const url = `https://planapi.in/api/Mobile/DthPlans?apimember_id=${MEMBER_ID}&api_password=${PASSWORD}&operatorcode=${originalOperator}`;
+
+  try {
+    console.log("DTH PLAN FETCH URL:", url);
+    const response = await axios.get(url);
+
+    res.json(response.data);
+  } catch (error) {
+    console.log("DTH PLAN FETCH ERROR =>", error);
+    res.status(500).json({ error: "Failed to fetch DTH plans" });
   }
 });
 

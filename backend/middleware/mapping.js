@@ -47,4 +47,20 @@ function mapCircle(apiCircleCode) {
   return circleMapping[apiCircleCode] || null;
 }
 
-module.exports = { mapOperator, mapCircle };
+function mapDTHOperator(code) {
+  const map = {
+    "24": "ATV",   // Airtel DTH
+    "25": "DTV",   // Dish TV
+    "26": "RTV",   // Reliance BigTV
+    "27": "STV",   // Sun Direct
+    "28": "TTV",   // Tata Sky
+    "29": "VTV"    // Videocon D2H
+  };
+  return map[code] || null;
+}
+
+module.exports = { 
+  mapOperator, 
+  mapCircle,
+  mapDTHOperator
+};

@@ -1,7 +1,9 @@
 const express = require("express");
 const axios = require("axios");
 const router = express.Router();
-const { mapOperator, mapCircle } = require("../middleware/mapping");
+// const { mapOperator, mapCircle } = require("../middleware/mapping");
+const { mapOperator, mapCircle, mapDTHOperator } = require("../middleware/mapping");
+
 
 router.get("/operator-info/:mobile", async (req, res) => {
   const mobile = req.params.mobile;
@@ -35,6 +37,44 @@ return res.json({
   } catch (error) {
     console.error("Error fetching operator info:", error.message);
     res.status(500).json({ error: "Failed to fetch operator info" });
+  }
+});
+  
+// =====================  DTH OPERATOR FETCH  =====================
+
+router.get("/dth-operator-info/:dth_number", async (req, res) => {
+  const dth_number = req.params.dth_number;
+
+  try {
+    const response = await axios.get(
+      `https://planapi.in/api/Mobile/DthOperatorFetch?apimember_id=6650&api_password=Ansari@2580&dth_number=${dth_number}`
+    );
+
+    const d = response.data;
+    console.log("RAW DTH =>", d);
+
+    // ye response me actual operator code hi aata hai
+    // iske liye mapping ka concept alag se nahi h
+    // direct return kar denge
+
+    if (!d.OperatorCode) {
+      return res.json({
+        success: false,
+        message: "Operator Not Found",
+      });
+    }
+
+    return res.json({
+  success: true,
+  operatorCode: mapDTHOperator(d.OperatorCode),
+  operatorName: d.OperatorName,
+  DTHNumber: d.DTH_Number
+});
+
+
+  } catch (err) {
+    console.log("DTH OP Error =>", err.message);
+    return res.status(500).json({ error: "Failed to fetch DTH operator" });
   }
 });
 

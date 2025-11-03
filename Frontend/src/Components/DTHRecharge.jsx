@@ -30,6 +30,9 @@ export default function DTHRecharge() {
   const [activeTab, setActiveTab] = useState("recharge");
   const [rechargeUser, setRechargeUser] = useState({});
   const [balance, setBalance] = useState(0);
+  const [dthInfo, setDthInfo] = useState(null);
+const [dthPlans, setDthPlans] = useState(null);
+
 
   // ✅ Load User Credentials from LocalStorage
   useEffect(() => {
@@ -100,6 +103,37 @@ useEffect(() => {
   { code: "VTV", name: "VIDEOCON DTH TV" },
   { code: "DTV", name: "DISH TV" },
 ];
+
+const fetchDTHInfo = async () => {
+    if(!formData.dthNumber || !formData.operatorcode) return alert("Enter DTH number & select operator first");
+    const res = await fetch(`${API_URL}/api/dth-info-check?mobile=${formData.dthNumber}&operatorcode=${formData.operatorcode}`);
+    const data = await res.json();
+    console.log("DTH INFO => ", data);
+    setDthInfo(data);
+}
+
+const fetchDTHPlans = async () => {
+    if(!formData.operatorcode) return alert("select operator first");
+    const res = await fetch(`${API_URL}/api/fetch-dth-plans?operatorcode=${formData.operatorcode}`);
+    const data = await res.json();
+    console.log("DTH PLANS => ", data);
+    setDthPlans(data.RDATA?.Combo || []); // only RDATA.Combo pickup
+}
+
+const detectDTHOperator = async () => {
+  if(formData.dthNumber.length < 6) return;
+
+  const res = await fetch(`${API_URL}/api/dth-operator-info/${formData.dthNumber}`);
+
+  const data = await res.json();
+
+  if(data && data.OperatorCode) {
+    setFormData(prev => ({
+      ...prev,
+      operatorcode: data.OperatorCode
+    }))
+  }
+};
 
 
   const quickAmounts = [99, 199, 299, 499, 999, 1499];
@@ -233,13 +267,15 @@ useEffect(() => {
                   <div style={styles.formGroup}>
                     <label style={styles.label}>DTH Subscriber ID</label>
                     <input
-                      type="text"
-                      name="dthNumber"
-                      placeholder="Enter your DTH number"
-                      value={formData.dthNumber}
-                      onChange={handleChange}
-                      style={styles.input}
-                    />
+ type="text"
+ name="dthNumber"
+ placeholder="Enter your DTH number"
+ value={formData.dthNumber}
+ onChange={handleChange}
+ onBlur={detectDTHOperator}  // <-- THIS LINE
+ style={styles.input}
+/>
+
                   </div>
 
                   <div style={styles.formGroup}>
@@ -301,6 +337,12 @@ useEffect(() => {
                     )}
                   </button>
 
+                  <div style={{ display:"flex", gap:"10px", marginTop:"10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+  <button type="button" style={styles.quickAmountBtn} onClick={fetchDTHInfo}>Fetch DTH Info</button>
+  <button type="button" style={styles.quickAmountBtn} onClick={fetchDTHPlans}>Fetch DTH Plans</button>
+</div>
+
+
                   {result && (
                     <div
                       style={{
@@ -313,9 +355,55 @@ useEffect(() => {
                       {result.message}
                     </div>
                   )}
+
                 </form>
+          
+
               </div>
             </div>
+                  {/* DTH INFO Result */}
+{dthInfo && (
+  <div style={{marginTop:"10px", padding:"10px", background:"#eef7ff", borderRadius:"8px"}}>
+    <h3 style={{fontWeight:"bold"}}>DTH Info Details</h3>
+    <pre style={{whiteSpace:"pre-wrap", fontSize:"14px"}}>
+      {JSON.stringify(dthInfo, null, 2)}
+    </pre>
+  </div>
+)}
+
+{/* DTH PLANS Result */}
+{dthPlans && dthPlans.length > 0 && (
+  <div style={{marginTop:"10px", padding:"10px", background:"#FFF6E0", borderRadius:"8px"}}>
+    <h3 style={{fontWeight:"bold"}}>DTH Plans</h3>
+
+    {dthPlans.map((c,i)=>(
+      <div key={i} style={{border:"1px solid #ccc", margin:"8px 0", padding:"8px", borderRadius:"6px"}}>
+        <p><b>Language:</b> {c.Language}</p>
+        <p><b>Total Packs:</b> {c.PackCount}</p>
+
+        {c.Details.map((p,j)=>(
+          <div key={j} style={{background:"#fafafa", padding:"8px", marginTop:"6px", borderRadius:"6px"}}>
+            <p><b>{p.PlanName}</b></p>
+            <p>{p.Channels}</p>
+            <p>{p.PaidChannels}</p>
+            <p>{p.HdChannels}</p>
+            <p><small>Updated: {p.last_update}</small></p>
+
+            <div style={{display:"flex", gap:"6px", flexWrap:"wrap", marginTop:"6px"}}>
+              {p.PricingList.map((price,k)=>(
+                <div key={k} style={{border:"1px solid #dadada", padding:"6px 8px", borderRadius:"6px"}}>
+                  <p>{price.Amount}</p>
+                  <small>{price.Month}</small>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    ))}
+
+  </div>
+)}
           </div>
 
           {/* Transaction History */}
