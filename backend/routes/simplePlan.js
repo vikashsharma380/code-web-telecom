@@ -13,34 +13,34 @@ const reverseOperatorMapping = {
   "BT": "4",  // BSNL
   "I": "6"    // IDEA
 };
-
 const reverseCircleMapping = {
-  "105": "22",
-  "101": "27",
-  "49": "13",
-  "95": "14",
-  "94": "8",
-  "40": "7",
-  "06": "9",
-  "52": "17",
-  "16": "26",
-  "56": "24",
-  "53": "23",
-  "51": "2",
-  "31": "6",
-  "70": "18",
-  "93": "16",
-  "98": "12",
-  "90": "4",
-  "92": "3",
-  "54": "10",
-  "55": "25",
-  "96": "20",
-  "03": "21",
-  "02": "1",
-  "97": "11",
-  "10": "5"
-};
+  "27": "101", // Madhya Pradesh + Chhattisgarh
+  "16": "101", // (both same original code 101)
+
+  "22": "105", // Jharkhand
+  "13": "49",  // Andhra Pradesh
+  "14": "95",  // Kerala
+  "8": "94",   // Tamil Nadu
+  "7": "40",   // Chennai
+  "9": "06",   // Karnataka
+  "17": "52",  // Bihar/Jharkhand Alternate old mapping
+  "24": "56",  // Assam
+  "23": "53",  // North East
+  "2": "51",   // West Bengal
+  "6": "31",   // Kolkata
+  "18": "70",  // Rajasthan
+  "12": "98",  // Gujarat
+  "4": "90",   // Maharashtra
+  "3": "92",   // Mumbai
+  "10": "54",  // UP East
+  "25": "55",  // Jammu & Kashmir
+  "20": "96",  // Haryana
+  "21": "03",  // Himachal Pradesh
+  "1": "02",   // Punjab
+  "11": "97",  // UP West + Uttarakhand
+  "5": "10",   // Delhi NCR
+}
+
 
 router.get("/fetch-mobile-plans", async (req, res) => {
   const { operatorcode, circle } = req.query;
