@@ -29,15 +29,13 @@ function MobileRechargeForm({ rechargeUser }) {
   const [result, setResult] = useState(null);
   const [balance, setBalance] = useState(0);
 
-
   const fetchSimplePlan = async () => {
-  const res = await fetch(
-    "https://code-web-telecom-production.up.railway.app/api/simple-plan?circle=Gujarat&operator=Jio"
-  );
-  const data = await res.json();
-  console.log(data);
-};
-
+    const res = await fetch(
+      "https://code-web-telecom-production.up.railway.app/api/simple-plan?circle=Gujarat&operator=Jio"
+    );
+    const data = await res.json();
+    console.log(data);
+  };
 
   const operators = [
     { code: "A", name: "Airtel" },
@@ -164,7 +162,7 @@ function MobileRechargeForm({ rechargeUser }) {
       });
 
       const data = await res.json();
-     console.log(data);
+      console.log(data);
 
       if (data.status === "Success") {
         setResult({
@@ -212,52 +210,55 @@ function MobileRechargeForm({ rechargeUser }) {
             <Smartphone size={24} />
             <div>
               <h2 style={styles.cardTitle}>Mobile Recharge</h2>
-              <p style={styles.cardSubtitle}>Recharge for all mobile operators</p>
+              <p style={styles.cardSubtitle}>
+                Recharge for all mobile operators
+              </p>
             </div>
           </div>
           <div style={styles.cardBody}>
             <form onSubmit={handleRecharge}>
               <div style={styles.formGroup}>
                 <label style={styles.label}>Mobile Number</label>
-               <input
-  type="tel"
-  name="number"
-  placeholder="Enter 10-digit mobile number"
-  value={formData.number}
-  onChange={async (e) => {
-    const value = e.target.value;
-    setFormData((prev) => ({ ...prev, number: value }));
+                <input
+                  type="tel"
+                  name="number"
+                  placeholder="Enter 10-digit mobile number"
+                  value={formData.number}
+                  onChange={async (e) => {
+                    const value = e.target.value;
+                    setFormData((prev) => ({ ...prev, number: value }));
 
-    if (value.length === 10) {
-      try {
-       const res = await fetch(`${API_URL}/api/operator-info/${value}`);
+                    if (value.length === 10) {
+                      try {
+                        const res = await fetch(
+                          `${API_URL}/api/operator-info/${value}`
+                        );
+                        const data = await res.json();
 
-        const data = await res.json();
+                        if (data.operatorName && data.circleName) {
+                          const operatorMatch = operators.find(
+                            (op) => op.code === data.operatorCode
+                          );
+                          const circleMatch = circles.find(
+                            (c) => c.code === data.circleCode
+                          );
 
-       if (data.operator && data.circle) {
-  const operatorMatch = operators.find((op) =>
-    data.operator.toLowerCase().includes(op.name.toLowerCase())
-  );
-  const circleMatch = circles.find((c) =>
-    data.circle.toLowerCase().includes(c.name.toLowerCase())
-  );
-
-  setFormData((prev) => ({
-    ...prev,
-    operatorcode: operatorMatch ? operatorMatch.code : "",
-    circlecode: circleMatch ? circleMatch.code : "",
-  }));
-}
-
-      } catch (err) {
-        console.error("Operator fetch failed", err);
-      }
-    }
-  }}
-  maxLength="10"
-  style={styles.input}
-/>
-
+                          setFormData((prev) => ({
+                            ...prev,
+                            operatorcode: operatorMatch
+                              ? operatorMatch.code
+                              : "",
+                            circlecode: circleMatch ? circleMatch.code : "",
+                          }));
+                        }
+                      } catch (err) {
+                        console.error("Operator fetch failed", err);
+                      }
+                    }
+                  }}
+                  maxLength="10"
+                  style={styles.input}
+                />
               </div>
               <div style={styles.formGroup}>
                 <label style={styles.label}>Operator</label>
@@ -291,41 +292,47 @@ function MobileRechargeForm({ rechargeUser }) {
                   ))}
                 </select>
                 <div style={{ marginTop: "10px" }}>
-  <button
-    type="button"
-    onClick={async () => {
-      try {
-        const circleName = circles.find(c => c.code === formData.circlecode)?.name;
-        const operatorName = operators.find(o => o.code === formData.operatorcode)?.name;
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        const circleName = circles.find(
+                          (c) => c.code === formData.circlecode
+                        )?.name;
+                        const operatorName = operators.find(
+                          (o) => o.code === formData.operatorcode
+                        )?.name;
 
-        if (!circleName || !operatorName) {
-          alert("Please select operator and circle first");
-          return;
-        }
+                        if (!circleName || !operatorName) {
+                          alert("Please select operator and circle first");
+                          return;
+                        }
 
-        const res = await fetch(
-          `https://code-web-telecom-production.up.railway.app/api/simple-plan?circle=${circleName}&operator=${operatorName}`
-        );
-        const data = await res.json();
-        console.log("Fetched Plans:", data);
-        alert(`Plans fetched for ${operatorName} (${circleName}) — Check console`);
-      } catch (err) {
-        console.error("Plan fetch failed", err);
-      }
-    }}
-    style={{
-      padding: "10px 15px",
-      backgroundColor: "#007bff",
-      color: "#fff",
-      border: "none",
-      borderRadius: "6px",
-      cursor: "pointer",
-      fontWeight: "500",
-    }}
-  >
-    Show Plans
-  </button>
-</div>
+                        const res = await fetch(
+                          `https://code-web-telecom-production.up.railway.app/api/simple-plan?circle=${circleName}&operator=${operatorName}`
+                        );
+                        const data = await res.json();
+                        console.log("Fetched Plans:", data);
+                        alert(
+                          `Plans fetched for ${operatorName} (${circleName}) — Check console`
+                        );
+                      } catch (err) {
+                        console.error("Plan fetch failed", err);
+                      }
+                    }}
+                    style={{
+                      padding: "10px 15px",
+                      backgroundColor: "#007bff",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      fontWeight: "500",
+                    }}
+                  >
+                    Show Plans
+                  </button>
+                </div>
               </div>
               <div style={styles.formGroup}>
                 <label style={styles.label}>Amount</label>
@@ -343,7 +350,10 @@ function MobileRechargeForm({ rechargeUser }) {
                       key={amt}
                       type="button"
                       onClick={() =>
-                        setFormData((prev) => ({ ...prev, amount: amt.toString() }))
+                        setFormData((prev) => ({
+                          ...prev,
+                          amount: amt.toString(),
+                        }))
                       }
                       style={styles.quickAmountBtn}
                     >
@@ -360,13 +370,21 @@ function MobileRechargeForm({ rechargeUser }) {
                   ...(loading ? styles.btnDisabled : {}),
                 }}
               >
-                {loading ? <div style={styles.loadingSpinner}></div> : <><Zap size={20} /> Recharge Now</>}
+                {loading ? (
+                  <div style={styles.loadingSpinner}></div>
+                ) : (
+                  <>
+                    <Zap size={20} /> Recharge Now
+                  </>
+                )}
               </button>
               {result && (
                 <div
                   style={{
                     ...styles.resultBox,
-                    ...(result.type === "success" ? styles.successBox : styles.errorBox),
+                    ...(result.type === "success"
+                      ? styles.successBox
+                      : styles.errorBox),
                   }}
                 >
                   {result.message}
@@ -379,26 +397,32 @@ function MobileRechargeForm({ rechargeUser }) {
 
       {/* Transactions */}
       <div style={styles.transactionList}>
-        {Array.isArray(transactions) &&transactions.slice(0, 5).map((t, i) => (
-          <div key={`${t.rechargeId}-${t.number}-${i}`} style={styles.transactionItem}>
-            <div style={styles.transactionIcon}>{t.operator.charAt(0)}</div>
-            <div style={styles.transactionDetails}>
-              <div style={styles.transactionOperator}>
-                {t.operator} (ID: {t.operatorId})
+        {Array.isArray(transactions) &&
+          transactions.slice(0, 5).map((t, i) => (
+            <div
+              key={`${t.rechargeId}-${t.number}-${i}`}
+              style={styles.transactionItem}
+            >
+              <div style={styles.transactionIcon}>{t.operator.charAt(0)}</div>
+              <div style={styles.transactionDetails}>
+                <div style={styles.transactionOperator}>
+                  {t.operator} (ID: {t.operatorId})
+                </div>
+                <div style={styles.transactionNumber}>{t.number}</div>
+                <div style={styles.transactionDate}>
+                  {new Date(t.dateTime).toLocaleString()}
+                </div>
               </div>
-              <div style={styles.transactionNumber}>{t.number}</div>
-              <div style={styles.transactionDate}>
-                {new Date(t.dateTime).toLocaleString()}
+              <div style={styles.transactionRight}>
+                <div style={styles.transactionAmount}>₹{t.amount}</div>
+                <div style={styles.transactionProfit}>Profit: ₹{t.profit}</div>
+                <div style={styles.transactionBalance}>
+                  Balance: ₹{t.balance}
+                </div>
+                <div style={styles.transactionStatus}>{t.status}</div>
               </div>
             </div>
-            <div style={styles.transactionRight}>
-              <div style={styles.transactionAmount}>₹{t.amount}</div>
-              <div style={styles.transactionProfit}>Profit: ₹{t.profit}</div>
-              <div style={styles.transactionBalance}>Balance: ₹{t.balance}</div>
-              <div style={styles.transactionStatus}>{t.status}</div>
-            </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );
@@ -420,11 +444,16 @@ export default function MobileRecharge() {
   return (
     <div style={styles.container}>
       <Nav />
-      <Hero title="Instant Mobile Recharge" subtitle="Fast, secure, and reliable mobile recharges for all operators" />
+      <Hero
+        title="Instant Mobile Recharge"
+        subtitle="Fast, secure, and reliable mobile recharges for all operators"
+      />
       <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Tabs */}
-      {activeTab === "mobile" && <MobileRechargeForm rechargeUser={rechargeUser} />}
+      {activeTab === "mobile" && (
+        <MobileRechargeForm rechargeUser={rechargeUser} />
+      )}
       {activeTab === "dth" && <DTHRecharge />}
       {activeTab === "datacard" && <DataCardRecharge />}
       {activeTab === "postpaid" && <PostpaidRecharge />}
@@ -437,7 +466,8 @@ export default function MobileRecharge() {
 
       <footer style={styles.footer}>
         <p style={styles.footerText}>
-          © 2025 <span style={styles.footerBrand}>CodeWeb Telecom</span> - All Rights Reserved
+          © 2025 <span style={styles.footerBrand}>CodeWeb Telecom</span> - All
+          Rights Reserved
         </p>
       </footer>
     </div>

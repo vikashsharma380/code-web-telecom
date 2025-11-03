@@ -24,10 +24,13 @@ router.get("/operator-info/:mobile", async (req, res) => {
     console.log("Mapped Operator:", finalOperator);
     console.log("Mapped Circle:", finalCircle);
 
-    return res.json({
-      operator: finalOperator,
-      circle: finalCircle
-    });
+return res.json({
+  operatorName: d.Operator,    // ← exact name
+  operatorCode: finalOperator, // ← mapped code
+  circleName: d.Circle,
+  circleCode: finalCircle
+});
+
 
   } catch (error) {
     console.error("Error fetching operator info:", error.message);
