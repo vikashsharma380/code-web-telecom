@@ -2,19 +2,28 @@
 const express = require("express");
 const axios = require("axios");
 const router = express.Router();
+const { mapOperator, mapCircle } = require("../middleware/mapping");
 
 router.get("/operator-info/:mobile", async (req, res) => {
   const mobile = req.params.mobile;
 
   try {
-    const response = await axios.get(
-      `https://www.nixinfo.in/api/operator-and-circle-api?status=status&emailid=vikashpandit380@gmail.com&ctrlkey=e510c57d498ae3302f5c61ba2ebff78ef08fd774774096683&mobnumber=${mobile}`
+       const response = await axios.get(
+      `https://planapi.in/api/Mobile/OperatorFetchNew?ApiUserID=6650&ApiPassword=Ansari@2580&Mobileno=${mobile}`
     );
 
-    console.log("Operator API called for:", mobile);
-    console.log("Response from NixInfo:", response.data);
+    const d = response.data;
 
-    return res.json(response.data); // <--- only 1 time response
+    const finalOperator = operatorMap[d.OpCode] || "";
+    const finalCircle = circleMap[d.CircleCode] || "";
+    console.log("Mapped Operator:", finalOperator);
+    console.log("Mapped Circle:", finalCircle);
+
+    return res.json({
+      operator: finalOperator,
+      circle: finalCircle
+    });
+
   } catch (error) {
     console.error("Error fetching operator info:", error.message);
     res.status(500).json({ error: "Failed to fetch operator info" });
