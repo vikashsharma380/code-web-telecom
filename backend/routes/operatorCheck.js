@@ -13,6 +13,8 @@ router.get("/operator-info/:mobile", async (req, res) => {
     );
 
     const d = response.data;
+    console.log("RAW API =>", d.OpCode, d.CircleCode, d.Operator, d.Circle);
+
 
     const finalOperator = mapOperator(d.OpCode);
     const finalCircle = mapCircle(d.CircleCode);
