@@ -1,4 +1,3 @@
-// routes/operatorCheck.js
 const express = require("express");
 const axios = require("axios");
 const router = express.Router();
@@ -13,10 +12,14 @@ router.get("/operator-info/:mobile", async (req, res) => {
     );
 
     const d = response.data;
+    console.log("RAW API FULL =>", d);
     console.log("RAW API =>", d.OpCode, d.CircleCode, d.Operator, d.Circle);
 
-    const finalOperator = mapOperator(d.OpCode);
-    const finalCircle = mapCircle(d.CircleCode);
+    console.log("typeof OpCode =>", typeof d.OpCode, d.OpCode);
+    console.log("typeof CircleCode =>", typeof d.CircleCode, d.CircleCode);
+
+    const finalOperator = mapOperator(String(d.OpCode).replace(/^0+/, "")); // remove leading 0
+    const finalCircle = mapCircle(String(d.CircleCode).replace(/^0+/, ""));  // remove leading 0
 
     console.log("Mapped Operator:", finalOperator);
     console.log("Mapped Circle:", finalCircle);
