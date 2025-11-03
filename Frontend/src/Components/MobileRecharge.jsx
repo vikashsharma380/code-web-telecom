@@ -27,6 +27,8 @@ function MobileRechargeForm({ rechargeUser }) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [balance, setBalance] = useState(0);
+  const [bestOffers, setBestOffers] = useState([]);
+
 
   const [plans, setPlans] = useState(null);
   const [activeCategory, setActiveCategory] = useState("");
@@ -282,9 +284,10 @@ function MobileRechargeForm({ rechargeUser }) {
           return;
         }
 
-        setPlans({ BEST_OFFER: data.RDATA }); // ONLY best offer
-        setActiveCategory("BEST_OFFER");
-        setShowPlans(true);
+        setBestOffers(data.RDATA);
+setShowPlans(true);
+setActiveCategory("BEST_OFFER");
+
 
       } catch (err) {
         console.log("Best Offer Fetch Failed", err);
@@ -416,6 +419,31 @@ function MobileRechargeForm({ rechargeUser }) {
             </div>
           ))}
       </div>
+{bestOffers && bestOffers.length > 0 && (
+  <>
+    <h2 className="text-xl font-semibold mb-3">Best Plans For You</h2>
+    <div className="grid grid-cols-2 gap-3">
+      {bestOffers.map((plan, index) => (
+        <div key={index} className="border bg-white rounded p-3 shadow-sm flex flex-col justify-between">
+          <div>
+            <div className="text-2xl font-bold">₹{plan.price}</div>
+            <div className="text-sm mt-2 text-gray-600">{plan.ofrtext}</div>
+            {plan.logdesc && (
+              <div className="text-xs mt-1 text-gray-500 italic">{plan.logdesc}</div>
+            )}
+          </div>
+
+          <button
+            className="mt-3 bg-blue-600 text-white rounded py-1 text-sm"
+            onClick={() => handleSelectPlan(plan)}
+          >
+            Select Plan ₹{plan.price}
+          </button>
+        </div>
+      ))}
+    </div>
+  </>
+)}
 
       {/* PLAN SECTION UI */}
       {showPlans && plans && typeof plans === "object" && (
