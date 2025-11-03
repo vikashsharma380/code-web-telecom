@@ -2,22 +2,26 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 
-const API_KEY = "6fda75354f70927c5d45a3a4dca7f6ce"; // apna real API key
+const MEMBER_ID = "6650";
+const PASSWORD = "Ansari@2580";
 
-// Example: /api/simple-plan?circle=Gujarat&operator=Jio
-router.get("/simple-plan", async (req, res) => {
-  const { circle, operator } = req.query;
+router.get("/fetch-mobile-plans", async (req, res) => {
+  const { operatorcode, circle } = req.query;
+
+  if (!operatorcode || !circle) {
+    return res.status(400).json({ error: "operatorcode & circle both required" });
+  }
+
+  const url = `https://planapi.in/api/Mobile/NewMobilePlans?apimember_id=${MEMBER_ID}&api_password=${PASSWORD}&operatorcode=${operatorcode}&cricle=${circle}`;
 
   try {
-    const url = `https://www.mplan.in/api/plans.php?apikey=${API_KEY}&circle=${circle}&operator=${operator}`;
-    console.log("Fetching Mplan URL:", url); // 👈 Debug line
+    console.log("Fetching PlanAPI URL:", url);
     const response = await axios.get(url);
     res.json(response.data);
   } catch (error) {
-    console.error("Error fetching Mplan plans:", error.message);
-    res.status(500).json({ error: "Failed to fetch simple plan" });
+    console.error("PlanAPI Error:", error.message);
+    res.status(500).json({ error: "Failed to fetch mobile plans" });
   }
 });
-
 
 module.exports = router;

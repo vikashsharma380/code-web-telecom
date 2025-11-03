@@ -29,6 +29,21 @@ function MobileRechargeForm({ rechargeUser }) {
   const [result, setResult] = useState(null);
   const [balance, setBalance] = useState(0);
 
+
+  const [plans, setPlans] = useState(null);
+const [activeCategory, setActiveCategory] = useState("");
+
+const fetchPlans = async () => {
+  const operatorMapped = formData.operatorcode;
+  const circleMapped = formData.circlecode;
+
+  const res = await fetch(`${API_URL}/api/fetch-mobile-plans?operatorcode=${operatorMapped}&circle=${circleMapped}`);
+  const data = await res.json();
+  setPlans(data.RDATA); // only RDATA store
+  setActiveCategory(Object.keys(data.RDATA)[0]); // default first tab
+};
+
+
   const fetchSimplePlan = async () => {
     const res = await fetch(
       "https://code-web-telecom-production.up.railway.app/api/simple-plan?circle=Gujarat&operator=Jio"
@@ -295,31 +310,28 @@ function MobileRechargeForm({ rechargeUser }) {
                   <button
                     type="button"
                     onClick={async () => {
-                      try {
-                        const circleName = circles.find(
-                          (c) => c.code === formData.circlecode
-                        )?.name;
-                        const operatorName = operators.find(
-                          (o) => o.code === formData.operatorcode
-                        )?.name;
+  try {
+    const operatorMapped = formData.operatorcode;
+    const circleMapped = formData.circlecode;
 
-                        if (!circleName || !operatorName) {
-                          alert("Please select operator and circle first");
-                          return;
-                        }
+    if (!operatorMapped || !circleMapped) {
+      alert("Please select operator and circle first");
+      return;
+    }
 
-                        const res = await fetch(
-                          `https://code-web-telecom-production.up.railway.app/api/simple-plan?circle=${circleName}&operator=${operatorName}`
-                        );
-                        const data = await res.json();
-                        console.log("Fetched Plans:", data);
-                        alert(
-                          `Plans fetched for ${operatorName} (${circleName}) — Check console`
-                        );
-                      } catch (err) {
-                        console.error("Plan fetch failed", err);
-                      }
-                    }}
+    const res = await fetch(
+      `${API_URL}/api/fetch-mobile-plans?operatorcode=${operatorMapped}&circle=${circleMapped}`
+    );
+    const data = await res.json();
+
+    setPlans(data.RDATA);        // <-- update state
+    setActiveCategory(Object.keys(data.RDATA)[0]);  // <-- select first category
+
+  } catch (err) {
+    console.error("Plan fetch failed", err);
+  }
+}}
+
                     style={{
                       padding: "10px 15px",
                       backgroundColor: "#007bff",
@@ -424,6 +436,74 @@ function MobileRechargeForm({ rechargeUser }) {
             </div>
           ))}
       </div>
+      {/* PLAN SECTION UI */}
+{plans && (
+  <div style={{ marginTop: "25px", gridColumn: "1 / span 2" }}>
+    <h3 style={{ marginBottom: "10px", fontWeight: "600" }}>
+      Best Plans For You
+    </h3>
+
+    {/* Tabs */}
+    <div style={{ display: "flex", gap: "10px", overflowX: "auto" }}>
+      {Object.keys(plans).map((cat) => (
+        <button
+          key={cat}
+          onClick={() => setActiveCategory(cat)}
+          style={{
+            padding: "6px 15px",
+            borderRadius: "6px",
+            cursor: "pointer",
+            background: activeCategory === cat ? "#007bff" : "#e9ecef",
+            color: activeCategory === cat ? "#fff" : "#000",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {cat}
+        </button>
+      ))}
+    </div>
+
+    {/* Cards */}
+    <div style={{ marginTop: "10px" }}>
+      {plans[activeCategory]?.map((p, i) => (
+        <div
+          key={i}
+          style={{
+            background: "#fff",
+            border: "1px solid #ddd",
+            padding: "15px",
+            marginBottom: "10px",
+            borderRadius: "8px",
+          }}
+        >
+          <h3>₹ {p.rs}</h3>
+          <p>
+            <b>Validity:</b> {p.validity}
+          </p>
+          <p>{p.desc}</p>
+          <button
+            type="button"
+            onClick={() =>
+              setFormData((prev) => ({ ...prev, amount: p.rs.toString() }))
+            }
+            style={{
+              marginTop: "8px",
+              background: "#28a745",
+              color: "#fff",
+              padding: "6px 12px",
+              borderRadius: "6px",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            Select Plan ₹{p.rs}
+          </button>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
     </div>
   );
 }
