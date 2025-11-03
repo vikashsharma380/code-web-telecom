@@ -234,21 +234,21 @@ function MobileRechargeForm({ rechargeUser }) {
 
         const data = await res.json();
 
-        if (data.Operator && data.Circle) {
-          // find matching operator code from list
-          const operatorMatch = operators.find((op) =>
-            data.Operator.toLowerCase().includes(op.name.toLowerCase())
-          );
-          const circleMatch = circles.find((c) =>
-            data.Circle.toLowerCase().includes(c.name.toLowerCase())
-          );
+       if (data.operator && data.circle) {
+  const operatorMatch = operators.find((op) =>
+    data.operator.toLowerCase().includes(op.name.toLowerCase())
+  );
+  const circleMatch = circles.find((c) =>
+    data.circle.toLowerCase().includes(c.name.toLowerCase())
+  );
 
-          setFormData((prev) => ({
-            ...prev,
-            operatorcode: operatorMatch ? operatorMatch.code : "",
-            circlecode: circleMatch ? circleMatch.code : "",
-          }));
-        }
+  setFormData((prev) => ({
+    ...prev,
+    operatorcode: operatorMatch ? operatorMatch.code : "",
+    circlecode: circleMatch ? circleMatch.code : "",
+  }));
+}
+
       } catch (err) {
         console.error("Operator fetch failed", err);
       }
