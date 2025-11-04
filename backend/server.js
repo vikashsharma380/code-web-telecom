@@ -340,6 +340,8 @@ app.use("/api/master-distributor", masterDistributorRoutes);
 const electricityRoutes = require("./routes/electricity");
 
 app.use("/api", electricityRoutes);
+const infoFetchRoutes = require("./routes/infoFetch");
+app.use("/api", infoFetchRoutes);
 
 
 app.get("/myip", async (req, res) => {

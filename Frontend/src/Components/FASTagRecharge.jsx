@@ -38,6 +38,18 @@ export default function FASTagRecharge() {
   const [detecting, setDetecting] = useState(false);
 
   const quickAmounts = [100, 200, 500, 1000, 2000];
+  const [fastagInfo, setFastagInfo] = useState(null);
+
+const fetchFastagInfo = async () => {
+  if (!formData.vehicleNo || !formData.operatorcode)
+    return alert("Enter Vehicle No & Operator first");
+
+  const res = await fetch(`${API_URL}/api/fastag-info-fetch?VehicleNo=${formData.vehicleNo}&operator_code=${formData.operatorcode}`);
+  const data = await res.json();
+  console.log("FASTAG INFO =>", data);
+  setFastagInfo(data);
+};
+
 
   const operators = [
     { code: "A", name: "Airtel" },
@@ -340,8 +352,27 @@ export default function FASTagRecharge() {
                   </div>
                 )}
               </div>
+
             </div>
+            <button
+  type="button"
+  onClick={fetchFastagInfo}
+  style={styles.quickAmountBtn}
+>
+  Fetch FASTag Info
+</button>
+
           </div>
+          {fastagInfo && fastagInfo.BILLDEATILS && (
+  <div style={{ marginTop: "10px", background: "#eef7ff", padding: "10px", borderRadius: "6px" }}>
+    <h3>FASTag Info</h3>
+    <p><b>Name:</b> {fastagInfo.BILLDEATILS.Name}</p>
+    <p><b>Balance:</b> ₹{fastagInfo.BILLDEATILS.Balance}</p>
+    <p><b>Due Amount:</b> ₹{fastagInfo.BILLDEATILS.DueAmount}</p>
+    <p><b>Due Date:</b> {fastagInfo.BILLDEATILS.DueDate}</p>
+  </div>
+)}
+
 
           {/* Transactions */}
           <div style={styles.transactionSection}>

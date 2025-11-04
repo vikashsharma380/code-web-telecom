@@ -31,6 +31,18 @@ export default function GasRecharge() {
   const [detecting, setDetecting] = useState(false);
   const [rechargeUser, setRechargeUser] = useState({ username: "", pwd: "" });
   const [activeTab, setActiveTab] = useState("gas");
+  const [gasInfo, setGasInfo] = useState(null);
+
+const fetchGasInfo = async () => {
+  if (!formData.consumerNo || !formData.operatorcode)
+    return alert("Enter Consumer No & Operator first");
+
+  const res = await fetch(`${API_URL}/api/gas-info-fetch?ConsumerNo=${formData.consumerNo}&operator_code=${formData.operatorcode}`);
+  const data = await res.json();
+  console.log("GAS INFO =>", data);
+  setGasInfo(data);
+};
+
 
   const quickAmounts = [100, 200, 500, 1000, 2000];
   const operators = [
@@ -288,7 +300,24 @@ useEffect(() => {
                 )}
               </div>
             </div>
+            <button
+  type="button"
+  onClick={fetchGasInfo}
+  style={styles.quickAmountBtn}
+>
+  Fetch Gas Info
+</button>
+
           </div>
+{gasInfo && gasInfo.BILLDEATILS && (
+  <div style={{ marginTop: "10px", background: "#f0fff4", padding: "10px", borderRadius: "6px" }}>
+    <h3>Gas Bill Info</h3>
+    <p><b>Name:</b> {gasInfo.BILLDEATILS.Name}</p>
+    <p><b>Due Amount:</b> ₹{gasInfo.BILLDEATILS.DueAmount}</p>
+    <p><b>Due Date:</b> {gasInfo.BILLDEATILS.DueDate}</p>
+    <p><b>Balance:</b> ₹{gasInfo.BILLDEATILS.Balance}</p>
+  </div>
+)}
 
           {/* Transactions */}
           <div style={styles.transactionSection}>
