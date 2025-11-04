@@ -467,8 +467,8 @@ export default function ElectricityRecharge() {
                 </form>
               </div>
             </div>
-          </div>
-          <div style={{ display: "flex", gap: "10px", margin: "10px 0" }}>
+
+             <div style={{ display: "flex", gap: "10px", margin: "10px 0" }}>
             <button
               type="button"
               onClick={fetchDistrictCodes}
@@ -484,6 +484,8 @@ export default function ElectricityRecharge() {
               Fetch Bill
             </button>
           </div>
+          </div>
+         
 
           {districtCodes.length > 0 && (
             <div style={{ marginTop: "15px" }}>
