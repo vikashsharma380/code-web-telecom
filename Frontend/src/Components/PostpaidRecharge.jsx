@@ -15,6 +15,7 @@ import GooglePlayRecharge from "./GooglePlayRecharge";
 import WaterBillRecharge from "./WaterBillRecharge";
 
 
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function PostpaidRecharge() {
@@ -31,6 +32,9 @@ export default function PostpaidRecharge() {
   const [balance, setBalance] = useState(0);
   const [balanceLoading, setBalanceLoading] = useState(false);
   const [rechargeUser, setRechargeUser] = useState({});
+  const [billInfo, setBillInfo] = useState(null);
+const [billLoading, setBillLoading] = useState(false);
+
 
   // Load user credentials from localStorage
   useEffect(() => {
@@ -113,6 +117,38 @@ useEffect(() => {
   { code: "6", name: "Kolkata" },
   { code: "23", name: "Orissa" },
 ];
+
+
+const fetchPostpaidBill = async () => {
+  const { number, operatorcode } = formData;
+  if(!number || !operatorcode) return;
+
+  setBillLoading(true);
+  setBillInfo(null);
+
+  try {
+    const res = await fetch(
+      `http://planapi.in/api/Mobile/PostPaidInfoFetch?apimember_id=${rechargeUser.username}&api_password=${rechargeUser.pwd}&MobileNo=${number}&operator_code=${operatorcode}`
+    );
+
+    const data = await res.json();
+    console.log("POSTPAID fetch:", data);
+
+    if(data.STATUS === "1"){
+      setBillInfo(data.BILLDEATILS);
+      // amount direct auto set
+      setFormData(prev=>({...prev, amount: data.BILLDEATILS.DueAmount }))
+    }
+  } catch(err){
+    console.log("bill fetch err", err);
+  }
+  finally {
+    setBillLoading(false)
+  }
+};
+useEffect(()=>{
+  fetchPostpaidBill();
+}, [formData.number,formData.operatorcode]);
 
 
   const quickAmounts = [199, 299, 399, 499, 599, 999];
@@ -244,15 +280,15 @@ console.log("Sending recharge request:", {
                       ))}
                     </select>
                   </div>
-                  <div style={styles.formGroup}>
+                  {/* <div style={styles.formGroup}>
                     <label style={styles.label}>Circle</label>
                     <select name="circlecode" value={formData.circlecode} onChange={handleChange} style={styles.select}>
                       <option value="">Select Circle</option>
                       {circles.map((c) => (
                         <option key={c.code} value={c.code}>{c.name}</option>
                       ))}
-                    </select>
-                  </div>
+                    </select> */}
+                  {/* </div> */}
                   <div style={styles.formGroup}>
                     <label style={styles.label}>Amount</label>
                     <input type="text" name="amount" value={formData.amount} onChange={handleChange} placeholder="Enter Amount" style={styles.input} />
@@ -265,6 +301,7 @@ console.log("Sending recharge request:", {
                   <button type="submit" disabled={loading} style={{ ...styles.rechargeBtn, ...(loading ? styles.btnDisabled : {}) }}>
                     {loading ? <div style={styles.loadingSpinner}></div> : <><Zap size={20} /> Pay Now</>}
                   </button>
+
                   {result && (
                     <div style={{ ...styles.resultBox, ...(result.type === "success" ? styles.successBox : styles.errorBox) }}>
                       {result.message}
@@ -273,6 +310,17 @@ console.log("Sending recharge request:", {
                 </form>
               </div>
             </div>
+            {billLoading && <p style={{color:"orange"}}>Fetching Bill Details...</p>}
+
+{billInfo && (
+  <div style={{padding:"10px",background:"#e7ffe7",borderRadius:"8px",marginBottom:"10px"}}>
+    <p><b>Consumer Name:</b> {billInfo.Name}</p>
+    <p><b>Due Amount:</b> ₹{billInfo.DueAmount}</p>
+    <p><b>Due Date:</b> {billInfo.DueDate}</p>
+    <p><b>Bill No:</b> {billInfo.BillNumber}</p>
+  </div>
+)}
+
           </div>
 
           {/* Transactions */}

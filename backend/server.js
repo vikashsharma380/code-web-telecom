@@ -31,21 +31,22 @@ const allowedOrigins = [
   "https://www.codewebtelecom.in"        // www subdomain (important!)
 ];
 
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
 
-// app.use(cors({
-
-//   origin: function (origin, callback) {
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error("Not allowed by CORS"));
-//     }
-//   },
-//   credentials: true,
-// }));
+app.options('*', cors());
 
 
-app.use(cors());
+
+
 app.get("/api/transactions", async (req, res) => {
   try {
     const transactions = await Transaction.find().sort({ date: -1 }).limit(10);

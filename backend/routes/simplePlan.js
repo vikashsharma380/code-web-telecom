@@ -144,6 +144,41 @@ router.get("/fetch-dth-plans", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch DTH plans" });
   }
 });
+// internal code -> planapi operator_code (postpaid)
+const postpaidOpMap = {
+  PAT: "34",
+  IP: "35",
+  VP: "36",
+  DP: "82",
+  BP: "33",
+  JPP: "491"
+};
+
+router.get("/postpaid/fetchBill", async (req, res) => {
+  try {
+    const { mobile, operatorCode } = req.query;
+
+    if (!mobile || !operatorCode) {
+      return res.status(400).json({ message: "Missing params" });
+    }
+
+    const finalOp = postpaidOpMap[operatorCode];   // <-- yaha change
+
+    if (!finalOp) {
+      return res.status(400).json({ message: "Invalid postpaid operator" });
+    }
+
+    const url = `http://planapi.in/api/Mobile/PostPaidInfoFetch?apimember_id=${MEMBER_ID}&api_password=${PASSWORD}&MobileNo=${mobile}&operator_code=${finalOp}`;
+
+    const response = await axios.get(url);
+
+    return res.json(response.data);
+  } catch(err) {
+    console.log(err);
+    res.status(500).json({ message:"Server error" });
+  }
+});
+
 
 
 module.exports = router;
