@@ -25,24 +25,23 @@ mongoose.connect(process.env.MONGO_URI, {
     process.exit(1);
   });
 const allowedOrigins = [
-  "http://localhost:5173",               // local dev
-  "https://codewebtelecomin.vercel.app", // Vercel default
-  "https://codewebtelecom.in",           // custom domain
-  "https://www.codewebtelecom.in"        // www subdomain (important!)
+  "http://localhost:5173",
+  "https://codewebtelecomin.vercel.app",
+  "https://codewebtelecom.in",
+  "https://www.codewebtelecom.in"
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-}));
-
-app.options('*', cors());
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+  if (req.method === "OPTIONS") return res.sendStatus(200);
+  next();
+});
 
 
 
