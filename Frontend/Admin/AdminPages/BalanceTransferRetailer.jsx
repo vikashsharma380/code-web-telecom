@@ -99,9 +99,40 @@ const BalanceTransferRetailer = () => {
     setCurrentPage(pageNumber);
   };
 
-  const handleLogin = () => {
-    navigate("/balance-transfer-retailer");
-  };
+const handleRetailerLogin = async (retailerId) => {
+  try {
+    const res = await fetch(`${API_URL}/api/users/${retailerId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const data = await res.json();
+
+    if (!data.success) return alert("Retailer details not found");
+
+    const retailer = data.user;
+
+    // ✅ LocalStorage me set kar dena retailer credentials
+    localStorage.setItem(
+      "rechargeUser",
+      JSON.stringify({
+        username: retailer.userId,
+        pwd: retailer.apiPassword,
+        name: retailer.name,
+        email: retailer.email,
+      })
+    );
+
+    alert(`✅ Logged in as ${retailer.name}`);
+
+    // ✅ Redirect to retailer dashboard
+    navigate("/MobileRecharge");
+  } catch (err) {
+    console.error("Retailer login error:", err);
+    alert("Server error while logging in as retailer");
+  }
+};
+
 
   const styles = {
     container: {
@@ -239,14 +270,15 @@ const BalanceTransferRetailer = () => {
                     </button>
                   </td>
                   <td style={styles.td}>
-                    <button
-                      style={{ ...styles.button, ...styles.loginBtn }}
-                      onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
-                      onMouseLeave={(e) => (e.target.style.opacity = "1")}
-                      onClick={handleLogin}
-                    >
-                      Login
-                    </button>
+                   <button
+  style={{ ...styles.button, ...styles.loginBtn }}
+  onClick={() => handleRetailerLogin(retailer.userId)}  // 👈 ye add kiya
+  onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
+  onMouseLeave={(e) => (e.target.style.opacity = "1")}
+>
+  Login
+</button>
+
                   </td>
                 </tr>
               ))}

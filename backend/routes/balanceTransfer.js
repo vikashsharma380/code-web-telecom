@@ -70,4 +70,25 @@ router.post("/balance/revert", async (req, res) => {
   }
 });
 
+router.get("/users/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findOne({ userId: Number(userId) }).select(
+      "userId name email apiPassword role"
+    );
+
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "Retailer not found" });
+
+    res.json({ success: true, user });
+  } catch (err) {
+    console.error("Get user error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+
+
 module.exports = router;
