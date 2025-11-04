@@ -1,40 +1,91 @@
-import React, { useState, useEffect } from "react";  // 👈 useEffect add kar
+import React, { useState, useEffect } from "react"; // 👈 useEffect add kar
 import { useNavigate } from "react-router-dom";
 import Header from "../Header";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-
 
 const BalanceTransferRetailer = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 25;
 
- const [allRetailers, setAllRetailers] = useState([]);
+  const [allRetailers, setAllRetailers] = useState([]);
 
-useEffect(() => {
-  fetchRetailers();
-}, []);
+  useEffect(() => {
+    fetchRetailers();
+  }, []);
 
-const fetchRetailers = async () => {
-  try {
-    const res = await fetch(`${API_URL}/api/retailers`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    const data = await res.json();
-    if (data.success) {
-      setAllRetailers(data.retailers);
-    } else {
-      alert("Failed to load retailers");
+  const fetchRetailers = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/retailers`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAllRetailers(data.retailers);
+      } else {
+        alert("Failed to load retailers");
+      }
+    } catch (err) {
+      console.error("Error fetching retailers:", err);
+      alert("Server error while fetching retailers");
     }
-  } catch (err) {
-    console.error("Error fetching retailers:", err);
-    alert("Server error while fetching retailers");
-  }
-};
+  };
+  const handleAddBalance = async (retailerId) => {
+    const amount = prompt("Enter amount to add:");
+    if (!amount || isNaN(amount)) return alert("Enter valid number");
 
+    try {
+      const res = await fetch(`${API_URL}/api/balance/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ retailerId, amount }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert(`✅ ${data.message}`);
+        fetchRetailers(); // refresh list
+      } else {
+        alert(`❌ ${data.message}`);
+      }
+    } catch (err) {
+      console.error("Add balance error:", err);
+      alert("Server error while adding balance");
+    }
+  };
+
+  const handleRevertBalance = async (retailerId) => {
+    const amount = prompt("Enter amount to revert:");
+    if (!amount || isNaN(amount)) return alert("Enter valid number");
+
+    try {
+      const res = await fetch(`${API_URL}/api/balance/revert`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ retailerId, amount }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert(`♻️ ${data.message}`);
+        fetchRetailers(); // refresh list
+      } else {
+        alert(`❌ ${data.message}`);
+      }
+    } catch (err) {
+      console.error("Revert balance error:", err);
+      alert("Server error while reverting balance");
+    }
+  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -170,6 +221,7 @@ const fetchRetailers = async () => {
                   <td style={styles.td}>
                     <button
                       style={{ ...styles.button, ...styles.addBalanceBtn }}
+                      onClick={() => handleAddBalance(retailer.userId)} // 👈 added
                       onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
                       onMouseLeave={(e) => (e.target.style.opacity = "1")}
                     >
@@ -179,6 +231,7 @@ const fetchRetailers = async () => {
                   <td style={styles.td}>
                     <button
                       style={{ ...styles.button, ...styles.revertBalanceBtn }}
+                      onClick={() => handleRevertBalance(retailer.userId)} // 👈 added
                       onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
                       onMouseLeave={(e) => (e.target.style.opacity = "1")}
                     >
