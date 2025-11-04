@@ -337,6 +337,10 @@ app.use("/api/distributor", distributorRoutes);
 const masterDistributorRoutes = require("./routes/masterDistributor");
 app.use("/api/master-distributor", masterDistributorRoutes);
 
+const electricityRoutes = require("./routes/electricity");
+
+app.use("/api", electricityRoutes);
+
 
 app.get("/myip", async (req, res) => {
   try {
