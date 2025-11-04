@@ -73,19 +73,38 @@ router.post("/balance/revert", async (req, res) => {
 router.get("/users/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
-    const user = await User.findOne({ userId: Number(userId) }).select(
-      "userId name email apiPassword role"
-    );
 
-    if (!user)
+    console.log("🔍 Fetching retailer userId:", userId);
+
+    // Try both string and number match
+    const user =
+      (await User.findOne({ userId })) ||
+      (await User.findOne({ userId: Number(userId) }));
+
+    if (!user) {
+      console.warn("⚠️ User not found for ID:", userId);
       return res
         .status(404)
         .json({ success: false, message: "Retailer not found" });
+    }
 
-    res.json({ success: true, user });
+    res.json({
+      success: true,
+      user: {
+        userId: user.userId,
+        name: user.name,
+        email: user.email || "",
+        apiPassword: user.apiPassword || "",
+        role: user.role,
+      },
+    });
   } catch (err) {
-    console.error("Get user error:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    console.error("❌ Get user error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      details: err.message,
+    });
   }
 });
 
