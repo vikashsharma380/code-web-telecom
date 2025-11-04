@@ -468,7 +468,7 @@ export default function ElectricityRecharge() {
               </div>
             </div>
 
-             <div style={{ display: "flex", gap: "10px", margin: "10px 0" }}>
+             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "10px 0" }}>
             <button
               type="button"
               onClick={fetchDistrictCodes}
