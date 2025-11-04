@@ -1,65 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import MasterDistributorPanel from "./MasterDistributorPanel";
 import PanelHeader from "./PanelHeader";
 import Header from "../Header";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 const ManageDistributor = () => {
-  const [searchBy, setSearchBy] = useState("Name");
+  const [searchBy, setSearchBy] = useState("name");
   const [searchTerm, setSearchTerm] = useState("");
   const [showDashboard, setShowDashboard] = useState(false);
   const [selectedDistributor, setSelectedDistributor] = useState(null);
+  const [distributors, setDistributors] = useState([]);
 
-  const [distributors] = useState([
-    {
-      userId: "200002",
-      name: "DEMO DISTRIBUTOR",
-      mobile: "12345",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "200003",
-      name: "CWT DISTRIBUTOR",
-      mobile: "9135353235",
-      balance: "53.35",
-      status: "Active",
-    },
-    {
-      userId: "200004",
-      name: "SP Gupta",
-      mobile: "8877788099",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "200005",
-      name: "AMAN KUMAR",
-      mobile: "8969351180",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "200006",
-      name: "PAPPU KUMAR GIRI",
-      mobile: "9007133563",
-      balance: "0.00",
-      status: "Active",
-    },
-    {
-      userId: "200007",
-      name: "ATUL PRAKASH",
-      mobile: "08252339220",
-      balance: "0.00",
-      status: "Active",
-    },
-  ]);
+  useEffect(() => {
+    loadDistributors();
+  }, []);
 
-  const totalBalance = distributors
-    .reduce((sum, dist) => sum + parseFloat(dist.balance), 0)
-    .toFixed(2);
+  const loadDistributors = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/master/distributors`);
+      setDistributors(res.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const handleSearch = () => {
-    console.log("Searching by:", searchBy, "Term:", searchTerm);
+  const handleSearch = async () => {
+    try {
+      const res = await axios.get(
+        `${API_URL}/master/distributors?${searchBy}=${searchTerm}`
+      );
+      setDistributors(res.data.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleLogin = (distributor) => {
@@ -67,10 +42,13 @@ const ManageDistributor = () => {
     setShowDashboard(true);
   };
 
-  const handleBackToList = () => {
-    setShowDashboard(false);
-    setSelectedDistributor(null);
-  };
+  const totalBalance = distributors
+    .reduce((sum, dist) => sum + Number(dist.balance), 0)
+    .toFixed(2);
+
+  const totalCommission = distributors
+    .reduce((sum, dist) => sum + Number(dist.commission), 0)
+    .toFixed(2);
 
   const styles = {
     container: {

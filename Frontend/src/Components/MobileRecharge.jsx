@@ -16,7 +16,6 @@ import WaterBillRecharge from "./WaterBillRecharge";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-// ✅ Separated MobileRechargeForm to avoid recursion
 function MobileRechargeForm({ rechargeUser }) {
   const [formData, setFormData] = useState({
     number: "",
@@ -28,16 +27,12 @@ function MobileRechargeForm({ rechargeUser }) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [balance, setBalance] = useState(0);
+  const [bestOffers, setBestOffers] = useState([]);
 
 
-  const fetchSimplePlan = async () => {
-  const res = await fetch(
-    "https://code-web-telecom-production.up.railway.app/api/simple-plan?circle=Gujarat&operator=Jio"
-  );
-  const data = await res.json();
-  console.log(data);
-};
-
+  const [plans, setPlans] = useState(null);
+  const [activeCategory, setActiveCategory] = useState("");
+  const [showPlans, setShowPlans] = useState(false);
 
   const operators = [
     { code: "A", name: "Airtel" },
@@ -84,7 +79,7 @@ function MobileRechargeForm({ rechargeUser }) {
     { code: "11", name: "Uttar Pradesh West" },
     { code: "3", name: "Mumbai" },
     { code: "5", name: "Delhi" },
-    { code: "7", name: "CHENNAI" },
+    { code: "7", name: "Chennai" },
     { code: "6", name: "Kolkata" },
     { code: "8", name: "Tamil Nadu" },
     { code: "1", name: "Punjab" },
@@ -121,9 +116,7 @@ function MobileRechargeForm({ rechargeUser }) {
       const { username, pwd } = rechargeUser;
       if (!username || !pwd) return;
       const res = await fetch(
-        `${API_URL}/api/balance?username=${encodeURIComponent(
-          username
-        )}&pwd=${encodeURIComponent(pwd)}`
+        `${API_URL}/api/balance?username=${encodeURIComponent(username)}&pwd=${encodeURIComponent(pwd)}`
       );
       const data = await res.json();
       if (data.success) setBalance(data.balance);
@@ -144,8 +137,7 @@ function MobileRechargeForm({ rechargeUser }) {
     try {
       const token = localStorage.getItem("token");
       const { number, operatorcode, circlecode, amount } = formData;
-      if (!number || !operatorcode || !circlecode || !amount)
-        throw new Error("All fields are required");
+      if (!number || !operatorcode || !circlecode || !amount) throw new Error("All fields are required");
 
       const res = await fetch(`${API_URL}/api/recharge`, {
         method: "POST",
@@ -164,19 +156,13 @@ function MobileRechargeForm({ rechargeUser }) {
       });
 
       const data = await res.json();
-     console.log(data);
+      console.log(data);
 
       if (data.status === "Success") {
-        setResult({
-          type: "success",
-          message: `Recharge Successful! TXID: ${data.txid}`,
-        });
+        setResult({ type: "success", message: `Recharge Successful! TXID: ${data.txid}` });
         fetchBalance();
       } else {
-        setResult({
-          type: "error",
-          message: `Recharge Failed: ${data.opid || "Unknown"}`,
-        });
+        setResult({ type: "error", message: `Recharge Failed: ${data.opid || "Unknown"}` });
       }
 
       setTransactions([
@@ -219,54 +205,39 @@ function MobileRechargeForm({ rechargeUser }) {
             <form onSubmit={handleRecharge}>
               <div style={styles.formGroup}>
                 <label style={styles.label}>Mobile Number</label>
-               <input
-  type="tel"
-  name="number"
-  placeholder="Enter 10-digit mobile number"
-  value={formData.number}
-  onChange={async (e) => {
-    const value = e.target.value;
-    setFormData((prev) => ({ ...prev, number: value }));
+                <input
+                  type="tel"
+                  name="number"
+                  placeholder="Enter 10-digit mobile number"
+                  value={formData.number}
+                  onChange={async (e) => {
+                    const value = e.target.value;
+                    setFormData((prev) => ({ ...prev, number: value }));
 
-    if (value.length === 10) {
-      try {
-       const res = await fetch(`${API_URL}/api/operator-info/${value}`);
-
-        const data = await res.json();
-
-        if (data.Operator && data.Circle) {
-          // find matching operator code from list
-          const operatorMatch = operators.find((op) =>
-            data.Operator.toLowerCase().includes(op.name.toLowerCase())
-          );
-          const circleMatch = circles.find((c) =>
-            data.Circle.toLowerCase().includes(c.name.toLowerCase())
-          );
-
-          setFormData((prev) => ({
-            ...prev,
-            operatorcode: operatorMatch ? operatorMatch.code : "",
-            circlecode: circleMatch ? circleMatch.code : "",
-          }));
-        }
-      } catch (err) {
-        console.error("Operator fetch failed", err);
-      }
-    }
-  }}
-  maxLength="10"
-  style={styles.input}
-/>
-
+                    if (value.length === 10) {
+                      try {
+                        const res = await fetch(`${API_URL}/api/operator-info/${value}`);
+                        const data = await res.json();
+                        if (data.operatorName && data.circleCode) {
+                          setFormData((prev) => ({
+                            ...prev,
+                            operatorcode: data.operatorCode,
+                            circlecode: data.circleCode,
+                          }));
+                        }
+                      } catch (err) {
+                        console.error("Operator fetch failed", err);
+                      }
+                    }
+                  }}
+                  maxLength="10"
+                  style={styles.input}
+                />
               </div>
+
               <div style={styles.formGroup}>
                 <label style={styles.label}>Operator</label>
-                <select
-                  name="operatorcode"
-                  value={formData.operatorcode}
-                  onChange={handleChange}
-                  style={styles.select}
-                >
+                <select name="operatorcode" value={formData.operatorcode} onChange={handleChange} style={styles.select}>
                   <option value="">Choose your operator</option>
                   {operators.map((op) => (
                     <option key={op.code} value={op.code}>
@@ -275,14 +246,10 @@ function MobileRechargeForm({ rechargeUser }) {
                   ))}
                 </select>
               </div>
+
               <div style={styles.formGroup}>
                 <label style={styles.label}>Circle</label>
-                <select
-                  name="circlecode"
-                  value={formData.circlecode}
-                  onChange={handleChange}
-                  style={styles.select}
-                >
+                <select name="circlecode" value={formData.circlecode} onChange={handleChange} style={styles.select}>
                   <option value="">Choose your circle</option>
                   {circles.map((c) => (
                     <option key={c.code} value={c.code}>
@@ -290,43 +257,96 @@ function MobileRechargeForm({ rechargeUser }) {
                     </option>
                   ))}
                 </select>
-                <div style={{ marginTop: "10px" }}>
-  <button
+                
+                <div style={{ marginTop: "10px" , display: "flex", alignItems: "center" , justifyContent: "space-between"} }>
+                  <button
     type="button"
     onClick={async () => {
-      try {
-        const circleName = circles.find(c => c.code === formData.circlecode)?.name;
-        const operatorName = operators.find(o => o.code === formData.operatorcode)?.name;
+      const { number, operatorcode } = formData;
 
-        if (!circleName || !operatorName) {
-          alert("Please select operator and circle first");
+      if (!number || number.length !== 10) {
+        alert("Enter valid mobile number first");
+        return;
+      }
+      if (!operatorcode) {
+        alert("Select operator first");
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          `${API_URL}/api/fetch-best-offer?operatorcode=${operatorcode}&mobile=${number}`
+        );
+        const data = await res.json();
+
+        if (!data || !data.RDATA) {
+          alert("No Best Offer Found");
           return;
         }
 
-        const res = await fetch(
-          `https://code-web-telecom-production.up.railway.app/api/simple-plan?circle=${circleName}&operator=${operatorName}`
-        );
-        const data = await res.json();
-        console.log("Fetched Plans:", data);
-        alert(`Plans fetched for ${operatorName} (${circleName}) — Check console`);
+        setBestOffers(data.RDATA);
+setShowPlans(true);
+setActiveCategory("BEST_OFFER");
+
+
       } catch (err) {
-        console.error("Plan fetch failed", err);
+        console.log("Best Offer Fetch Failed", err);
       }
     }}
     style={{
       padding: "10px 15px",
-      backgroundColor: "#007bff",
+      backgroundColor:  "#007bff",
       color: "#fff",
       border: "none",
       borderRadius: "6px",
       cursor: "pointer",
       fontWeight: "500",
+      marginRight: "10px"
     }}
   >
-    Show Plans
+    Best Offer
   </button>
-</div>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        const operatorMapped = formData.operatorcode;
+                        const circleMapped = formData.circlecode;
+                        if (!operatorMapped || !circleMapped) {
+                          alert("Please select operator and circle first");
+                          return;
+                        }
+
+                        const res = await fetch(
+                          `${API_URL}/api/fetch-mobile-plans?operatorcode=${operatorMapped}&circle=${circleMapped}`
+                        );
+                        const data = await res.json();
+                        if (!data || !data.RDATA) {
+                          alert("Plans not available");
+                          return;
+                        }
+                        setPlans({ ...data.RDATA });
+                        setActiveCategory(Object.keys(data.RDATA)[0]);
+                        setShowPlans(true);
+                      } catch (err) {
+                        console.error("Plan fetch failed", err);
+                      }
+                    }}
+                    style={{
+                      padding: "10px 15px",
+                      backgroundColor: "#007bff",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      fontWeight: "500",
+                    }}
+                  >
+                    Show Plans
+                  </button>
+                </div>
               </div>
+
               <div style={styles.formGroup}>
                 <label style={styles.label}>Amount</label>
                 <input
@@ -342,9 +362,7 @@ function MobileRechargeForm({ rechargeUser }) {
                     <button
                       key={amt}
                       type="button"
-                      onClick={() =>
-                        setFormData((prev) => ({ ...prev, amount: amt.toString() }))
-                      }
+                      onClick={() => setFormData((prev) => ({ ...prev, amount: amt.toString() }))}
                       style={styles.quickAmountBtn}
                     >
                       ₹{amt}
@@ -352,6 +370,7 @@ function MobileRechargeForm({ rechargeUser }) {
                   ))}
                 </div>
               </div>
+
               <button
                 type="submit"
                 disabled={loading}
@@ -362,6 +381,7 @@ function MobileRechargeForm({ rechargeUser }) {
               >
                 {loading ? <div style={styles.loadingSpinner}></div> : <><Zap size={20} /> Recharge Now</>}
               </button>
+
               {result && (
                 <div
                   style={{
@@ -379,32 +399,119 @@ function MobileRechargeForm({ rechargeUser }) {
 
       {/* Transactions */}
       <div style={styles.transactionList}>
-        {Array.isArray(transactions) &&transactions.slice(0, 5).map((t, i) => (
-          <div key={`${t.rechargeId}-${t.number}-${i}`} style={styles.transactionItem}>
-            <div style={styles.transactionIcon}>{t.operator.charAt(0)}</div>
-            <div style={styles.transactionDetails}>
-              <div style={styles.transactionOperator}>
-                {t.operator} (ID: {t.operatorId})
+        {Array.isArray(transactions) &&
+          transactions.slice(0, 5).map((t, i) => (
+            <div key={`${t.rechargeId}-${t.number}-${i}`} style={styles.transactionItem}>
+              <div style={styles.transactionIcon}>{t.operator.charAt(0)}</div>
+              <div style={styles.transactionDetails}>
+                <div style={styles.transactionOperator}>
+                  {t.operator} (ID: {t.operatorId})
+                </div>
+                <div style={styles.transactionNumber}>{t.number}</div>
+                <div style={styles.transactionDate}>{new Date(t.dateTime).toLocaleString()}</div>
               </div>
-              <div style={styles.transactionNumber}>{t.number}</div>
-              <div style={styles.transactionDate}>
-                {new Date(t.dateTime).toLocaleString()}
+              <div style={styles.transactionRight}>
+                <div style={styles.transactionAmount}>₹{t.amount}</div>
+                <div style={styles.transactionProfit}>Profit: ₹{t.profit}</div>
+                <div style={styles.transactionBalance}>Balance: ₹{t.balance}</div>
+                <div style={styles.transactionStatus}>{t.status}</div>
               </div>
             </div>
-            <div style={styles.transactionRight}>
-              <div style={styles.transactionAmount}>₹{t.amount}</div>
-              <div style={styles.transactionProfit}>Profit: ₹{t.profit}</div>
-              <div style={styles.transactionBalance}>Balance: ₹{t.balance}</div>
-              <div style={styles.transactionStatus}>{t.status}</div>
-            </div>
-          </div>
-        ))}
+          ))}
       </div>
+{bestOffers && bestOffers.length > 0 && (
+  <>
+    <h2 className="text-xl font-semibold mb-3">Best Plans For You</h2>
+    <div className="grid grid-cols-2 gap-3">
+      {bestOffers.map((plan, index) => (
+        <div key={index} className="border bg-white rounded p-3 shadow-sm flex flex-col justify-between">
+          <div>
+            <div className="text-2xl font-bold">₹{plan.price}</div>
+            <div className="text-sm mt-2 text-gray-600">{plan.ofrtext}</div>
+            {plan.logdesc && (
+              <div className="text-xs mt-1 text-gray-500 italic">{plan.logdesc}</div>
+            )}
+          </div>
+
+          <button
+            className="mt-3 bg-blue-600 text-white rounded py-1 text-sm"
+            onClick={() => handleSelectPlan(plan)}
+          >
+            Select Plan ₹{plan.price}
+          </button>
+        </div>
+      ))}
+    </div>
+  </>
+)}
+
+      {/* PLAN SECTION UI */}
+      {showPlans && plans && typeof plans === "object" && (
+        <div style={{ marginTop: "25px", gridColumn: "1 / span 2" }}>
+          <h3 style={{ marginBottom: "10px", fontWeight: "600" }}>Best Plans For You</h3>
+
+          {/* Tabs */}
+          <div style={{ display: "flex", gap: "10px", overflowX: "auto" }}>
+            {Object.keys(plans).map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                style={{
+                  padding: "6px 15px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  background: activeCategory === cat ? "#007bff" : "#e9ecef",
+                  color: activeCategory === cat ? "#fff" : "#000",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* Cards */}
+          <div style={{ marginTop: "10px" }}>
+            {plans[activeCategory]?.map((p, i) => (
+              <div
+                key={i}
+                style={{
+                  background: "#fff",
+                  border: "1px solid #ddd",
+                  padding: "15px",
+                  marginBottom: "10px",
+                  borderRadius: "8px",
+                }}
+              >
+                <h3>₹ {p.rs}</h3>
+                <p>
+                  <b>Validity:</b> {p.validity}
+                </p>
+                <p>{p.desc}</p>
+                <button
+                  type="button"
+                  onClick={() => setFormData((prev) => ({ ...prev, amount: p.rs.toString() }))}
+                  style={{
+                    marginTop: "8px",
+                    background: "#28a745",
+                    color: "#fff",
+                    padding: "6px 12px",
+                    borderRadius: "6px",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Select Plan ₹{p.rs}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-// ✅ Main Component
 export default function MobileRecharge() {
   const [activeTab, setActiveTab] = useState("mobile");
   const [rechargeUser, setRechargeUser] = useState({});
@@ -423,7 +530,6 @@ export default function MobileRecharge() {
       <Hero title="Instant Mobile Recharge" subtitle="Fast, secure, and reliable mobile recharges for all operators" />
       <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      {/* Tabs */}
       {activeTab === "mobile" && <MobileRechargeForm rechargeUser={rechargeUser} />}
       {activeTab === "dth" && <DTHRecharge />}
       {activeTab === "datacard" && <DataCardRecharge />}
@@ -436,9 +542,7 @@ export default function MobileRecharge() {
       {activeTab === "water bill" && <WaterBillRecharge />}
 
       <footer style={styles.footer}>
-        <p style={styles.footerText}>
-          © 2025 <span style={styles.footerBrand}>CodeWeb Telecom</span> - All Rights Reserved
-        </p>
+        <p style={styles.footerText}>© 2025 <span style={styles.footerBrand}>CodeWeb Telecom</span> - All Rights Reserved</p>
       </footer>
     </div>
   );

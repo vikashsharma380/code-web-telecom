@@ -2,20 +2,146 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 
-const API_KEY = "6fda75354f70927c5d45a3a4dca7f6ce"; // apna real API key
 
-// Example: /api/simple-plan?circle=Gujarat&operator=Jio
-router.get("/simple-plan", async (req, res) => {
-  const { circle, operator } = req.query;
+const MEMBER_ID = "6650";
+const PASSWORD = "Ansari@2580";
+
+// REVERSE mapping (internal -> original PlanAPI)
+const reverseOperatorMapping = {
+  "RC": "11", // JIO
+  "A": "2",   // Airtel
+  "V": "23",  // Vodafone
+  "BT": "4",  // BSNL
+  "I": "6"    // IDEA
+};
+const reverseCircleMapping = {
+  "27": "101", // Madhya Pradesh + Chhattisgarh
+  "16": "101", // (both same original code 101)
+
+  "22": "105", // Jharkhand
+  "13": "49",  // Andhra Pradesh
+  "14": "95",  // Kerala
+  "8": "94",   // Tamil Nadu
+  "7": "40",   // Chennai
+  "9": "06",   // Karnataka
+  "17": "52",  // Bihar/Jharkhand Alternate old mapping
+  "24": "56",  // Assam
+  "23": "53",  // North East
+  "2": "51",   // West Bengal
+  "6": "31",   // Kolkata
+  "18": "70",  // Rajasthan
+  "12": "98",  // Gujarat
+  "4": "90",   // Maharashtra
+  "3": "92",   // Mumbai
+  "10": "54",  // UP East
+  "25": "55",  // Jammu & Kashmir
+  "20": "96",  // Haryana
+  "21": "03",  // Himachal Pradesh
+  "1": "02",   // Punjab
+  "11": "97",  // UP West + Uttarakhand
+  "5": "10",   // Delhi NCR
+}
+
+
+router.get("/fetch-mobile-plans", async (req, res) => {
+  const { operatorcode, circle } = req.query;
+
+  // internal → original convert
+  const originalOperator = reverseOperatorMapping[operatorcode];
+  const originalCircle = reverseCircleMapping[circle];
+
+  if (!originalOperator || !originalCircle) {
+    return res.status(400).json({ error: "Mapping not found for operator/circle" });
+  }
+
+  const url = `https://planapi.in/api/Mobile/NewMobilePlans?apimember_id=${MEMBER_ID}&api_password=${PASSWORD}&operatorcode=${originalOperator}&cricle=${originalCircle}`;
 
   try {
-    const url = `https://www.mplan.in/api/plans.php?apikey=${API_KEY}&circle=${circle}&operator=${operator}`;
-    console.log("Fetching Mplan URL:", url); // 👈 Debug line
+    console.log("Final API URL:", url);
     const response = await axios.get(url);
+
+   if (response.data.RDATA) {
+  return res.json({ RDATA: response.data.RDATA });
+}
+
+    return res.json(response.data);
+
+  } catch (error) {
+    console.error("PlanAPI Error:", error.message);
+    res.status(500).json({ error: "Failed to fetch mobile plans" });
+  }
+});
+
+router.get("/fetch-best-offer", async (req, res) => {
+  const { operatorcode, mobile } = req.query;
+
+  const originalOperator = reverseOperatorMapping[operatorcode];
+  if (!originalOperator) {
+    return res.status(400).json({ error: "Operator mapping not found" });
+  }
+
+  const url = `https://planapi.in/api/Mobile/RofferCheck?apimember_id=${MEMBER_ID}&api_password=${PASSWORD}&operator_code=${originalOperator}&mobile_no=${mobile}`;
+
+  try {
+    console.log("BEST OFFER URL:", url);
+    const response = await axios.get(url);
+
+    return res.json(response.data);
+  } catch (error) {
+    console.error("BEST OFFER API Error:", error.message);
+    res.status(500).json({ error: "Failed to fetch best offer" });
+  }
+});
+
+
+const reverseDTHMapping = {
+  "ATV": "24", // Airtel dth
+  "DTV": "25", // Dish TV
+  "RBTV": "26", // Reliance Big TV (agar use krna ho future me)
+  "STV": "27", // Sun Direct
+  "TTV": "28", // Tata Sky
+  "VTV": "29", // Videocon D2H
+};
+
+router.get("/dth-info-check", async (req, res) => {
+  const { operatorcode, mobile } = req.query;
+
+  const originalOperator = reverseDTHMapping[operatorcode];
+
+  if (!originalOperator) {
+    return res.status(400).json({ error: "DTH Operator mapping not found" });
+  }
+
+  const url = `https://planapi.in/api/Mobile/DTHINFOCheck?apimember_id=${MEMBER_ID}&api_password=${PASSWORD}&mobile_no=${mobile}&Opcode=${originalOperator}`;
+
+  try {
+    console.log("DTH INFO CHECK URL:", url);
+    const response = await axios.get(url);
+
     res.json(response.data);
   } catch (error) {
-    console.error("Error fetching Mplan plans:", error.message);
-    res.status(500).json({ error: "Failed to fetch simple plan" });
+    console.log("DTH INFO CHECK ERROR =>", error);
+    res.status(500).json({ error: "Failed to DTH info check" });
+  }
+});
+router.get("/fetch-dth-plans", async (req, res) => {
+  const { operatorcode } = req.query;
+
+  const originalOperator = reverseDTHMapping[operatorcode];
+  if (!originalOperator) {
+    return res.status(400).json({ error: "DTH Operator mapping not found" });
+  }
+
+  const url = `https://planapi.in/api/Mobile/DthPlans?apimember_id=${MEMBER_ID}&api_password=${PASSWORD}&operatorcode=${originalOperator}`;
+
+  try {
+    console.log("DTH PLAN FETCH URL:", url);
+    const response = await axios.get(url);
+
+    res.json(response.data);
+  } catch (error) {
+    console.log("DTH PLAN FETCH ERROR =>", error);
+    res.status(500).json({ error: "Failed to fetch DTH plans" });
   }
 });
 
