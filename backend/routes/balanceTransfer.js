@@ -72,20 +72,19 @@ router.post("/balance/revert", async (req, res) => {
 
 router.get("/users/:userId", async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = Number(req.params.userId); // 👈 convert here
+
+    if (isNaN(userId)) {
+      return res.status(400).json({ success: false, message: "Invalid userId" });
+    }
 
     console.log("🔍 Fetching retailer userId:", userId);
 
-    // Try both string and number match
-    const user =
-      (await User.findOne({ userId })) ||
-      (await User.findOne({ userId: Number(userId) }));
+    const user = await User.findOne({ userId: userId });
 
     if (!user) {
       console.warn("⚠️ User not found for ID:", userId);
-      return res
-        .status(404)
-        .json({ success: false, message: "Retailer not found" });
+      return res.status(404).json({ success: false, message: "Retailer not found" });
     }
 
     res.json({
@@ -107,6 +106,7 @@ router.get("/users/:userId", async (req, res) => {
     });
   }
 });
+
 
 
 

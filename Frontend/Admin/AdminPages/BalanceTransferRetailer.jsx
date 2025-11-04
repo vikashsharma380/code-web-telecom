@@ -101,37 +101,28 @@ const BalanceTransferRetailer = () => {
 
 const handleRetailerLogin = async (retailerId) => {
   try {
-    const res = await fetch(`${API_URL}/api/users/${retailerId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    const res = await fetch(`${API_URL}/api/users/${retailerId}`);
     const data = await res.json();
 
-    if (!data.success) return alert("Retailer details not found");
+    if (!data.success) return alert(data.message || "Login failed");
 
-    const retailer = data.user;
+    const { user } = data;
 
-    // ✅ LocalStorage me set kar dena retailer credentials
+    // ✅ Store retailer details in localStorage
     localStorage.setItem(
-      "rechargeUser",
-      JSON.stringify({
-        username: retailer.userId,
-        pwd: retailer.apiPassword,
-        name: retailer.name,
-        email: retailer.email,
-      })
+      "token",
+      JSON.stringify({ adminLoginAs: "retailer", userId: user.userId })
     );
+    localStorage.setItem("user", JSON.stringify(user));
 
-    alert(`✅ Logged in as ${retailer.name}`);
-
-    // ✅ Redirect to retailer dashboard
+    alert(`Logged in as ${user.name}`);
     navigate("/MobileRecharge");
   } catch (err) {
-    console.error("Retailer login error:", err);
-    alert("Server error while logging in as retailer");
+    console.error("Login as retailer error:", err);
+    alert("Server error while logging in retailer");
   }
 };
+
 
 
   const styles = {
