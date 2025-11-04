@@ -344,6 +344,7 @@ app.use("/api", infoFetchRoutes);
 
 const balanceTransferRoutes = require("./routes/balanceTransfer");
 app.use("/api", balanceTransferRoutes);
+app.use("/api", require("./routes/distributorRoutes"));
 
 app.get("/myip", async (req, res) => {
   try {
