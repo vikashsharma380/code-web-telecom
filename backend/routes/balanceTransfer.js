@@ -72,40 +72,51 @@ router.post("/balance/revert", async (req, res) => {
 
 router.get("/users/:userId", async (req, res) => {
   try {
-    const userId = Number(req.params.userId); // 👈 convert here
+    // 👇 Step 1: Convert param to number safely
+    const userId = Number(req.params.userId);
 
     if (isNaN(userId)) {
-      return res.status(400).json({ success: false, message: "Invalid userId" });
+      console.warn("⚠️ Invalid userId:", req.params.userId);
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid userId format" });
     }
 
-    console.log("🔍 Fetching retailer userId:", userId);
+    console.log("🔍 Searching for userId:", userId);
 
-    const user = await User.findOne({ userId: userId });
+    // 👇 Step 2: Query with number (schema me number hai)
+    const user = await User.findOne({ userId: userId }).lean();
 
     if (!user) {
-      console.warn("⚠️ User not found for ID:", userId);
-      return res.status(404).json({ success: false, message: "Retailer not found" });
+      console.warn("⚠️ No user found for ID:", userId);
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
+    console.log("✅ User found:", user.name);
+
+    // 👇 Step 3: Send safe response
     res.json({
       success: true,
       user: {
         userId: user.userId,
-        name: user.name,
+        name: user.name || "",
         email: user.email || "",
         apiPassword: user.apiPassword || "",
-        role: user.role,
+        role: user.role || "user",
       },
     });
   } catch (err) {
-    console.error("❌ Get user error:", err);
+    console.error("❌ Get user error:", err.message);
     res.status(500).json({
       success: false,
-      message: "Server error",
+      message: "Server error while fetching user",
       details: err.message,
     });
   }
 });
+
 
 
 
