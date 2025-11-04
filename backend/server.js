@@ -346,6 +346,9 @@ const balanceTransferRoutes = require("./routes/balanceTransfer");
 app.use("/api", balanceTransferRoutes);
 app.use("/api", require("./routes/distributorRoutes"));
 
+app.use("/api", require("./routes/balanceMasterDistributor"));
+
+
 app.get("/myip", async (req, res) => {
   try {
     const response = await axios.get("https://api.ipify.org?format=json");
