@@ -342,6 +342,8 @@ app.use("/api", electricityRoutes);
 const infoFetchRoutes = require("./routes/infoFetch");
 app.use("/api", infoFetchRoutes);
 
+const balanceTransferRoutes = require("./routes/balanceTransfer");
+app.use("/api", balanceTransferRoutes);
 
 app.get("/myip", async (req, res) => {
   try {
