@@ -70,33 +70,27 @@ router.post("/balance/revert", async (req, res) => {
   }
 });
 
-// ✅ Get user details by userId safely (works with string or number)
+
 router.get("/users/:userId", async (req, res) => {
   try {
-    const paramId = req.params.userId?.trim();
+    const userIdParam = req.params.userId?.trim();
 
-    if (!paramId) {
-      return res.status(400).json({ success: false, message: "Missing userId" });
-    }
+    console.log("🔍 Fetching user for userId:", userIdParam);
 
-    console.log("🔍 Searching user for userId:", paramId);
-
-    // 👉 Try both numeric & string match (to handle all DB variations)
-    const query = {
-      $or: [{ userId: Number(paramId) }, { userId: paramId }],
-    };
-
-    const user = await User.findOne(query).lean();
+    // 💡 Fix: explicitly exclude _id usage
+    const user = await User.findOne({
+      $or: [
+        { userId: Number(userIdParam) },
+        { userId: userIdParam },
+      ],
+    }).lean();
 
     if (!user) {
-      console.warn("⚠️ No user found:", paramId);
+      console.warn("⚠️ User not found:", userIdParam);
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    console.log("✅ User found:", user.name);
-
-    // ✅ Safe response
-    return res.json({
+    res.json({
       success: true,
       user: {
         userId: user.userId,
@@ -108,7 +102,7 @@ router.get("/users/:userId", async (req, res) => {
     });
   } catch (err) {
     console.error("❌ Get user error:", err);
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message: "Server error while fetching user",
       details: err.message,
