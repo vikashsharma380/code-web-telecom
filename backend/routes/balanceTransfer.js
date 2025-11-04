@@ -70,33 +70,26 @@ router.post("/balance/revert", async (req, res) => {
   }
 });
 
+// ✅ Get single user by userId (handles both Number & String safely)
 router.get("/users/:userId", async (req, res) => {
   try {
-    // 👇 Step 1: Convert param to number safely
-    const userId = Number(req.params.userId);
+    const paramId = req.params.userId;
+    const userIdNum = Number(paramId);
 
-    if (isNaN(userId)) {
-      console.warn("⚠️ Invalid userId:", req.params.userId);
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid userId format" });
-    }
+    console.log("🔍 Searching user for param:", paramId);
 
-    console.log("🔍 Searching for userId:", userId);
-
-    // 👇 Step 2: Query with number (schema me number hai)
-    const user = await User.findOne({ userId: userId }).lean();
+    // Try both string & number versions safely
+    const user = await User.findOne({
+      $or: [{ userId: userIdNum }, { userId: paramId }],
+    }).lean();
 
     if (!user) {
-      console.warn("⚠️ No user found for ID:", userId);
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
+      console.warn("⚠️ No user found for ID:", paramId);
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
     console.log("✅ User found:", user.name);
 
-    // 👇 Step 3: Send safe response
     res.json({
       success: true,
       user: {
@@ -108,7 +101,7 @@ router.get("/users/:userId", async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("❌ Get user error:", err.message);
+    console.error("❌ Get user error:", err);
     res.status(500).json({
       success: false,
       message: "Server error while fetching user",
