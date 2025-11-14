@@ -5,9 +5,8 @@ const User = require("../models/user");
 // ✅ Get all retailers (role: "user")
 router.get("/retailers", async (req, res) => {
   try {
-    // 👇 filter changed: role: "user"
     const retailers = await User.find({ role: "user" })
-      .select("userId name balance email mobile")
+      .select("userId name balance email mobile phone")
       .sort({ userId: 1 });
 
     res.json({ success: true, retailers });
@@ -21,12 +20,19 @@ router.get("/retailers", async (req, res) => {
 router.post("/balance/add", async (req, res) => {
   try {
     const { retailerId, amount } = req.body;
+
     if (!retailerId || !amount)
       return res.status(400).json({ success: false, message: "Missing fields" });
 
     const retailer = await User.findOne({ userId: retailerId });
+
     if (!retailer)
       return res.status(404).json({ success: false, message: "User not found" });
+
+    // 🔥 Auto-fix missing phone field
+    if (!retailer.phone) {
+      retailer.phone = retailer.mobile;
+    }
 
     retailer.balance = (retailer.balance || 0) + Number(amount);
     await retailer.save();
@@ -46,12 +52,19 @@ router.post("/balance/add", async (req, res) => {
 router.post("/balance/revert", async (req, res) => {
   try {
     const { retailerId, amount } = req.body;
+
     if (!retailerId || !amount)
       return res.status(400).json({ success: false, message: "Missing fields" });
 
     const retailer = await User.findOne({ userId: retailerId });
+
     if (!retailer)
       return res.status(404).json({ success: false, message: "User not found" });
+
+    // 🔥 Auto-fix missing phone field
+    if (!retailer.phone) {
+      retailer.phone = retailer.mobile;
+    }
 
     if ((retailer.balance || 0) < Number(amount))
       return res.status(400).json({ success: false, message: "Insufficient balance" });
@@ -70,14 +83,11 @@ router.post("/balance/revert", async (req, res) => {
   }
 });
 
-
+// ✅ View User by userId
 router.get("/users/:userId", async (req, res) => {
   try {
     const userIdParam = req.params.userId?.trim();
 
-    console.log("🔍 Fetching user for userId:", userIdParam);
-
-    // 💡 Fix: explicitly exclude _id usage
     const user = await User.findOne({
       $or: [
         { userId: Number(userIdParam) },
@@ -85,10 +95,8 @@ router.get("/users/:userId", async (req, res) => {
       ],
     }).lean();
 
-    if (!user) {
-      console.warn("⚠️ User not found:", userIdParam);
+    if (!user)
       return res.status(404).json({ success: false, message: "User not found" });
-    }
 
     res.json({
       success: true,
@@ -96,6 +104,7 @@ router.get("/users/:userId", async (req, res) => {
         userId: user.userId,
         name: user.name || "",
         email: user.email || "",
+        mobile: user.mobile || "",
         apiPassword: user.apiPassword || "",
         role: user.role || "user",
       },
@@ -109,10 +118,5 @@ router.get("/users/:userId", async (req, res) => {
     });
   }
 });
-
-
-
-
-
 
 module.exports = router;
