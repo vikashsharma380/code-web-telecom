@@ -33,18 +33,49 @@ router.get("/retailers", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-router.get("/:id", async (req, res) => {
+
+
+// ✅ Get user by userId OR mobile (NO ObjectId)
+router.get("/:userId", async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const id = req.params.userId.trim();
+
+    console.log("🔍 Fetch request for:", id);
+
+    const user = await User.findOne({
+      $or: [
+        { userId: Number(id) },  // retailerId
+        { mobile: id },          // mobile login
+        { phone: id },
+      ],
+    }).lean();
+
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
-    res.json(user);
-  } catch (error) {
-    console.error("Error fetching user details:", error);
-    res.status(500).json({ message: "Server error" });
+
+    res.json({
+      success: true,
+      user: {
+        userId: user.userId,
+        name: user.name,
+        mobile: user.mobile,
+        email: user.email,
+        balance: user.balance,
+        role: user.role,
+        apiPassword: user.apiPassword || user.password, // login use
+      },
+    });
+  } catch (err) {
+    console.error("❌ User fetch error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: err.message,
+    });
   }
 });
+
 
 router.put("/:id", async (req, res) => {
   try {
