@@ -4,6 +4,8 @@ const User = require("../models/user");
 const Counter = require("../models/Counter");
 const router = express.Router();
 const ADMIN_MOBILE = "9266982764";
+const { verifyToken } = require("../middleware/authMiddleware");
+
 async function getNextUserId() {
   // We'll use a counter document named 'userId'
   const counter = await Counter.findOneAndUpdate(
