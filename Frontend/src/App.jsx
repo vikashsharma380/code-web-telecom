@@ -73,6 +73,7 @@ import BalanceTransferDistributor from "../Admin/AdminPages/BalanceTransferDistr
 import BalanceTransferMasterDistributor from "../Admin/AdminPages/BalanceTransferMasterDistributor";
 import DistributorPanel from "../Admin/AdminPages/DistributorPanel";
 import ReportAccountReport from "../Admin/AdminPages/ReportAccountReport";
+import LeaderBoard from "../Admin/LeaderBoard";
 // import CustomersDropdown from "../Admin/CustomersDropdown";
 
 function App() {
@@ -231,6 +232,7 @@ function App() {
           path="/balance-transfer-retailer"
           element={<DistributorPanel />}
         />
+        <Route path="/leaderboard" element={<LeaderBoard />} />
       </Routes>
       {/* <CustomersDropdown /> */}
     </>
