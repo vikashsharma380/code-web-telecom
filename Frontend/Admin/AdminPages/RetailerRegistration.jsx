@@ -29,7 +29,7 @@ const RetailerRegistration = () => {
   const handleSubmit = async () => {
     try {
       const response = await fetch(
-        "https://code-web-telecom-production-5618.up.railway.app/api/retailer-register",
+        "https://api.codewebtelecom.in/api/retailer-register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
