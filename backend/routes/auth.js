@@ -4,6 +4,8 @@ const User = require("../models/user");
 const Counter = require("../models/Counter");
 const router = express.Router();
 const ADMIN_MOBILE = "9266982764";
+const { verifyToken } = require("../middleware/authMiddleware");
+
 async function getNextUserId() {
   // We'll use a counter document named 'userId'
   const counter = await Counter.findOneAndUpdate(
@@ -158,6 +160,52 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+
+router.post("/impersonate", verifyToken, async (req, res) => {
+  try {
+    const admin = await User.findById(req.user.id);
+
+    if (!admin || admin.role !== "admin") {
+      return res.status(403).json({ success: false, message: "Not allowed" });
+    }
+
+    const { targetUserId } = req.body;
+    const targetUser = await User.findOne({ userId: targetUserId });
+
+    if (!targetUser) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // 🔥 REAL LOGIN TOKEN (same as normal login)
+    const token = jwt.sign(
+      { id: targetUser._id, role: targetUser.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // 🔥 REAL LOGIN USER DATA (same as normal login)
+    return res.json({
+      success: true,
+      message: "Logged in as " + targetUser.name,
+      token,
+      user: {
+        userId: targetUser.userId,
+        name: targetUser.name,
+        role: targetUser.role,
+        mobile: targetUser.mobile,
+        email: targetUser.email,
+        balance: targetUser.balance
+      }
+    });
+
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+
+
 const axios = require("axios");
 
 const otpStore = new Map();
