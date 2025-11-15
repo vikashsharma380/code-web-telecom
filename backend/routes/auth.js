@@ -162,7 +162,6 @@ router.post("/login", async (req, res) => {
 });
 
 
-
 router.post("/impersonate", verifyToken, async (req, res) => {
   try {
     const admin = await User.findById(req.user.id);
@@ -172,19 +171,20 @@ router.post("/impersonate", verifyToken, async (req, res) => {
     }
 
     const { targetUserId } = req.body;
-
     const targetUser = await User.findOne({ userId: targetUserId });
+
     if (!targetUser) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    // ⭐ Create REAL LOGIN-TOKEN of USER
+    // 🔥 REAL LOGIN TOKEN (same as normal login)
     const token = jwt.sign(
       { id: targetUser._id, role: targetUser.role },
       process.env.JWT_SECRET,
-      { expiresIn: "24h" }
+      { expiresIn: "7d" }
     );
 
+    // 🔥 REAL LOGIN USER DATA (same as normal login)
     return res.json({
       success: true,
       message: "Logged in as " + targetUser.name,
@@ -192,16 +192,18 @@ router.post("/impersonate", verifyToken, async (req, res) => {
       user: {
         userId: targetUser.userId,
         name: targetUser.name,
-        mobile: targetUser.mobile,
-        balance: targetUser.balance,
         role: targetUser.role,
-      },
+        mobile: targetUser.mobile,
+        email: targetUser.email,
+        balance: targetUser.balance
+      }
     });
+
   } catch (err) {
-    console.log("Impersonation ERROR:", err);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({ success: false, message: err.message });
   }
 });
+
 
 
 const axios = require("axios");
