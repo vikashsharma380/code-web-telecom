@@ -158,6 +158,62 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+
+
+router.post("/impersonate-login", async (req, res) => {
+  try {
+    const { adminToken, targetUserId } = req.body;
+
+    if (!adminToken || !targetUserId) {
+      return res.status(400).json({ success: false, message: "Missing fields" });
+    }
+
+    // 🔐 Verify admin token
+    let decoded;
+    try {
+      decoded = jwt.verify(adminToken, process.env.JWT_SECRET);
+    } catch (e) {
+      return res.status(401).json({ success: false, message: "Invalid admin token" });
+    }
+
+    const adminUser = await User.findById(decoded.id);
+
+    if (!adminUser || adminUser.role !== "admin") {
+      return res.status(403).json({ success: false, message: "Not allowed" });
+    }
+
+    // 🎯 Fetch target user
+    const user = await User.findOne({ userId: targetUserId });
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // 🔥 Issue token AS THE USER (impersonation)
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
+
+    res.json({
+      success: true,
+      message: "Logged in as " + user.name,
+      token,
+      user: {
+        userId: user.userId,
+        name: user.name,
+        role: user.role,
+        mobile: user.mobile,
+        balance: user.balance,
+      },
+    });
+  } catch (err) {
+    console.log("Impersonation Login Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
 const axios = require("axios");
 
 const otpStore = new Map();
