@@ -13,7 +13,7 @@ const LeaderBoard = () => {
 
   const itemsPerPage = 7;
 
-  // Dummy fintech leaderboard data
+  // Dummy fintech leaderboard data WITH phone numbers
   const rawData = [
     {
       id: 1,
@@ -25,6 +25,7 @@ const LeaderBoard = () => {
       growth: 12.5,
       transactions: 420,
       period: "This Month",
+      phone: "9876500001",
     },
     {
       id: 2,
@@ -36,6 +37,7 @@ const LeaderBoard = () => {
       growth: 9.4,
       transactions: 380,
       period: "This Month",
+      phone: "9876500002",
     },
     {
       id: 3,
@@ -47,6 +49,7 @@ const LeaderBoard = () => {
       growth: 7.2,
       transactions: 350,
       period: "This Week",
+      phone: "9876500003",
     },
     {
       id: 4,
@@ -58,6 +61,7 @@ const LeaderBoard = () => {
       growth: 6.1,
       transactions: 330,
       period: "This Week",
+      phone: "9876500004",
     },
     {
       id: 5,
@@ -69,6 +73,7 @@ const LeaderBoard = () => {
       growth: 5.4,
       transactions: 320,
       period: "This Month",
+      phone: "9876500005",
     },
     {
       id: 6,
@@ -80,6 +85,7 @@ const LeaderBoard = () => {
       growth: 4.3,
       transactions: 290,
       period: "Today",
+      phone: "9876500006",
     },
     {
       id: 7,
@@ -91,6 +97,7 @@ const LeaderBoard = () => {
       growth: 10.1,
       transactions: 440,
       period: "This Month",
+      phone: "9876500007",
     },
     {
       id: 8,
@@ -102,6 +109,7 @@ const LeaderBoard = () => {
       growth: 3.9,
       transactions: 270,
       period: "Today",
+      phone: "9876500008",
     },
     {
       id: 9,
@@ -113,6 +121,7 @@ const LeaderBoard = () => {
       growth: 3.2,
       transactions: 250,
       period: "This Week",
+      phone: "9876500009",
     },
     {
       id: 10,
@@ -124,28 +133,7 @@ const LeaderBoard = () => {
       growth: 4.0,
       transactions: 260,
       period: "This Month",
-    },
-    {
-      id: 11,
-      name: "Manish Kumar",
-      role: "Retailer",
-      business: 75000,
-      commission: 3500,
-      today: 4200,
-      growth: 2.4,
-      transactions: 210,
-      period: "Today",
-    },
-    {
-      id: 12,
-      name: "Sonia Roy",
-      role: "Distributor",
-      business: 89000,
-      commission: 3900,
-      today: 5000,
-      growth: 2.9,
-      transactions: 230,
-      period: "This Week",
+      phone: "9876500010",
     },
   ];
 
@@ -162,12 +150,7 @@ const LeaderBoard = () => {
     });
   };
 
-  const getSortIcon = (key) => {
-    if (sortConfig.key !== key) return "↕";
-    return sortConfig.direction === "asc" ? "▲" : "▼";
-  };
-
-  // Process data: filter + search + sort + rank
+  // Process data: search by name + phone
   const processedData = useMemo(() => {
     let filtered = [...rawData];
 
@@ -181,8 +164,10 @@ const LeaderBoard = () => {
 
     if (searchTerm.trim() !== "") {
       const term = searchTerm.toLowerCase();
-      filtered = filtered.filter((item) =>
-        item.name.toLowerCase().includes(term)
+      filtered = filtered.filter(
+        (item) =>
+          item.name.toLowerCase().includes(term) ||
+          item.phone.toLowerCase().includes(term)
       );
     }
 
@@ -258,14 +243,8 @@ const LeaderBoard = () => {
             >
               Fintech Leaderboard
             </div>
-            <div
-              style={{
-                fontSize: "13px",
-                opacity: 0.85,
-              }}
-            >
-              Performance ranking of your Master Distributors, Distributors and
-              Retailers based on business volume & commission.
+            <div style={{ fontSize: "13px", opacity: 0.85 }}>
+              Performance ranking with mobile number lookup.
             </div>
           </div>
 
@@ -302,7 +281,7 @@ const LeaderBoard = () => {
           }}
         >
           <input
-            placeholder="Search by agent name..."
+            placeholder="Search name or phone number..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -380,7 +359,7 @@ const LeaderBoard = () => {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "70px 1.2fr 0.9fr 1.1fr 1.1fr 0.9fr 0.7fr",
+              gridTemplateColumns: "70px 1fr 0.8fr 0.8fr 1fr 1fr 0.8fr 0.6fr",
               padding: "12px 16px",
               fontWeight: 600,
               fontSize: "13px",
@@ -394,11 +373,16 @@ const LeaderBoard = () => {
               sortKey="rank"
               current={sortConfig}
               onClick={handleSort}
-              align="left"
             />
             <HeaderCell
               label="Name"
               sortKey="name"
+              current={sortConfig}
+              onClick={handleSort}
+            />
+            <HeaderCell
+              label="Phone"
+              sortKey="phone"
               current={sortConfig}
               onClick={handleSort}
             />
@@ -454,7 +438,7 @@ const LeaderBoard = () => {
                 style={{
                   display: "grid",
                   gridTemplateColumns:
-                    "70px 1.2fr 0.9fr 1.1fr 1.1fr 0.9fr 0.7fr",
+                    "70px 1fr 0.8fr 0.8fr 1fr 1fr 0.8fr 0.6fr",
                   padding: "12px 16px",
                   fontSize: "14px",
                   borderBottom:
@@ -467,9 +451,8 @@ const LeaderBoard = () => {
               >
                 <div style={{ fontWeight: 600 }}>#{item.rank}</div>
                 <div>{item.name}</div>
-                <div style={{ fontSize: "13px", opacity: 0.9 }}>
-                  {item.role}
-                </div>
+                <div style={{ opacity: 0.9 }}>{item.phone}</div>
+                <div style={{ opacity: 0.9 }}>{item.role}</div>
                 <div>₹{item.business.toLocaleString()}</div>
                 <div>₹{item.commission.toLocaleString()}</div>
                 <div>₹{item.today.toLocaleString()}</div>
@@ -521,7 +504,7 @@ const LeaderBoard = () => {
             </div>
           </div>
         </div>
-      </div>{" "}
+      </div>
     </>
   );
 };
