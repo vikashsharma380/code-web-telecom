@@ -161,58 +161,46 @@ router.post("/login", async (req, res) => {
 
 
 
-router.post("/impersonate-login", async (req, res) => {
+router.post("/impersonate", verifyToken, async (req, res) => {
   try {
-    const { adminToken, targetUserId } = req.body;
+    const admin = await User.findById(req.user.id);
 
-    if (!adminToken || !targetUserId) {
-      return res.status(400).json({ success: false, message: "Missing fields" });
-    }
-
-    // 🔐 Verify admin token
-    let decoded;
-    try {
-      decoded = jwt.verify(adminToken, process.env.JWT_SECRET);
-    } catch (e) {
-      return res.status(401).json({ success: false, message: "Invalid admin token" });
-    }
-
-    const adminUser = await User.findById(decoded.id);
-
-    if (!adminUser || adminUser.role !== "admin") {
+    if (!admin || admin.role !== "admin") {
       return res.status(403).json({ success: false, message: "Not allowed" });
     }
 
-    // 🎯 Fetch target user
-    const user = await User.findOne({ userId: targetUserId });
-    if (!user) {
+    const { targetUserId } = req.body;
+
+    const targetUser = await User.findOne({ userId: targetUserId });
+    if (!targetUser) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    // 🔥 Issue token AS THE USER (impersonation)
+    // ⭐ Create REAL LOGIN-TOKEN of USER
     const token = jwt.sign(
-      { id: user._id, role: user.role },
+      { id: targetUser._id, role: targetUser.role },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
 
-    res.json({
+    return res.json({
       success: true,
-      message: "Logged in as " + user.name,
+      message: "Logged in as " + targetUser.name,
       token,
       user: {
-        userId: user.userId,
-        name: user.name,
-        role: user.role,
-        mobile: user.mobile,
-        balance: user.balance,
+        userId: targetUser.userId,
+        name: targetUser.name,
+        mobile: targetUser.mobile,
+        balance: targetUser.balance,
+        role: targetUser.role,
       },
     });
   } catch (err) {
-    console.log("Impersonation Login Error:", err);
+    console.log("Impersonation ERROR:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+
 
 const axios = require("axios");
 
