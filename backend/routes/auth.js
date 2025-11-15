@@ -121,19 +121,27 @@ router.post("/login", async (req, res) => {
     let user;
 
     if (/^\d{10}$/.test(loginInput)) {
-      // mobile is string
       user = await User.findOne({
         $or: [{ mobile: loginInput }, { phone: loginInput }],
       });
     } else {
-      // userId is number
       user = await User.findOne({ userId: Number(loginInput) });
     }
 
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
+
     console.log("✅ Found user:", user.mobile || user.userId);
+
+    // ⭐⭐⭐ BLOCK INACTIVE USERS ⭐⭐⭐
+    if (user.status === "Inactive") {
+      return res.status(403).json({
+        success: false,
+        message: "Your account is deactivated by admin.",
+      });
+    }
+
     console.log("DB password hash:", user.password);
     console.log("Entered password:", password);
 
@@ -160,6 +168,7 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
 
 
 router.post("/impersonate", verifyToken, async (req, res) => {

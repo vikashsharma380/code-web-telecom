@@ -76,6 +76,45 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
+router.patch("/users/update-status", async (req, res) => {
+  try {
+    let { userId, status } = req.body;
+
+    if (!userId || !status) {
+      return res.json({
+        success: false,
+        message: "User ID and status are required",
+      });
+    }
+
+    userId = Number(userId);
+
+    const user = await User.findOne({ userId });
+
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    user.status = status;
+    await user.save();
+
+    return res.json({
+      success: true,
+      message: `User status updated to ${status}`,
+    });
+
+  } catch (err) {
+    console.log("UPDATE STATUS ERROR:", err);
+    res.json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+});
+
 
 router.put("/:id", async (req, res) => {
   try {
