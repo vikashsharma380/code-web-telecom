@@ -13,8 +13,6 @@ import DataCardRecharge from "./DataCardRecharge";
 import GooglePlayRecharge from "./GooglePlayRecharge";
 import WaterBillRecharge from "./WaterBillRecharge";
 
-
-
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function InsuranceRecharge() {
@@ -36,34 +34,34 @@ export default function InsuranceRecharge() {
   };
 
   // === FETCH BALANCE ===
-useEffect(() => {
+  useEffect(() => {
     fetchBalance();
   }, []);
 
-    const fetchBalance = async () => {
-  try {
-    const username = localStorage.getItem("username");
-    const pwd = localStorage.getItem("apiPassword");
+  const fetchBalance = async () => {
+    try {
+      const username = localStorage.getItem("username");
+      const pwd = localStorage.getItem("apiPassword");
 
-    if (!username || !pwd) {
-      console.warn("Missing username or password for balance fetch");
-      return;
+      if (!username || !pwd) {
+        console.warn("Missing username or password for balance fetch");
+        return;
+      }
+
+      const response = await fetch(
+        `/api/balance?username=${username}&pwd=${pwd}`
+      );
+      const data = await response.json();
+
+      if (data.success) {
+        setBalance(data.balance); // Balance state update
+      } else {
+        console.error("Balance fetch failed:", data.error);
+      }
+    } catch (error) {
+      console.error("Error fetching balance:", error);
     }
-
-    const response = await fetch(
-      `/api/balance?username=${username}&pwd=${pwd}`
-    );
-    const data = await response.json();
-
-    if (data.success) {
-      setBalance(data.balance); // Balance state update
-    } else {
-      console.error("Balance fetch failed:", data.error);
-    }
-  } catch (error) {
-    console.error("Error fetching balance:", error);
-  }
-};
+  };
 
   // === INSURANCE PROVIDERS ===
   const insuranceProviders = [
@@ -153,7 +151,7 @@ useEffect(() => {
   return (
     <div style={styles.container}>
       {/* NAVBAR & BALANCE */}
-     <Nav/> 
+      <Nav />
 
       {/* Hero Section */}
       <div style={styles.hero}>
@@ -189,22 +187,22 @@ useEffect(() => {
       </div>
 
       {/* Tab Section */}
-     <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Main Content */}
       <div style={styles.mainContent}>
-          {activeTab === "mobile" && <MobileRecharge />}
-  {activeTab === "dth" && <DTHRecharge />}
-  {activeTab === "datacard" && <DataCardRecharge />}
-  {activeTab === "postpaid" && <PostpaidRecharge />}
-  {activeTab === "electricity" && <ElectricityRecharge />}
-  {activeTab === "gas" && <GasRecharge />}
-  
-  {activeTab === "fastag" && <FASTagRecharge />}
-  {activeTab === "google play" && <GooglePlayRecharge />}
-  {activeTab === "water bill" && <WaterBill />}
-  {activeTab === "landline" && <Landline />}
-  {activeTab === "more" && <MoreServices />}
+        {activeTab === "mobile" && <MobileRecharge />}
+        {activeTab === "dth" && <DTHRecharge />}
+        {activeTab === "datacard" && <DataCardRecharge />}
+        {activeTab === "postpaid" && <PostpaidRecharge />}
+        {activeTab === "electricity" && <ElectricityRecharge />}
+        {activeTab === "gas" && <GasRecharge />}
+
+        {activeTab === "fastag" && <FASTagRecharge />}
+        {activeTab === "google play" && <GooglePlayRecharge />}
+        {activeTab === "water bill" && <WaterBill />}
+        {activeTab === "landline" && <Landline />}
+        {activeTab === "more" && <MoreServices />}
         <div style={styles.contentGrid}>
           {/* Insurance Payment Form */}
           <div style={styles.formSection}>
@@ -365,7 +363,7 @@ useEffect(() => {
       {/* Footer */}
       <footer style={styles.footer}>
         <p style={styles.footerText}>
-          © 2025 <span style={styles.footerBrand}>CodeWeb Telecom</span> - All
+          © 2025 <span style={styles.footerBrand}>Code Web Telecom</span> - All
           Rights Reserved
         </p>
       </footer>

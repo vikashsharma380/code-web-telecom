@@ -468,24 +468,30 @@ export default function ElectricityRecharge() {
               </div>
             </div>
 
-             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "10px 0" }}>
-            <button
-              type="button"
-              onClick={fetchDistrictCodes}
-              style={styles.quickAmountBtn}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                margin: "10px 0",
+              }}
             >
-              Fetch District Codes
-            </button>
-            <button
-              type="button"
-              onClick={fetchBillDetails}
-              style={styles.quickAmountBtn}
-            >
-              Fetch Bill
-            </button>
+              <button
+                type="button"
+                onClick={fetchDistrictCodes}
+                style={styles.quickAmountBtn}
+              >
+                Fetch District Codes
+              </button>
+              <button
+                type="button"
+                onClick={fetchBillDetails}
+                style={styles.quickAmountBtn}
+              >
+                Fetch Bill
+              </button>
+            </div>
           </div>
-          </div>
-         
 
           {districtCodes.length > 0 && (
             <div style={{ marginTop: "15px" }}>
@@ -584,7 +590,7 @@ export default function ElectricityRecharge() {
 
       <footer style={styles.footer}>
         <p style={styles.footerText}>
-          © 2025 <span style={styles.footerBrand}>CodeWeb Telecom</span> - All
+          © 2025 <span style={styles.footerBrand}>Code Web Telecom</span> - All
           Rights Reserved
         </p>
       </footer>

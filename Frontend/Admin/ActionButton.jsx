@@ -81,6 +81,12 @@ export default function ActionButton() {
           >
             RECHARGE HISTORY
           </button>
+          <button
+            style={styles.actionBtn}
+            onClick={() => navigate("/leaderboard")}
+          >
+            LEADERBOARD
+          </button>
         </div>
       </div>
 

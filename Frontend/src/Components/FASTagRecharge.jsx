@@ -16,7 +16,6 @@ import InsuranceRecharge from "./InsuranceRecharge";
 import GooglePlayRecharge from "./GooglePlayRecharge";
 import WaterBillRecharge from "./WaterBillRecharge";
 
-
 export default function FASTagRecharge() {
   const [formData, setFormData] = useState({
     vehicleNumber: "",
@@ -28,7 +27,7 @@ export default function FASTagRecharge() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  
+
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [transactions, setTransactions] = useState([]);
@@ -40,16 +39,17 @@ export default function FASTagRecharge() {
   const quickAmounts = [100, 200, 500, 1000, 2000];
   const [fastagInfo, setFastagInfo] = useState(null);
 
-const fetchFastagInfo = async () => {
-  if (!formData.vehicleNo || !formData.operatorcode)
-    return alert("Enter Vehicle No & Operator first");
+  const fetchFastagInfo = async () => {
+    if (!formData.vehicleNo || !formData.operatorcode)
+      return alert("Enter Vehicle No & Operator first");
 
-  const res = await fetch(`${API_URL}/api/fastag-info-fetch?VehicleNo=${formData.vehicleNo}&operator_code=${formData.operatorcode}`);
-  const data = await res.json();
-  console.log("FASTAG INFO =>", data);
-  setFastagInfo(data);
-};
-
+    const res = await fetch(
+      `${API_URL}/api/fastag-info-fetch?VehicleNo=${formData.vehicleNo}&operator_code=${formData.operatorcode}`
+    );
+    const data = await res.json();
+    console.log("FASTAG INFO =>", data);
+    setFastagInfo(data);
+  };
 
   const operators = [
     { code: "A", name: "Airtel" },
@@ -87,34 +87,34 @@ const fetchFastagInfo = async () => {
     amount: formData.amount,
   };
   // === FETCH BALANCE ===
- useEffect(() => {
-     fetchBalance();
-   }, []);
- 
-     const fetchBalance = async () => {
-   try {
-     const username = localStorage.getItem("username");
-     const pwd = localStorage.getItem("apiPassword");
- 
-     if (!username || !pwd) {
-       console.warn("Missing username or password for balance fetch");
-       return;
-     }
- 
-     const response = await fetch(
-       `/api/balance?username=${username}&pwd=${pwd}`
-     );
-     const data = await response.json();
- 
-     if (data.success) {
-       setBalance(data.balance); // Balance state update
-     } else {
-       console.error("Balance fetch failed:", data.error);
-     }
-   } catch (error) {
-     console.error("Error fetching balance:", error);
-   }
- };
+  useEffect(() => {
+    fetchBalance();
+  }, []);
+
+  const fetchBalance = async () => {
+    try {
+      const username = localStorage.getItem("username");
+      const pwd = localStorage.getItem("apiPassword");
+
+      if (!username || !pwd) {
+        console.warn("Missing username or password for balance fetch");
+        return;
+      }
+
+      const response = await fetch(
+        `/api/balance?username=${username}&pwd=${pwd}`
+      );
+      const data = await response.json();
+
+      if (data.success) {
+        setBalance(data.balance); // Balance state update
+      } else {
+        console.error("Balance fetch failed:", data.error);
+      }
+    } catch (error) {
+      console.error("Error fetching balance:", error);
+    }
+  };
   // === OPERATOR AUTO-DETECT ===
   useEffect(() => {
     const detectOperator = async () => {
@@ -221,22 +221,22 @@ const fetchFastagInfo = async () => {
       />
 
       {/* Tabs */}
- <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Main Content */}
       <div style={styles.mainContent}>
-          {activeTab === "mobile" && <MobileRecharge />}
-  {activeTab === "dth" && <DTHRecharge />}
-  {activeTab === "datacard" && <DataCardRecharge />}
-  {activeTab === "postpaid" && <PostpaidRecharge />}
-  {activeTab === "electricity" && <ElectricityRecharge />}
-  {activeTab === "gas" && <GasRecharge />}
-  {activeTab === "insurance" && <Insurance />}
- 
-  {activeTab === "google play" && <GooglePlayRecharge />}
-  {activeTab === "water bill" && <WaterBill />}
-  {activeTab === "landline" && <Landline />}
-  {activeTab === "more" && <MoreServices />}
+        {activeTab === "mobile" && <MobileRecharge />}
+        {activeTab === "dth" && <DTHRecharge />}
+        {activeTab === "datacard" && <DataCardRecharge />}
+        {activeTab === "postpaid" && <PostpaidRecharge />}
+        {activeTab === "electricity" && <ElectricityRecharge />}
+        {activeTab === "gas" && <GasRecharge />}
+        {activeTab === "insurance" && <Insurance />}
+
+        {activeTab === "google play" && <GooglePlayRecharge />}
+        {activeTab === "water bill" && <WaterBill />}
+        {activeTab === "landline" && <Landline />}
+        {activeTab === "more" && <MoreServices />}
         <div style={styles.contentGrid}>
           {/* Recharge Form */}
           <div style={styles.formSection}>
@@ -254,16 +254,14 @@ const fetchFastagInfo = async () => {
                   <label style={styles.label}>Vehicle Number</label>
                   <input
                     type="text"
-                     name="vehicleNumber"
-                    
+                    name="vehicleNumber"
                     placeholder="Enter Vehicle Number"
                     value={formData.vehicleNumber}
-                     onChange={handleChange}
+                    onChange={handleChange}
                     style={styles.input}
                   />
                 </div>
 
-               
                 <div style={styles.formGroup}>
                   <label style={styles.label}>Select Operators</label>
                   <select
@@ -293,36 +291,35 @@ const fetchFastagInfo = async () => {
                   </select>
                 </div>
 
-               <div style={styles.formGroup}>
-  <label style={styles.label}>Amount</label>
-  <input
-    type="text"
-    name="amount" // important for handleChange
-    placeholder="Enter Amount"
-    value={formData.amount} // use formData.amount
-    onChange={handleChange} // updates formData.amount
-    style={styles.input}
-  />
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Amount</label>
+                  <input
+                    type="text"
+                    name="amount" // important for handleChange
+                    placeholder="Enter Amount"
+                    value={formData.amount} // use formData.amount
+                    onChange={handleChange} // updates formData.amount
+                    style={styles.input}
+                  />
 
-  <div style={styles.quickAmounts}>
-    {quickAmounts.map((amt) => (
-      <button
-        key={amt}
-        type="button"
-        onClick={() =>
-          setFormData((prev) => ({
-            ...prev,
-            amount: amt.toString(),
-          }))
-        }
-        style={styles.quickAmountBtn}
-      >
-        ₹{amt}
-      </button>
-    ))}
-  </div>
-</div>
-
+                  <div style={styles.quickAmounts}>
+                    {quickAmounts.map((amt) => (
+                      <button
+                        key={amt}
+                        type="button"
+                        onClick={() =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            amount: amt.toString(),
+                          }))
+                        }
+                        style={styles.quickAmountBtn}
+                      >
+                        ₹{amt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
                 <button
                   onClick={handleRecharge}
@@ -352,27 +349,39 @@ const fetchFastagInfo = async () => {
                   </div>
                 )}
               </div>
-
             </div>
             <button
-  type="button"
-  onClick={fetchFastagInfo}
-  style={styles.quickAmountBtn}
->
-  Fetch FASTag Info
-</button>
-
+              type="button"
+              onClick={fetchFastagInfo}
+              style={styles.quickAmountBtn}
+            >
+              Fetch FASTag Info
+            </button>
           </div>
           {fastagInfo && fastagInfo.BILLDEATILS && (
-  <div style={{ marginTop: "10px", background: "#eef7ff", padding: "10px", borderRadius: "6px" }}>
-    <h3>FASTag Info</h3>
-    <p><b>Name:</b> {fastagInfo.BILLDEATILS.Name}</p>
-    <p><b>Balance:</b> ₹{fastagInfo.BILLDEATILS.Balance}</p>
-    <p><b>Due Amount:</b> ₹{fastagInfo.BILLDEATILS.DueAmount}</p>
-    <p><b>Due Date:</b> {fastagInfo.BILLDEATILS.DueDate}</p>
-  </div>
-)}
-
+            <div
+              style={{
+                marginTop: "10px",
+                background: "#eef7ff",
+                padding: "10px",
+                borderRadius: "6px",
+              }}
+            >
+              <h3>FASTag Info</h3>
+              <p>
+                <b>Name:</b> {fastagInfo.BILLDEATILS.Name}
+              </p>
+              <p>
+                <b>Balance:</b> ₹{fastagInfo.BILLDEATILS.Balance}
+              </p>
+              <p>
+                <b>Due Amount:</b> ₹{fastagInfo.BILLDEATILS.DueAmount}
+              </p>
+              <p>
+                <b>Due Date:</b> {fastagInfo.BILLDEATILS.DueDate}
+              </p>
+            </div>
+          )}
 
           {/* Transactions */}
           <div style={styles.transactionSection}>
@@ -426,7 +435,7 @@ const fetchFastagInfo = async () => {
       {/* Footer */}
       <footer style={styles.footer}>
         <p style={styles.footerText}>
-          © 2025 <span style={styles.footerBrand}>CodeWeb Telecom</span> - All
+          © 2025 <span style={styles.footerBrand}>Code Web Telecom</span> - All
           Rights Reserved
         </p>
       </footer>
