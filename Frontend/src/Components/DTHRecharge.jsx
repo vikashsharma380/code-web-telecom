@@ -279,6 +279,7 @@ export default function DTHRecharge() {
                       style={styles.input}
                     />
                   </div>
+
                   <div style={styles.formGroup}>
                     <label style={styles.label}>Select Operator</label>
                     <select
@@ -295,6 +296,7 @@ export default function DTHRecharge() {
                       ))}
                     </select>
                   </div>
+
                   <div style={styles.formGroup}>
                     <label style={styles.label}>Recharge Amount</label>
                     <input
@@ -318,6 +320,7 @@ export default function DTHRecharge() {
                       ))}
                     </div>
                   </div>
+
                   <button
                     type="submit"
                     disabled={loading}
@@ -335,6 +338,7 @@ export default function DTHRecharge() {
                       </>
                     )}
                   </button>
+
                   <div
                     style={{
                       display: "flex",
@@ -369,7 +373,6 @@ export default function DTHRecharge() {
                   >
                     {result.message}
                   </div>
-                  )}
                 </form>
               </div>
             </div>
@@ -529,7 +532,7 @@ export default function DTHRecharge() {
       {/* Footer */}
       <footer style={styles.footer}>
         <p style={styles.footerText}>
-          © 2025 <span style={styles.footerBrand}>CodeWeb Telecom</span> - All
+          © 2025 <span style={styles.footerBrand}>Code Web Telecom</span> - All
           Rights Reserved
         </p>
       </footer>

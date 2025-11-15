@@ -14,7 +14,6 @@ import InsuranceRecharge from "./InsuranceRecharge";
 import GooglePlayRecharge from "./GooglePlayRecharge";
 import WaterBillRecharge from "./WaterBillRecharge";
 
-
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function GasRecharge() {
@@ -33,16 +32,17 @@ export default function GasRecharge() {
   const [activeTab, setActiveTab] = useState("gas");
   const [gasInfo, setGasInfo] = useState(null);
 
-const fetchGasInfo = async () => {
-  if (!formData.consumerNo || !formData.operatorcode)
-    return alert("Enter Consumer No & Operator first");
+  const fetchGasInfo = async () => {
+    if (!formData.consumerNo || !formData.operatorcode)
+      return alert("Enter Consumer No & Operator first");
 
-  const res = await fetch(`${API_URL}/api/gas-info-fetch?ConsumerNo=${formData.consumerNo}&operator_code=${formData.operatorcode}`);
-  const data = await res.json();
-  console.log("GAS INFO =>", data);
-  setGasInfo(data);
-};
-
+    const res = await fetch(
+      `${API_URL}/api/gas-info-fetch?ConsumerNo=${formData.consumerNo}&operator_code=${formData.operatorcode}`
+    );
+    const data = await res.json();
+    console.log("GAS INFO =>", data);
+    setGasInfo(data);
+  };
 
   const quickAmounts = [100, 200, 500, 1000, 2000];
   const operators = [
@@ -66,34 +66,34 @@ const fetchGasInfo = async () => {
   }, []);
 
   // Fetch balance
-useEffect(() => {
+  useEffect(() => {
     fetchBalance();
   }, []);
 
-    const fetchBalance = async () => {
-  try {
-    const username = localStorage.getItem("username");
-    const pwd = localStorage.getItem("apiPassword");
+  const fetchBalance = async () => {
+    try {
+      const username = localStorage.getItem("username");
+      const pwd = localStorage.getItem("apiPassword");
 
-    if (!username || !pwd) {
-      console.warn("Missing username or password for balance fetch");
-      return;
+      if (!username || !pwd) {
+        console.warn("Missing username or password for balance fetch");
+        return;
+      }
+
+      const response = await fetch(
+        `/api/balance?username=${username}&pwd=${pwd}`
+      );
+      const data = await response.json();
+
+      if (data.success) {
+        setBalance(data.balance); // Balance state update
+      } else {
+        console.error("Balance fetch failed:", data.error);
+      }
+    } catch (error) {
+      console.error("Error fetching balance:", error);
     }
-
-    const response = await fetch(
-      `/api/balance?username=${username}&pwd=${pwd}`
-    );
-    const data = await response.json();
-
-    if (data.success) {
-      setBalance(data.balance); // Balance state update
-    } else {
-      console.error("Balance fetch failed:", data.error);
-    }
-  } catch (error) {
-    console.error("Error fetching balance:", error);
-  }
-};
+  };
 
   // Auto-detect operator (if you have API for it)
   useEffect(() => {
@@ -107,7 +107,10 @@ useEffect(() => {
           if (!res.ok) throw new Error(`Server returned ${res.status}`);
           const data = await res.json();
           if (data.operatorcode)
-            setFormData((prev) => ({ ...prev, operatorcode: data.operatorcode }));
+            setFormData((prev) => ({
+              ...prev,
+              operatorcode: data.operatorcode,
+            }));
         } catch (err) {
           console.warn("Operator auto-detect failed", err);
         } finally {
@@ -165,10 +168,16 @@ useEffect(() => {
       console.log("✅ Recharge API response:", data);
 
       if (data.status === "Success") {
-        setResult({ type: "success", message: `Recharge Successful! TXID: ${data.txid}` });
+        setResult({
+          type: "success",
+          message: `Recharge Successful! TXID: ${data.txid}`,
+        });
         fetchBalance();
       } else {
-        setResult({ type: "error", message: `Recharge Failed: ${data.opid || "Unknown"}` });
+        setResult({
+          type: "error",
+          message: `Recharge Failed: ${data.opid || "Unknown"}`,
+        });
       }
 
       setTransactions([
@@ -186,7 +195,10 @@ useEffect(() => {
       setFormData({ consumerNumber: "", operatorcode: "", amount: "" });
     } catch (err) {
       console.error("Recharge failed:", err);
-      setResult({ type: "error", message: err.message || "API connection failed" });
+      setResult({
+        type: "error",
+        message: err.message || "API connection failed",
+      });
     } finally {
       setLoading(false);
       setTimeout(() => setResult(null), 5000);
@@ -196,22 +208,25 @@ useEffect(() => {
   return (
     <div style={styles.container}>
       <Nav />
-      <Hero title="Instant Gas Recharge" subtitle="Fast, secure, and reliable gas recharges" />
+      <Hero
+        title="Instant Gas Recharge"
+        subtitle="Fast, secure, and reliable gas recharges"
+      />
       <Tab />
 
       <div style={styles.mainContent}>
-          {activeTab === "mobile" && <MobileRecharge />}
-  {activeTab === "dth" && <DTHRecharge />}
-  {activeTab === "datacard" && <DataCardRecharge />}
-  {activeTab === "postpaid" && <PostpaidRecharge />}
-  {activeTab === "electricity" && <ElectricityRecharge />}
-  
-  {activeTab === "insurance" && <Insurance />}
-  {activeTab === "fastag" && <FASTagRecharge />}
-  {activeTab === "google play" && <GooglePlayRecharge />}
-  {activeTab === "water bill" && <WaterBill />}
-  {activeTab === "landline" && <Landline />}
-  {activeTab === "more" && <MoreServices />}
+        {activeTab === "mobile" && <MobileRecharge />}
+        {activeTab === "dth" && <DTHRecharge />}
+        {activeTab === "datacard" && <DataCardRecharge />}
+        {activeTab === "postpaid" && <PostpaidRecharge />}
+        {activeTab === "electricity" && <ElectricityRecharge />}
+
+        {activeTab === "insurance" && <Insurance />}
+        {activeTab === "fastag" && <FASTagRecharge />}
+        {activeTab === "google play" && <GooglePlayRecharge />}
+        {activeTab === "water bill" && <WaterBill />}
+        {activeTab === "landline" && <Landline />}
+        {activeTab === "more" && <MoreServices />}
         <div style={styles.contentGrid}>
           {/* Recharge Form */}
           <div style={styles.formSection}>
@@ -245,7 +260,12 @@ useEffect(() => {
                     <label style={styles.label}>Select Gas Provider</label>
                     <select
                       value={formData.operatorcode}
-                      onChange={(e) => setFormData({ ...formData, operatorcode: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          operatorcode: e.target.value,
+                        })
+                      }
                       style={styles.select}
                     >
                       <option value="">Select Provider</option>
@@ -264,7 +284,10 @@ useEffect(() => {
                       value={formData.amount}
                       onChange={(e) => {
                         const val = e.target.value;
-                        if (val === "" || (/^\d+$/.test(val) && parseInt(val) > 0))
+                        if (
+                          val === "" ||
+                          (/^\d+$/.test(val) && parseInt(val) > 0)
+                        )
                           setFormData({ ...formData, amount: val });
                       }}
                       style={styles.input}
@@ -274,7 +297,9 @@ useEffect(() => {
                         <button
                           key={amt}
                           type="button"
-                          onClick={() => setFormData({ ...formData, amount: amt.toString() })}
+                          onClick={() =>
+                            setFormData({ ...formData, amount: amt.toString() })
+                          }
                           style={styles.quickAmountBtn}
                         >
                           ₹{amt}
@@ -283,8 +308,18 @@ useEffect(() => {
                     </div>
                   </div>
 
-                  <button type="submit" disabled={loading} style={styles.rechargeBtn}>
-                    {loading ? "Processing..." : <><Zap size={20} /> Pay Bill</>}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    style={styles.rechargeBtn}
+                  >
+                    {loading ? (
+                      "Processing..."
+                    ) : (
+                      <>
+                        <Zap size={20} /> Pay Bill
+                      </>
+                    )}
                   </button>
                 </form>
 
@@ -292,7 +327,9 @@ useEffect(() => {
                   <div
                     style={{
                       ...styles.resultBox,
-                      ...(result.type === "success" ? styles.successBox : styles.errorBox),
+                      ...(result.type === "success"
+                        ? styles.successBox
+                        : styles.errorBox),
                     }}
                   >
                     {result.message}
@@ -301,23 +338,37 @@ useEffect(() => {
               </div>
             </div>
             <button
-  type="button"
-  onClick={fetchGasInfo}
-  style={styles.quickAmountBtn}
->
-  Fetch Gas Info
-</button>
-
+              type="button"
+              onClick={fetchGasInfo}
+              style={styles.quickAmountBtn}
+            >
+              Fetch Gas Info
+            </button>
           </div>
-{gasInfo && gasInfo.BILLDEATILS && (
-  <div style={{ marginTop: "10px", background: "#f0fff4", padding: "10px", borderRadius: "6px" }}>
-    <h3>Gas Bill Info</h3>
-    <p><b>Name:</b> {gasInfo.BILLDEATILS.Name}</p>
-    <p><b>Due Amount:</b> ₹{gasInfo.BILLDEATILS.DueAmount}</p>
-    <p><b>Due Date:</b> {gasInfo.BILLDEATILS.DueDate}</p>
-    <p><b>Balance:</b> ₹{gasInfo.BILLDEATILS.Balance}</p>
-  </div>
-)}
+          {gasInfo && gasInfo.BILLDEATILS && (
+            <div
+              style={{
+                marginTop: "10px",
+                background: "#f0fff4",
+                padding: "10px",
+                borderRadius: "6px",
+              }}
+            >
+              <h3>Gas Bill Info</h3>
+              <p>
+                <b>Name:</b> {gasInfo.BILLDEATILS.Name}
+              </p>
+              <p>
+                <b>Due Amount:</b> ₹{gasInfo.BILLDEATILS.DueAmount}
+              </p>
+              <p>
+                <b>Due Date:</b> {gasInfo.BILLDEATILS.DueDate}
+              </p>
+              <p>
+                <b>Balance:</b> ₹{gasInfo.BILLDEATILS.Balance}
+              </p>
+            </div>
+          )}
 
           {/* Transactions */}
           <div style={styles.transactionSection}>
@@ -326,16 +377,24 @@ useEffect(() => {
                 <Clock size={24} />
                 <div>
                   <h2 style={styles.cardTitle}>Recent Transactions</h2>
-                  <p style={styles.cardSubtitle}>Your last 5 gas bill payments</p>
+                  <p style={styles.cardSubtitle}>
+                    Your last 5 gas bill payments
+                  </p>
                 </div>
               </div>
               <div style={styles.cardBody}>
                 {transactions.length === 0 ? (
                   <p>No transactions yet</p>
                 ) : (
-                  Array.isArray(transactions) &&transactions.slice(0, 5).map((t,i) => (
-                    <div key={`${t.txid || 'tx'}-${t.number}-${i}`} style={styles.transactionItem}>
-                      <div style={styles.transactionIcon}>{t.operator.charAt(0)}</div>
+                  Array.isArray(transactions) &&
+                  transactions.slice(0, 5).map((t, i) => (
+                    <div
+                      key={`${t.txid || "tx"}-${t.number}-${i}`}
+                      style={styles.transactionItem}
+                    >
+                      <div style={styles.transactionIcon}>
+                        {t.operator.charAt(0)}
+                      </div>
                       <div style={styles.transactionDetails}>
                         <div>{t.operator}</div>
                         <div>{t.number}</div>
@@ -356,7 +415,8 @@ useEffect(() => {
 
       <footer style={styles.footer}>
         <p style={styles.footerText}>
-          © 2025 <span style={styles.footerBrand}>CodeWeb Telecom</span> - All Rights Reserved
+          © 2025 <span style={styles.footerBrand}>Code Web Telecom</span> - All
+          Rights Reserved
         </p>
       </footer>
     </div>

@@ -15,7 +15,7 @@ const Nav = () => {
   const [balanceLoading, setBalanceLoading] = useState(true);
   const [showAddFundModal, setShowAddFundModal] = useState(false);
   const [fundAmount, setFundAmount] = useState("");
-  const [userName, setUserName] = useState(""); 
+  const [userName, setUserName] = useState("");
 
   const rechargeUser = {
     username: "500032",
@@ -51,74 +51,75 @@ const Nav = () => {
     { name: "Logout", path: "/logout" },
   ];
   const [amount, setAmount] = useState("");
-const handleAddFund = async () => {
-  if (!fundAmount || Number(fundAmount) <= 0) {
-    return alert("Please enter a valid amount.");
-  }
-
-  try {
-    const token = localStorage.getItem("token");
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user || !user.userId) {
-      return alert("User ID missing. Please login again.");
+  const handleAddFund = async () => {
+    if (!fundAmount || Number(fundAmount) <= 0) {
+      return alert("Please enter a valid amount.");
     }
 
-    const body = {
-      userId: user.userId,
-      amount: Number(fundAmount),
-     redirect_url: "https://codewebtelecom.com/mrobo_upi/payment_callback_upi",
-    };
+    try {
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user || !user.userId) {
+        return alert("User ID missing. Please login again.");
+      }
 
-    const res = await fetch(`${API_URL}/api/add-fund`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(body),
-    });
+      const body = {
+        userId: user.userId,
+        amount: Number(fundAmount),
+        redirect_url:
+          "https://codewebtelecom.com/mrobo_upi/payment_callback_upi",
+      };
 
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      console.error("Add Fund Error:", data.error || data);
-      return alert("❌ " + (data.error || "Something went wrong"));
-    }
-
-    // Load SDK
-    const script = document.createElement("script");
-    script.src = "https://cdn.ekqr.in/ekqr_sdk.js";
-    script.onload = () => {
-      const paymentSDK = new EKQR({
-        sessionId: data.sessionId,
-        callbacks: {
-          onSuccess: async (response) => {
-            console.log("Payment Success:", response);
-            alert("✅ Payment Successful!");
-
-            // After success, update wallet balance
-            await fetchBalance();
-            setShowAddFundModal(false);
-          },
-          onError: (response) => {
-            console.error("Payment Error:", response);
-            alert("❌ Payment failed!");
-          },
-          onCancelled: (response) => {
-            console.log("Payment Cancelled:", response);
-            alert("⚠️ Payment cancelled");
-          },
+      const res = await fetch(`${API_URL}/api/add-fund`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify(body),
       });
 
-      paymentSDK.pay(); // open popup
-    };
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        console.error("Add Fund Error:", data.error || data);
+        return alert("❌ " + (data.error || "Something went wrong"));
+      }
 
-    document.body.appendChild(script);
-  } catch (err) {
-    console.error("Server error:", err);
-    alert("Server error: " + err.message);
-  }
-};
+      // Load SDK
+      const script = document.createElement("script");
+      script.src = "https://cdn.ekqr.in/ekqr_sdk.js";
+      script.onload = () => {
+        const paymentSDK = new EKQR({
+          sessionId: data.sessionId,
+          callbacks: {
+            onSuccess: async (response) => {
+              console.log("Payment Success:", response);
+              alert("✅ Payment Successful!");
+
+              // After success, update wallet balance
+              await fetchBalance();
+              setShowAddFundModal(false);
+            },
+            onError: (response) => {
+              console.error("Payment Error:", response);
+              alert("❌ Payment failed!");
+            },
+            onCancelled: (response) => {
+              console.log("Payment Cancelled:", response);
+              alert("⚠️ Payment cancelled");
+            },
+          },
+        });
+
+        paymentSDK.pay(); // open popup
+      };
+
+      document.body.appendChild(script);
+    } catch (err) {
+      console.error("Server error:", err);
+      alert("Server error: " + err.message);
+    }
+  };
 
   const fetchBalance = async () => {
     setBalanceLoading(true);
@@ -157,12 +158,11 @@ const handleAddFund = async () => {
     }
   }, []);
 
-
-    useEffect(() => {
+  useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
       const parsedUser = JSON.parse(userData);
-      setUserName(parsedUser?.name || "User"); 
+      setUserName(parsedUser?.name || "User");
     }
   }, []);
   const navigate = useNavigate();
@@ -256,7 +256,7 @@ const handleAddFund = async () => {
               <Smartphone size={24} />
             </div>
             <div>
-              <div style={styles.logoText}>CodeWeb Telecom</div>
+              <div style={styles.logoText}>Code Web Telecom</div>
               <div style={styles.logoSubtext}>Digital Recharge Partner</div>
             </div>
           </div>
@@ -440,9 +440,9 @@ const handleAddFund = async () => {
               style={{ position: "relative" }}
               onClick={() => setShowUserMenu((prev) => !prev)}
             >
-             <div style={styles.avatar}>
-    {userName ? userName.charAt(0).toUpperCase() : "U"}
-  </div>
+              <div style={styles.avatar}>
+                {userName ? userName.charAt(0).toUpperCase() : "U"}
+              </div>
 
               {showUserMenu && (
                 <div

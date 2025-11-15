@@ -14,7 +14,6 @@ import InsuranceRecharge from "./InsuranceRecharge";
 import GooglePlayRecharge from "./GooglePlayRecharge";
 import WaterBillRecharge from "./WaterBillRecharge";
 
-
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function DataCardRecharge() {
@@ -57,34 +56,34 @@ export default function DataCardRecharge() {
   }, []);
 
   // Fetch balance
-useEffect(() => {
+  useEffect(() => {
     fetchBalance();
   }, []);
 
-    const fetchBalance = async () => {
-  try {
-    const username = localStorage.getItem("username");
-    const pwd = localStorage.getItem("apiPassword");
+  const fetchBalance = async () => {
+    try {
+      const username = localStorage.getItem("username");
+      const pwd = localStorage.getItem("apiPassword");
 
-    if (!username || !pwd) {
-      console.warn("Missing username or password for balance fetch");
-      return;
+      if (!username || !pwd) {
+        console.warn("Missing username or password for balance fetch");
+        return;
+      }
+
+      const response = await fetch(
+        `/api/balance?username=${username}&pwd=${pwd}`
+      );
+      const data = await response.json();
+
+      if (data.success) {
+        setBalance(data.balance); // Balance state update
+      } else {
+        console.error("Balance fetch failed:", data.error);
+      }
+    } catch (error) {
+      console.error("Error fetching balance:", error);
     }
-
-    const response = await fetch(
-      `/api/balance?username=${username}&pwd=${pwd}`
-    );
-    const data = await response.json();
-
-    if (data.success) {
-      setBalance(data.balance); // Balance state update
-    } else {
-      console.error("Balance fetch failed:", data.error);
-    }
-  } catch (error) {
-    console.error("Error fetching balance:", error);
-  }
-};
+  };
 
   // Fetch transaction history
   const fetchTransactions = async () => {
@@ -161,7 +160,7 @@ useEffect(() => {
           status: data.status || "Failed",
           date: new Date().toLocaleString(),
         },
-      ...(Array.isArray(prev) ? prev : []),
+        ...(Array.isArray(prev) ? prev : []),
       ]);
 
       setFormData({ consumerNumber: "", operatorcode: "", amount: "" });
@@ -180,22 +179,25 @@ useEffect(() => {
   return (
     <div style={styles.container}>
       <Nav />
-      <Hero title="Instant Data Card Recharge" subtitle="Fast, secure, and reliable data card recharges for all operators" />
+      <Hero
+        title="Instant Data Card Recharge"
+        subtitle="Fast, secure, and reliable data card recharges for all operators"
+      />
       <Tab activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <div style={styles.mainContent}>
-          {activeTab === "mobile" && <MobileRecharge />}
-  {activeTab === "dth" && <DTHRecharge />}
-  
-  {activeTab === "postpaid" && <PostpaidRecharge />}
-  {activeTab === "electricity" && <ElectricityRecharge />}
-  {activeTab === "gas" && <GasRecharge />}
-  {activeTab === "insurance" && <Insurance />}
-  {activeTab === "fastag" && <FASTagRecharge />}
-  {activeTab === "google play" && <GooglePlayRecharge />}
-  {activeTab === "water bill" && <WaterBill />}
-  {activeTab === "landline" && <Landline />}
-  {activeTab === "more" && <MoreServices />}
+        {activeTab === "mobile" && <MobileRecharge />}
+        {activeTab === "dth" && <DTHRecharge />}
+
+        {activeTab === "postpaid" && <PostpaidRecharge />}
+        {activeTab === "electricity" && <ElectricityRecharge />}
+        {activeTab === "gas" && <GasRecharge />}
+        {activeTab === "insurance" && <Insurance />}
+        {activeTab === "fastag" && <FASTagRecharge />}
+        {activeTab === "google play" && <GooglePlayRecharge />}
+        {activeTab === "water bill" && <WaterBill />}
+        {activeTab === "landline" && <Landline />}
+        {activeTab === "more" && <MoreServices />}
         <div style={styles.contentGrid}>
           {/* Recharge Form */}
           <div style={styles.formSection}>
@@ -204,7 +206,9 @@ useEffect(() => {
                 <Smartphone size={24} />
                 <div>
                   <h2 style={styles.cardTitle}>Data Card Recharge</h2>
-                  <p style={styles.cardSubtitle}>Recharge your Data Card easily</p>
+                  <p style={styles.cardSubtitle}>
+                    Recharge your Data Card easily
+                  </p>
                 </div>
               </div>
               <div style={styles.cardBody}>
@@ -218,7 +222,10 @@ useEffect(() => {
                       onChange={(e) => {
                         const val = e.target.value;
                         if (val === "" || /^\d+$/.test(val))
-                          setFormData((prev) => ({ ...prev, consumerNumber: val.slice(0, 11) }));
+                          setFormData((prev) => ({
+                            ...prev,
+                            consumerNumber: val.slice(0, 11),
+                          }));
                       }}
                       style={styles.input}
                     />
@@ -230,7 +237,10 @@ useEffect(() => {
                       name="operatorcode"
                       value={formData.operatorcode}
                       onChange={(e) =>
-                        setFormData((prev) => ({ ...prev, operatorcode: e.target.value }))
+                        setFormData((prev) => ({
+                          ...prev,
+                          operatorcode: e.target.value,
+                        }))
                       }
                       style={styles.selectBox}
                     >
@@ -251,7 +261,10 @@ useEffect(() => {
                       value={formData.amount}
                       onChange={(e) => {
                         const val = e.target.value;
-                        if (val === "" || (/^\d+$/.test(val) && parseInt(val) > 0))
+                        if (
+                          val === "" ||
+                          (/^\d+$/.test(val) && parseInt(val) > 0)
+                        )
                           setFormData((prev) => ({ ...prev, amount: val }));
                       }}
                       style={styles.input}
@@ -261,7 +274,12 @@ useEffect(() => {
                         <button
                           key={amt}
                           type="button"
-                          onClick={() => setFormData((prev) => ({ ...prev, amount: amt.toString() }))}
+                          onClick={() =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              amount: amt.toString(),
+                            }))
+                          }
                           style={styles.quickAmountBtn}
                         >
                           ₹{amt}
@@ -270,11 +288,35 @@ useEffect(() => {
                     </div>
                   </div>
 
-                  <button type="submit" disabled={loading} style={{ ...styles.rechargeBtn, ...(loading ? styles.btnDisabled : {}) }}>
-                    {loading ? <div style={styles.loadingSpinner}></div> : <><Zap size={20} /> Recharge Now</>}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    style={{
+                      ...styles.rechargeBtn,
+                      ...(loading ? styles.btnDisabled : {}),
+                    }}
+                  >
+                    {loading ? (
+                      <div style={styles.loadingSpinner}></div>
+                    ) : (
+                      <>
+                        <Zap size={20} /> Recharge Now
+                      </>
+                    )}
                   </button>
 
-                  {result && <div style={{ ...styles.resultBox, ...(result.type === "success" ? styles.successBox : styles.errorBox) }}>{result.message}</div>}
+                  {result && (
+                    <div
+                      style={{
+                        ...styles.resultBox,
+                        ...(result.type === "success"
+                          ? styles.successBox
+                          : styles.errorBox),
+                      }}
+                    >
+                      {result.message}
+                    </div>
+                  )}
                 </form>
               </div>
             </div>
@@ -298,20 +340,34 @@ useEffect(() => {
                   </div>
                 ) : (
                   <div style={styles.transactionList}>
-                    {Array.isArray(transactions) &&transactions.slice(0, 5).map((t, i) => (
-                      <div key={`${t.txid}-${i}`} style={styles.transactionItem}>
-                        <div style={styles.transactionIcon}>{t.operator.charAt(0)}</div>
-                        <div style={styles.transactionDetails}>
-                          <div style={styles.transactionOperator}>{t.operator}</div>
-                          <div style={styles.transactionNumber}>{t.number}</div>
-                          <div style={styles.transactionDate}>{t.date}</div>
+                    {Array.isArray(transactions) &&
+                      transactions.slice(0, 5).map((t, i) => (
+                        <div
+                          key={`${t.txid}-${i}`}
+                          style={styles.transactionItem}
+                        >
+                          <div style={styles.transactionIcon}>
+                            {t.operator.charAt(0)}
+                          </div>
+                          <div style={styles.transactionDetails}>
+                            <div style={styles.transactionOperator}>
+                              {t.operator}
+                            </div>
+                            <div style={styles.transactionNumber}>
+                              {t.number}
+                            </div>
+                            <div style={styles.transactionDate}>{t.date}</div>
+                          </div>
+                          <div style={styles.transactionRight}>
+                            <div style={styles.transactionAmount}>
+                              ₹{t.amount}
+                            </div>
+                            <div style={styles.transactionStatus}>
+                              {t.status}
+                            </div>
+                          </div>
                         </div>
-                        <div style={styles.transactionRight}>
-                          <div style={styles.transactionAmount}>₹{t.amount}</div>
-                          <div style={styles.transactionStatus}>{t.status}</div>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 )}
               </div>
@@ -322,7 +378,8 @@ useEffect(() => {
 
       <footer style={styles.footer}>
         <p style={styles.footerText}>
-          © 2025 <span style={styles.footerBrand}>CodeWeb Telecom</span> - All Rights Reserved
+          © 2025 <span style={styles.footerBrand}>Code Web Telecom</span> - All
+          Rights Reserved
         </p>
       </footer>
     </div>
