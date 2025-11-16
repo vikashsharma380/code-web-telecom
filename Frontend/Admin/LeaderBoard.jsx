@@ -165,7 +165,17 @@ const LeaderBoard = () => {
               setSearchTerm(e.target.value);
               setCurrentPage(1);
             }}
-            style={inputStyle}
+            style={{
+              flex: "1 1 220px",
+              minWidth: "200px",
+              padding: "10px 12px",
+              borderRadius: "999px",
+              border: "1px solid rgba(255,255,255,0.4)",
+              background: "rgba(10,10,30,0.25)",
+              color: "#fff",
+              outline: "none",
+              fontSize: "14px",
+            }}
           />
 
           <select
@@ -330,65 +340,8 @@ const selectStyle = {
   padding: "10px 14px",
   borderRadius: "999px",
   border: "1px solid rgba(255,255,255,0.4)",
-  background: "rgba(10,10,30,0.25)",
+  background: "linear-gradient(135deg, rgba(15,23,42,0.9), rgba(15,23,42,0.6))",
   color: "#fff",
-  outline: "none",
-};
-
-const topThreeGrid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-  gap: "14px",
-  marginBottom: "20px",
-};
-
-const tableCard = {
-  background: "rgba(3,7,26,0.72)",
-  borderRadius: "16px",
-  border: "1px solid rgba(255,255,255,0.2)",
-  overflow: "hidden",
-};
-
-const tableHeader = {
-  display: "grid",
-  gridTemplateColumns: "60px 1fr 1fr 1fr 1fr 1fr 1fr 1fr",
-  padding: "12px 16px",
-  borderBottom: "1px solid rgba(255,255,255,0.2)",
-  background: "rgba(255,255,255,0.08)",
-  fontSize: "13px",
-  fontWeight: 600,
-};
-
-const headerBtn = {
-  display: "flex",
-  alignItems: "center",
-  color: "#fff",
-  background: "transparent",
-  border: "none",
-  fontSize: "13px",
-  cursor: "pointer",
-};
-
-const rowStyle = (i) => ({
-  display: "grid",
-  gridTemplateColumns: "60px 1fr 1fr 1fr 1fr 1fr 1fr 1fr",
-  padding: "12px 16px",
-  fontSize: "14px",
-  background: i % 2 === 0 ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
-});
-
-const emptyMsg = {
-  padding: "20px",
-  textAlign: "center",
-  fontSize: "14px",
-  opacity: 0.8,
-};
-
-const paginationFooter = {
-  padding: "12px 16px",
-  display: "flex",
-  justifyContent: "space-between",
-  borderTop: "1px solid rgba(255,255,255,0.2)",
   fontSize: "13px",
 };
 
