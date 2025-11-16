@@ -327,6 +327,8 @@ app.use("/api", operatorCheck);
 const simplePlan = require("./routes/simplePlan");
 app.use("/api", simplePlan);
 
+app.use("/api", require("./routes/leaderboard"));
+
 const commissionRoutes = require("./routes/commissionRoutes");
 app.use("/api/commission", commissionRoutes);
 
