@@ -263,7 +263,7 @@ const Nav = () => {
 
           {/* Nav Links */}
           <div style={styles.navLinks}>
-            <Link to="/dashboard" style={styles.navLink}>
+            <Link to="/admin-dashboard" style={styles.navLink}>
               Dashboard
             </Link>
 
