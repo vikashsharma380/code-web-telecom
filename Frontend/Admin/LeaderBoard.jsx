@@ -409,4 +409,16 @@ const headerBtn = {
   alignItems: "center",
 };
 
+const selectStyle = {
+  padding: "9px 12px",
+  borderRadius: "999px",
+  border: "1px solid rgba(255,255,255,0.4)",
+  background: "rgba(255,255,255,0.15)",
+  color: "#fff",
+  fontSize: "13px",
+  outline: "none",
+  appearance: "none",
+  cursor: "pointer",
+};
+
 export default LeaderBoard;
