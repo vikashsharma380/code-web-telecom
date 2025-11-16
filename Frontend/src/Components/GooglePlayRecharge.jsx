@@ -82,70 +82,95 @@ export default function GooglePlayRecharge() {
     }
   };
 
-  const handleRecharge = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setResult(null);
+const handleRecharge = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setResult(null);
 
-    try {
-      const { email, operatorcode: operator, amount } = formData;
-      if (!email || !operator || !amount) {
-        throw new Error("All fields are required");
-      }
+  try {
+    const { email, operatorcode: operator, amount } = formData;
+    if (!email || !operator || !amount) {
+      throw new Error("All fields are required");
+    }
 
-      const payload = {
-        ...rechargeUser,
-        number: email,
-        operatorcode: operator,
-        amount,
-      };
+    const payload = {
+      ...rechargeUser,
+      number: email,
+      operatorcode: operator,
+      amount,
+    };
 
-      const res = await fetch(`${API_URL}/api/googleplay`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+    const res = await fetch(`${API_URL}/api/recharge`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+
+    if (data.status === "Success" || data.success) {
+      setResult({
+        type: "success",
+        message: `Purchase Successful! TXID: ${data.txid}`,
       });
-
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
-      const data = await res.json();
-
-      if (data.status === "Success") {
-        setResult({
-          type: "success",
-          message: `Purchase Successful! TXID: ${data.txid}`,
-        });
-        fetchBalance();
-      } else {
-        setResult({
-          type: "error",
-          message: `Purchase Failed: ${data.opid || "Unknown"}`,
-        });
-      }
-
-      setTransactions([
-        {
-          txid: data.txid || Math.random(),
-          operator,
-          number: email,
-          amount,
-          status: data.status,
-          date: new Date().toLocaleString(),
-        },
-        ...transactions,
-      ]);
-
-      setFormData({ email: "", operatorcode: "GPLAY", amount: "" });
-    } catch (error) {
-      console.error("Recharge failed:", error);
+      fetchBalance();
+    } else {
       setResult({
         type: "error",
-        message: error.message || "API connection failed",
+        message: `Purchase Failed: ${data.opid || "Unknown"}`,
       });
-    } finally {
-      setLoading(false);
-      setTimeout(() => setResult(null), 5000);
     }
-  };
+
+    // Save transaction
+    setTransactions((prev) => [
+      {
+        txid: data.txid || Math.random(),
+        operator,
+        number: email,
+        amount,
+        status: data.status,
+        date: new Date().toLocaleString(),
+      },
+      ...(Array.isArray(prev) ? prev : []),
+    ]);
+
+    // --- UPDATE LEADERBOARD ---
+    try {
+      await fetch(`${API_URL}/api/update-leaderboard`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          userId: rechargeUser.username,
+          amount: amount,
+          commission: data.profit || data.commissionAmount || 0,
+          operator: operator,
+          number: email,
+          service: "GOOGLE_PLAY",
+        }),
+      });
+    } catch (err) {
+      console.error("Leaderboard update failed:", err);
+    }
+
+    setFormData({ email: "", operatorcode: "GPLAY", amount: "" });
+
+  } catch (error) {
+    setResult({
+      type: "error",
+      message: error.message || "API error",
+    });
+  } finally {
+    setLoading(false);
+    setTimeout(() => setResult(null), 5000);
+  }
+};
+
 
   return (
     <div style={styles.container}>

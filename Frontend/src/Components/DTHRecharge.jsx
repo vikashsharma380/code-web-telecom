@@ -217,6 +217,30 @@ export default function DTHRecharge() {
         ...(Array.isArray(prev) ? prev : []),
       ]);
 
+    
+// --- UPDATE LEADERBOARD ---
+try {
+  await fetch(`${API_URL}/api/update-leaderboard`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({
+      userId: rechargeUser.username,
+      amount: amount,
+      commission: data.profit || data.commissionAmount || 0,
+      operator: operatorcode,
+      number: dthNumber,
+      service: "DTH",
+    }),
+  });
+} catch (err) {
+  console.error("Leaderboard update failed:", err);
+}
+
+
+
       // ✅ Reset Form
       setFormData({ dthNumber: "", operatorcode: "", amount: "" });
     } catch (error) {

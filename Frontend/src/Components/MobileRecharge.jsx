@@ -148,28 +148,48 @@ const handleRecharge = async (e) => {
 
       // ************** SUCCESS CHECK UPDATED **************
       if (data.success && data.apiResponse?.status === "Success") {
-        setResult({
-          type: "success",
-          message: `Recharge Successful! TXID: ${data.apiResponse.txid}`,
-        });
+  setResult({
+    type: "success",
+    message: `Recharge Successful! TXID: ${data.apiResponse.txid}`,
+  });
 
-        fetchBalance();
+  fetchBalance();
 
-        setTransactions((prev) => [
-          {
-            rechargeId: data.apiResponse.txid,
-            operator: operatorcode,
-            operatorId: data.apiResponse.opid,
-            number,
-            amount,
-            profit: data.profit || 0,
-            balance: data.balanceAfter || balance,
-            status: data.apiResponse.status,
-            dateTime: new Date().toISOString(),
-          },
-          ...prev,
-        ]);
-      } else {
+  setTransactions((prev) => [
+    {
+      rechargeId: data.apiResponse.txid,
+      operator: operatorcode,
+      operatorId: data.apiResponse.opid,
+      number,
+      amount,
+      profit: data.profit || 0,
+      balance: data.balanceAfter || balance,
+      status: data.apiResponse.status,
+      dateTime: new Date().toISOString(),
+    },
+    ...prev,
+  ]);
+
+  // *** LEADERBOARD UPDATE ***
+  try {
+    await fetch(`${API_URL}/api/update-leaderboard`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({
+        userId: rechargeUser.username,
+        amount: amount,
+        commission: data.profit || 0,
+      }),
+    });
+  } catch (err) {
+    console.error("Leaderboard update failed:", err);
+  }
+
+} else {
+
         setResult({
           type: "error",
           message:
