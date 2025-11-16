@@ -148,7 +148,7 @@ export default function GasRecharge() {
       if (!consumerNumber || !operatorcode || !amount)
         throw new Error("All fields are required");
 
-      const res = await fetch(`${API_URL}/api/gasrecharge`, {
+      const res = await fetch(`${API_URL}/api/recharge`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -191,6 +191,27 @@ export default function GasRecharge() {
         },
         ...transactions,
       ]);
+// --- UPDATE LEADERBOARD ---
+try {
+  await fetch(`${API_URL}/api/update-leaderboard`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({
+      userId: rechargeUser.username,
+      amount: amount,
+     commission: data.profit || data.commissionAmount || 0,
+
+      operator: operatorcode,
+      number: consumerNumber,
+      service: "GAS",
+    }),
+  });
+} catch (err) {
+  console.error("Leaderboard update failed:", err);
+}
 
       setFormData({ consumerNumber: "", operatorcode: "", amount: "" });
     } catch (err) {

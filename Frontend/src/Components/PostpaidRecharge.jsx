@@ -160,16 +160,18 @@ useEffect(()=>{
   };
 
   // Handle recharge submit
-  const handleRecharge = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setResult(null);
-    try {
-      const { number, operatorcode, circlecode, amount } = formData;
-      if (!number || !operatorcode || !circlecode || !amount)
-        throw new Error("All fields are required");
-console.log("Sending recharge request:", {
-      username: rechargeUser.username.toString(),
+ const handleRecharge = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setResult(null);
+
+  try {
+    const { number, operatorcode, circlecode, amount } = formData;
+    if (!number || !operatorcode || !amount)
+      throw new Error("All fields are required");
+
+    console.log("Sending recharge request:", {
+      username: rechargeUser.username,
       pwd: rechargeUser.pwd,
       number,
       operatorcode,
@@ -177,56 +179,91 @@ console.log("Sending recharge request:", {
       amount,
     });
 
-      const res = await fetch(`${API_URL}/api/recharge`, {
+    const res = await fetch(`${API_URL}/api/recharge`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({
+        username: rechargeUser.username,
+        pwd: rechargeUser.pwd,
+        number,
+        operatorcode,
+        circlecode,
+        amount,
+      }),
+    });
+
+    const data = await res.json();
+    console.log("POSTPAID RESPONSE:", data);
+
+    if (data.status === "Success") {
+      setResult({
+        type: "success",
+        message: `Recharge Successful! TXID: ${data.txid}`,
+      });
+      fetchBalance();
+    } else {
+      setResult({
+        type: "error",
+        message: `Recharge Failed: ${data.opid || "Unknown"}`,
+      });
+    }
+
+    // Save transaction
+    setTransactions((prev) => [
+      {
+        txid: data.txid || Math.random(),
+        operator: operatorcode,
+        number,
+        amount,
+        status: data.status,
+        date: new Date().toLocaleString(),
+      },
+      ...(Array.isArray(prev) ? prev : []),
+    ]);
+
+    // --- UPDATE LEADERBOARD ---
+    try {
+      await fetch(`${API_URL}/api/update-leaderboard`, {
         method: "POST",
         headers: {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${localStorage.getItem("token")}` // ye zaruri hai
-  },
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
         body: JSON.stringify({
-          username: rechargeUser.username,
-          pwd: rechargeUser.pwd,
-          number,
-          operatorcode,
-          circlecode,
-          amount,
+          userId: rechargeUser.username,
+          amount: amount,
+          commission: data.profit || data.commissionAmount || 0,
+          operator: operatorcode,
+          number: number,
+          service: "POSTPAID",
         }),
       });
-
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
-      const data = await res.json();
-      console.log("✅ Recharge API response:", data);
-
-      if (data.status === "Success") {
-        setResult({ type: "success", message: `Recharge Successful! TXID: ${data.txid}` });
-        fetchBalance();
-      } else {
-        setResult({ type: "error", message: `Recharge Failed: ${data.opid || "Unknown"}` });
-      }
-
-      // Add transaction to history
-      setTransactions([
-        {
-          txid: data.txid || Math.random(),
-          operator: operatorcode,
-          number,
-          amount,
-          status: data.status,
-          date: new Date().toLocaleString(),
-        },
-        ...transactions,
-      ]);
-
-      // Reset form
-      setFormData({ number: "", operatorcode: "", circlecode: "", amount: "" });
-    } catch (error) {
-      console.error("Recharge failed:", error);
-      setResult({ type: "error", message: error.message || "API connection failed" });
-    } finally {
-      setLoading(false);
-      setTimeout(() => setResult(null), 5000);
+    } catch (err) {
+      console.error("Leaderboard update failed:", err);
     }
-  };
+
+    // Reset form
+    setFormData({
+      number: "",
+      operatorcode: "",
+      circlecode: "",
+      amount: "",
+    });
+  } catch (error) {
+    console.error("Recharge failed:", error);
+    setResult({
+      type: "error",
+      message: error.message || "API connection failed",
+    });
+  } finally {
+    setLoading(false);
+    setTimeout(() => setResult(null), 5000);
+  }
+};
+
 
   return (
     <div style={styles.container}>

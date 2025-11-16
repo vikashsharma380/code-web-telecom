@@ -322,6 +322,26 @@ export default function ElectricityRecharge() {
         },
         ...(Array.isArray(prev) ? prev : []),
       ]);
+try {
+  await fetch(`${API_URL}/api/update-leaderboard`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({
+      userId: rechargeUser.username,
+      amount: amount,
+     commission: data.profit || data.commissionAmount || 0,
+
+      operator: operatorcode,
+      number: consumerNumber,
+      service: "ELECTRICITY",
+    }),
+  });
+} catch (err) {
+  console.error("Leaderboard update failed:", err);
+}
 
       // Reset form
       setFormData({ consumerNumber: "", operatorcode: "", amount: "" });
