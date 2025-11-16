@@ -122,13 +122,24 @@ const LeaderBoard = () => {
         <div style={headerWrap}>
           <div>
             <div style={title}>Fintech Leaderboard</div>
-            <div style={subtitle}>Real-time ranking based on recharge performance.</div>
+            <div style={subtitle}>
+              Real-time ranking based on recharge performance.
+            </div>
           </div>
 
           <div style={summaryRow}>
-            <SummaryChip label="Total Business" value={`₹${totals.business.toLocaleString()}`} />
-            <SummaryChip label="Total Commission" value={`₹${totals.commission.toLocaleString()}`} />
-            <SummaryChip label="Total Transactions" value={totals.txns.toLocaleString()} />
+            <SummaryChip
+              label="Total Business"
+              value={`₹${totals.business.toLocaleString()}`}
+            />
+            <SummaryChip
+              label="Total Commission"
+              value={`₹${totals.commission.toLocaleString()}`}
+            />
+            <SummaryChip
+              label="Total Transactions"
+              value={totals.txns.toLocaleString()}
+            />
           </div>
         </div>
 
@@ -179,14 +190,55 @@ const LeaderBoard = () => {
         {/* MAIN TABLE */}
         <div style={tableCard}>
           <div style={tableHeader}>
-            <HeaderCell label="Rank" sortKey="rank" current={sortConfig} onClick={handleSort} />
-            <HeaderCell label="Name" sortKey="name" current={sortConfig} onClick={handleSort} />
-            <HeaderCell label="Phone" sortKey="phone" current={sortConfig} onClick={handleSort} />
-            <HeaderCell label="Role" sortKey="role" current={sortConfig} onClick={handleSort} />
-            <HeaderCell label="Business" sortKey="business" current={sortConfig} onClick={handleSort} />
-            <HeaderCell label="Commission" sortKey="commission" current={sortConfig} onClick={handleSort} />
-            <HeaderCell label="Today" sortKey="today" current={sortConfig} onClick={handleSort} />
-            <HeaderCell label="Growth" sortKey="growth" current={sortConfig} onClick={handleSort} align="right" />
+            <HeaderCell
+              label="Rank"
+              sortKey="rank"
+              current={sortConfig}
+              onClick={handleSort}
+            />
+            <HeaderCell
+              label="Name"
+              sortKey="name"
+              current={sortConfig}
+              onClick={handleSort}
+            />
+            <HeaderCell
+              label="Phone"
+              sortKey="phone"
+              current={sortConfig}
+              onClick={handleSort}
+            />
+            <HeaderCell
+              label="Role"
+              sortKey="role"
+              current={sortConfig}
+              onClick={handleSort}
+            />
+            <HeaderCell
+              label="Business"
+              sortKey="business"
+              current={sortConfig}
+              onClick={handleSort}
+            />
+            <HeaderCell
+              label="Commission"
+              sortKey="commission"
+              current={sortConfig}
+              onClick={handleSort}
+            />
+            <HeaderCell
+              label="Today"
+              sortKey="today"
+              current={sortConfig}
+              onClick={handleSort}
+            />
+            <HeaderCell
+              label="Growth"
+              sortKey="growth"
+              current={sortConfig}
+              onClick={handleSort}
+              align="right"
+            />
           </div>
 
           {paginatedOthers.length === 0 ? (
@@ -201,7 +253,12 @@ const LeaderBoard = () => {
                 <div>₹{item.business.toLocaleString()}</div>
                 <div>₹{item.commission.toLocaleString()}</div>
                 <div>₹{item.today.toLocaleString()}</div>
-                <div style={{ textAlign: "right", color: item.growth >= 0 ? "#4effa1" : "#ff6b6b" }}>
+                <div
+                  style={{
+                    textAlign: "right",
+                    color: item.growth >= 0 ? "#4effa1" : "#ff6b6b",
+                  }}
+                >
                   {item.growth >= 0 ? "+" : ""}
                   {item.growth}%
                 </div>
@@ -211,10 +268,24 @@ const LeaderBoard = () => {
 
           {/* PAGINATION */}
           <div style={paginationFooter}>
-            <span>Page {safePage} of {totalPages}</span>
+            <span>
+              Page {safePage} of {totalPages}
+            </span>
             <div>
-              <button style={pageBtn} disabled={safePage === 1} onClick={() => setCurrentPage(p => p - 1)}>Prev</button>
-              <button style={pageBtn} disabled={safePage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>Next</button>
+              <button
+                style={pageBtn}
+                disabled={safePage === 1}
+                onClick={() => setCurrentPage((p) => p - 1)}
+              >
+                Prev
+              </button>
+              <button
+                style={pageBtn}
+                disabled={safePage === totalPages}
+                onClick={() => setCurrentPage((p) => p + 1)}
+              >
+                Next
+              </button>
             </div>
           </div>
         </div>
@@ -242,9 +313,13 @@ const TopCard = ({ item, index }) => {
 
   return (
     <div style={topCardStyle}>
-      <div style={{ ...rankBadge, background: colors[index] }}>{badges[index]}</div>
+      <div style={{ ...rankBadge, background: colors[index] }}>
+        {badges[index]}
+      </div>
       <div style={topName}>{item.name}</div>
-      <div style={topRole}>{item.role} · {item.transactions} txns</div>
+      <div style={topRole}>
+        {item.role} · {item.transactions} txns
+      </div>
 
       <div style={topStats}>
         <div>
@@ -269,7 +344,8 @@ const TopCard = ({ item, index }) => {
 
 const HeaderCell = ({ label, sortKey, current, onClick, align }) => {
   const active = current.key === sortKey;
-  const icon = current.key !== sortKey ? "↕" : current.direction === "asc" ? "▲" : "▼";
+  const icon =
+    current.key !== sortKey ? "↕" : current.direction === "asc" ? "▲" : "▼";
 
   return (
     <button
@@ -288,12 +364,22 @@ const HeaderCell = ({ label, sortKey, current, onClick, align }) => {
 
 /* ===================== ALL STYLES BELOW ===================== */
 
-const headerWrap = { display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap" };
+const headerWrap = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  flexWrap: "wrap",
+};
 const title = { fontSize: "26px", fontWeight: 700 };
 const subtitle = { fontSize: "13px", opacity: 0.8 };
 const summaryRow = { display: "flex", gap: "10px", flexWrap: "wrap" };
 
-const filterRow = { display: "flex", gap: "12px", marginTop: "20px", marginBottom: "20px" };
+const filterRow = {
+  display: "flex",
+  gap: "12px",
+  marginTop: "20px",
+  marginBottom: "20px",
+};
 const searchInput = {
   flex: 1,
   padding: "10px 14px",

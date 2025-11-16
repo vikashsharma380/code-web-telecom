@@ -9,7 +9,7 @@ import ElectricityRecharge from "./Components/ElectricityRecharge";
 import FASTagRecharge from "./Components/FASTagRecharge";
 import GasRecharge from "./Components/GasRecharge";
 import DataCardRecharge from "./Components/DataCardRecharge";
-import Dashboard from "./Components/Dashboard";
+// import Dashboard from "./Components/Dashboard";
 import WebSolutions from "./Components/WebSolutions";
 import InsuranceRecharge from "./Components/InsuranceRecharge";
 import PostpaidRecharge from "./Components/PostpaidRecharge";
@@ -97,7 +97,7 @@ function App() {
         <Route path="/FASTagRecharge" element={<FASTagRecharge />} />
         <Route path="/GasRecharge" element={<GasRecharge />} />
         <Route path="/DataCardRecharge" element={<DataCardRecharge />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        {/* <Route path="/admin-dashboard" element={<Dashboard />} /> */}
         <Route path="/web-solutions" element={<WebSolutions />} />
         <Route path="/InsuranceRecharge" element={<InsuranceRecharge />} />
         <Route path="/PostpaidRecharge" element={<PostpaidRecharge />} />

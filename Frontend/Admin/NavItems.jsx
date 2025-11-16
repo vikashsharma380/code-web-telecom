@@ -1,5 +1,5 @@
 const navItems = [
-  { label: "DASHBOARD", href: "/dashboard" },
+  { label: "DASHBOARD", href: "/admin-dashboard" },
   {
     label: "CUSTOMERS",
     href: "#",
