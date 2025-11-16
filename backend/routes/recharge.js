@@ -6,7 +6,7 @@ const { verifyToken } = require("../middleware/authMiddleware");
 
 const User = require("../models/user");
 const OperatorApi = require("../models/OperatorApi");
-const OperatorCommission = require("../models/OperatorCommission");
+const OperatorCommission = require("../models/Commission");
 const Transaction = require("../models/Transaction");
 
 // A1Topup PRIMARY API
