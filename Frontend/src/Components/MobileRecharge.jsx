@@ -41,23 +41,7 @@ function MobileRechargeForm({ rechargeUser }) {
     { code: "RC", name: "RELIANCE - JIO" },
     { code: "I", name: "Idea" },
     { code: "BR", name: "BSNL - STV" },
-    { code: "GLF", name: "Google Play" },
-    { code: "AXF", name: "Axis Bank Fastag" },
-    { code: "BBF", name: "Bank Of Baroda - Fastag" },
-    { code: "EFF", name: "Equitas Fastag Recharge" },
-    { code: "FDF", name: "Federal Bank - Fastag" },
-    { code: "HDF", name: "Hdfc Bank - Fastag" },
-    { code: "ICF", name: "Icici Bank Fastag" },
-    { code: "IBF", name: "Idbi Bank Fastag" },
-    { code: "IFF", name: "Idfc First Bank- Fastag" },
-    { code: "IHMCF", name: "Indian Highways Management Company Ltd Fastag" },
-    { code: "INDF", name: "Indusind Bank Fastag" },
-    { code: "JKF", name: "Jammu And Kashmir Bank Fastag" },
-    { code: "KMF", name: "Kotak Mahindra Bank - Fastag" },
-    { code: "PTF", name: "Paytm Payments Bank Fastag" },
-    { code: "SBF", name: "Sbi Bank Fastag" },
-    { code: "HPSEBL", name: "HP" },
-    { code: "Hpgas", name: "Hp Gas" },
+   
   ];
 
   const circles = [
@@ -130,14 +114,18 @@ function MobileRechargeForm({ rechargeUser }) {
     fetchBalance();
   }, [rechargeUser]);
 
-  const handleRecharge = async (e) => {
+const handleRecharge = async (e) => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
+
     try {
       const token = localStorage.getItem("token");
       const { number, operatorcode, circlecode, amount } = formData;
-      if (!number || !operatorcode || !circlecode || !amount) throw new Error("All fields are required");
+
+      if (!number || !operatorcode || !circlecode || !amount) {
+        throw new Error("All fields are required");
+      }
 
       const res = await fetch(`${API_URL}/api/recharge`, {
         method: "POST",
@@ -156,30 +144,42 @@ function MobileRechargeForm({ rechargeUser }) {
       });
 
       const data = await res.json();
-      console.log(data);
+      console.log("RECHARGE RESULT:", data);
 
-      if (data.status === "Success") {
-        setResult({ type: "success", message: `Recharge Successful! TXID: ${data.txid}` });
+      // ************** SUCCESS CHECK UPDATED **************
+      if (data.success && data.apiResponse?.status === "Success") {
+        setResult({
+          type: "success",
+          message: `Recharge Successful! TXID: ${data.apiResponse.txid}`,
+        });
+
         fetchBalance();
+
+        setTransactions((prev) => [
+          {
+            rechargeId: data.apiResponse.txid,
+            operator: operatorcode,
+            operatorId: data.apiResponse.opid,
+            number,
+            amount,
+            profit: data.profit || 0,
+            balance: data.balanceAfter || balance,
+            status: data.apiResponse.status,
+            dateTime: new Date().toISOString(),
+          },
+          ...prev,
+        ]);
       } else {
-        setResult({ type: "error", message: `Recharge Failed: ${data.opid || "Unknown"}` });
+        setResult({
+          type: "error",
+          message:
+            data.error ||
+            data.apiResponse?.message ||
+            "Recharge Failed",
+        });
       }
 
-      setTransactions([
-        {
-          rechargeId: data.txid || Math.random(),
-          operator: operatorcode,
-          operatorId: data.opid || operatorcode,
-          number,
-          amount,
-          profit: data.profit || 0,
-          balance: data.balance || balance,
-          status: data.status,
-          dateTime: new Date().toISOString(),
-        },
-        ...(Array.isArray(transactions) ? transactions : []),
-      ]);
-
+      // Reset Form
       setFormData({ number: "", operatorcode: "", circlecode: "", amount: "" });
     } catch (err) {
       console.error(err);
@@ -188,7 +188,7 @@ function MobileRechargeForm({ rechargeUser }) {
       setLoading(false);
       setTimeout(() => setResult(null), 5000);
     }
-  };
+};
 
   return (
     <div style={styles.contentGrid}>

@@ -1,204 +1,151 @@
-// routes/recharge.js
 const express = require("express");
 const router = express.Router();
-const { verifyToken } = require("../middleware/authMiddleware");
-const { v4: uuidv4 } = require("uuid");
 const axios = require("axios");
-const Transaction = require("../models/Transaction");
+const { v4: uuidv4 } = require("uuid");
+const { verifyToken } = require("../middleware/authMiddleware");
+
 const User = require("../models/user");
+const OperatorApi = require("../models/OperatorApi");
+const OperatorCommission = require("../models/OperatorCommission");
+const Transaction = require("../models/Transaction");
 
-// Cutoff: users activated ON/AFTER this date are "new"
-const cutoffDate = new Date("2025-10-25T00:00:00.000Z");
+// A1Topup PRIMARY API
+const PRIMARY_API = "http://business.a1topup.com/recharge/api";
+const PRIMARY_USER = "505629";
+const PRIMARY_PWD = "Ansari@2580";
 
-// Admin API credentials (use env vars in production)
-const ADMIN_API_USERNAME = process.env.ADMIN_API_USERNAME || "505629";
-const ADMIN_API_PWD = process.env.ADMIN_API_PWD || "Ansari@2580";
-const ADMIN_API_BASE = process.env.ADMIN_API_BASE || "http://business.a1topup.com/recharge/api";
-
-// Default external API base (for non-admin users)
-const EXTERNAL_API_BASE = process.env.EXTERNAL_API_BASE || "https://codewebtelecom.com/recharge/api";
+// A1TOPUP-UTILITY SECONDARY API
+const SECONDARY_API = "http://utility.a1topup.com/recharge/api";
+const SEC_USER = "500021";
+const SEC_PWD = "Ansari@2580";
 
 router.post("/recharge", verifyToken, async (req, res) => {
   try {
-    const userFromToken = req.user;
-    const { circlecode, operatorcode, number, amount: rawAmount, username, pwd } = req.body;
+    const { operatorcode, circlecode, number, amount } = req.body;
+    const userId = req.user.userId;
 
-    // ✅ 1. Basic validation
-    if (!circlecode || !operatorcode || !number || !rawAmount) {
-      return res.status(400).json({ error: "Missing required fields" });
-    }
+    if (!operatorcode || !circlecode || !number || !amount)
+      return res.status(400).json({ error: "Missing fields" });
 
-    const amount = Number(rawAmount);
-    if (isNaN(amount) || amount <= 0) {
-      return res.status(400).json({ error: "Invalid amount" });
-    }
-
-    // ✅ 2. Fetch logged-in user
-    const user = await User.findOne({ userId: userFromToken.userId });
+    // Fetch user
+    const user = await User.findOne({ userId });
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    // ✅ 3. Determine user type (new / old)
-    const activationDate = user.activationDate ? new Date(user.activationDate) : null;
-    const isNewUser = activationDate ? activationDate >= cutoffDate : false;
+    // SCHEME (Retailer / Distributor)
+    const scheme = user.role === "distributor" ? "DISTRIBUTOR" : "RETAILER";
 
-    // 🧾 Logging
-    console.log("--------------------------------------------------");
-    console.log(`📱 Recharge Request for User: ${user.userId} (${user.name})`);
-    console.log("Activation Date:", activationDate);
-    console.log("Is New User:", isNewUser);
-    console.log("Recharge details:", { circlecode, operatorcode, number, amount });
-    console.log("--------------------------------------------------");
+    // Fetch commission
+    const comDoc = await OperatorCommission.findOne({
+      operatorCode: operatorcode,
+      scheme,
+    });
+
+    const commissionPercent = comDoc?.commission || 0;
+
+    // Commission logic
+    const commissionAmount = (amount * commissionPercent) / 100;
+    const finalDeduction = Number((amount - commissionAmount).toFixed(4));
+
+    // Balance check & Deduct
+    const updatedUser = await User.findOneAndUpdate(
+      {
+        _id: user._id,
+        balance: { $gte: finalDeduction },
+      },
+      { $inc: { balance: -finalDeduction } },
+      { new: true }
+    );
+
+    if (!updatedUser)
+      return res.status(400).json({ error: "Insufficient balance" });
 
     const orderid = uuidv4();
 
-    // Helper: Save transaction
-    const saveTransaction = async (txData) => {
-      try {
-        await Transaction.create(txData);
-      } catch (err) {
-        console.error("❌ Failed to save transaction:", err.message);
-      }
+    // Operator wise selected API
+    const apiData = await OperatorApi.findOne({ operatorCode: operatorcode });
+    const selectedApi = apiData?.selectedApi || "A1Topup";
+
+    // Primary params
+    const primaryParams = {
+      username: PRIMARY_USER,
+      pwd: PRIMARY_PWD,
+      circlecode,
+      operatorcode,
+      number,
+      amount,
+      orderid,
+      format: "json",
     };
 
-    // ============================================================
-    // 🔹 NEW USER FLOW (Admin API + Local Balance Deduction)
-    // ============================================================
-    if (isNewUser) {
-      console.log("🧠 New User Flow → Admin API + Local Deduction");
+    // Secondary params
+    const secondaryParams = {
+      username: SEC_USER,
+      pwd: SEC_PWD,
+      circlecode,
+      operatorcode,
+      number,
+      amount,
+      orderid,
+      format: "json",
+    };
 
-      // Balance Check & Deduct Atomically
-      const updatedUser = await User.findOneAndUpdate(
-        { _id: user._id, balance: { $gte: amount } },
-        { $inc: { balance: -amount } },
-        { new: true }
-      );
+    let apiResponse = null;
 
-      if (!updatedUser) {
-        console.log("❌ Insufficient balance for user:", user.userId);
-        return res.status(400).json({ error: "Insufficient balance" });
-      }
-
-      // Prepare Admin API Params
-      const adminParams = {
-        username: ADMIN_API_USERNAME,
-        pwd: ADMIN_API_PWD,
-        circlecode,
-        operatorcode,
-        number,
-        amount,
-        orderid,
-        format: "json",
-      };
-
-      console.log("🔗 Admin API Base:", ADMIN_API_BASE);
-      console.log("🔗 Admin API Params:", { ...adminParams, pwd: "***" });
-
-      let apiResponseData;
-      try {
-        const apiRes = await axios.get(ADMIN_API_BASE, { params: adminParams, timeout: 30000 });
-        apiResponseData = apiRes.data;
-        console.log("✅ Admin API Response:", apiResponseData);
-      } catch (apiErr) {
-        console.error("❌ Admin API Error:", apiErr.message);
-
-        // Refund on failure
-        await User.findByIdAndUpdate(user._id, { $inc: { balance: amount } });
-        console.log("🔁 Refunded due to Admin API failure for:", user.userId);
-
-        return res.status(502).json({
-          error: "Admin Recharge API failed",
-          details: apiErr.response ? apiErr.response.data : apiErr.message,
-        });
-      }
-
-      // Save Transaction
-      await saveTransaction({
-        rechargeId: apiResponseData.txid || orderid,
-        operator: operatorcode,
-        number,
-        amount,
-        status: apiResponseData.status || "Pending",
-        balance: updatedUser.balance,
-        userId: user.userId,
-        role: user.role,
-        rawResponse: apiResponseData,
-        dateTime: new Date(),
-      });
-
-      // Final Response
-      return res.json({
-        success: true,
-        source: "admin-api",
-        apiResponse: apiResponseData,
-        balanceAfter: updatedUser.balance,
-      });
+    // 1️⃣ CALL PRIMARY API
+    try {
+      apiResponse = (
+        await axios.get(PRIMARY_API, { params: primaryParams })
+      ).data;
+    } catch (e) {
+      apiResponse = null;
     }
 
-    // ============================================================
-    // 🔹 OLD USER FLOW (User’s Own API; No Balance Deduction)
-    // ============================================================
-    else {
-      console.log("🧠 Old User Flow → External/User API (No Deduction)");
-
-      const apiBaseUrl =
-        user.role === "admin" ? ADMIN_API_BASE : EXTERNAL_API_BASE;
-
-      const apiUsername = username || user.apiUserId;
-      const apiPwd = pwd || user.apiPassword;
-
-      if (!apiUsername || !apiPwd) {
-        console.warn("⚠️ Missing external API credentials. Likely to fail.");
-      }
-
-      const externalParams = {
-        username: apiUsername,
-        pwd: apiPwd,
-        circlecode,
-        operatorcode,
-        number,
-        amount,
-        orderid,
-        format: "json",
-      };
-
-      console.log("🔗 External API Base:", apiBaseUrl);
-      console.log("🔗 External API Params:", { ...externalParams, pwd: "***" });
-
-      let apiResponseData;
+    // 2️⃣ FAILOVER → CALL SECONDARY
+    if (!apiResponse || apiResponse.status !== "Success") {
       try {
-        const response = await axios.get(apiBaseUrl, { params: externalParams, timeout: 30000 });
-        apiResponseData = response.data;
-        console.log("✅ External API Response:", apiResponseData);
+        apiResponse = (
+          await axios.get(SECONDARY_API, { params: secondaryParams })
+        ).data;
       } catch (err) {
-        console.error("❌ External API Error:", err.message);
+        // refund if secondary also fails
+        await User.findByIdAndUpdate(user._id, {
+          $inc: { balance: finalDeduction },
+        });
+
         return res.status(502).json({
-          error: "External Recharge API failed",
-          details: err.response ? err.response.data : err.message,
+          success: false,
+          error: "Both APIs failed. Amount refunded.",
         });
       }
-
-      // Save Transaction
-      await saveTransaction({
-        rechargeId: apiResponseData.txid || orderid,
-        operator: operatorcode,
-        number,
-        amount,
-        status: apiResponseData.status || "Pending",
-        userId: user.userId,
-        role: user.role,
-        rawResponse: apiResponseData,
-        dateTime: new Date(),
-      });
-
-      return res.json({
-        success: true,
-        source: "external-api",
-        apiResponse: apiResponseData,
-      });
     }
+
+    // Save transaction
+    await Transaction.create({
+      rechargeId: apiResponse.txid || orderid,
+      operator: operatorcode,
+      number,
+      amount,
+      finalDeduction,
+      commissionPercent,
+      commissionAmount,
+      status: apiResponse.status,
+      userId: user.userId,
+      dateTime: new Date(),
+      rawResponse: apiResponse,
+    });
+
+    return res.json({
+      success: true,
+      message: "Recharge done",
+      apiResponse,
+      profit: commissionAmount,
+      balanceAfter: updatedUser.balance,
+    });
   } catch (err) {
-    console.error("💥 Fatal Recharge Error:", err.message);
-    return res.status(500).json({ error: "Recharge failed", details: err.message });
+    console.log("RECHARGE ERROR:", err.message);
+    return res
+      .status(500)
+      .json({ error: "Recharge failed", details: err.message });
   }
 });
 
