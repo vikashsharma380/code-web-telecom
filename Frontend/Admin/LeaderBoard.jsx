@@ -13,10 +13,10 @@ const LeaderBoard = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [rawData, setRawData] = useState([]); // REAL DATA FROM BACKEND
+  const [rawData, setRawData] = useState([]); // BACKEND DATA
   const itemsPerPage = 7;
 
-  // ⭐ FETCH REAL LEADERBOARD FROM BACKEND
+  // ⭐ FETCH REAL LEADERBOARD
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
@@ -30,7 +30,7 @@ const LeaderBoard = () => {
         console.log("LEADERBOARD DATA:", data);
 
         if (data.success) {
-          setRawData(data.records); // store real data
+          setRawData(data.records);
         }
       } catch (error) {
         console.error("Leaderboard fetch error:", error);
@@ -40,20 +40,17 @@ const LeaderBoard = () => {
     fetchLeaderboard();
   }, []);
 
-  // ⭐ SORT HANDLER
+  // ⭐ SORTING
   const handleSort = (key) => {
     setSortConfig((prev) => {
       if (prev.key === key) {
-        return {
-          key,
-          direction: prev.direction === "asc" ? "desc" : "asc",
-        };
+        return { key, direction: prev.direction === "asc" ? "desc" : "asc" };
       }
       return { key, direction: "desc" };
     });
   };
 
-  // ⭐ FILTER + SEARCH + SORT
+  // ⭐ SEARCH + FILTER + SORT + RANK
   const processedData = useMemo(() => {
     let filtered = [...rawData];
 
@@ -72,7 +69,7 @@ const LeaderBoard = () => {
       );
     }
 
-    // SORT
+    // SORT LOGIC
     filtered.sort((a, b) => {
       const key = sortConfig.key;
       const dir = sortConfig.direction === "asc" ? 1 : -1;
@@ -83,14 +80,12 @@ const LeaderBoard = () => {
       if (typeof A === "string") {
         A = A.toLowerCase();
         B = B.toLowerCase();
-        if (A < B) return -1 * dir;
-        if (A > B) return 1 * dir;
-        return 0;
+        return A < B ? -1 * dir : A > B ? 1 * dir : 0;
       }
       return (A - B) * dir;
     });
 
-    return filtered.map((item, index) => ({ ...item, rank: index + 1 }));
+    return filtered.map((item, i) => ({ ...item, rank: i + 1 }));
   }, [rawData, roleFilter, periodFilter, searchTerm, sortConfig]);
 
   const topThree = processedData.slice(0, 3);
@@ -101,12 +96,14 @@ const LeaderBoard = () => {
   const startIndex = (safePage - 1) * itemsPerPage;
   const paginatedOthers = others.slice(startIndex, startIndex + itemsPerPage);
 
+  // ⭐ TOTAL SUMMARY
   const totals = useMemo(() => {
     const base = processedData;
-    const business = base.reduce((sum, item) => sum + item.business, 0);
-    const commission = base.reduce((sum, item) => sum + item.commission, 0);
-    const txns = base.reduce((sum, item) => sum + item.transactions, 0);
-    return { business, commission, txns };
+    return {
+      business: base.reduce((s, x) => s + x.business, 0),
+      commission: base.reduce((s, x) => s + x.commission, 0),
+      txns: base.reduce((s, x) => s + x.transactions, 0),
+    };
   }, [processedData]);
 
   return (
@@ -122,42 +119,21 @@ const LeaderBoard = () => {
         }}
       >
         {/* HEADER */}
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "16px",
-            alignItems: "flex-end",
-            marginBottom: "20px",
-          }}
-        >
-          <div style={{ flex: "1 1 220px" }}>
-            <div style={{ fontSize: "26px", fontWeight: 700 }}>
-              Fintech Leaderboard
-            </div>
-            <div style={{ fontSize: "13px", opacity: 0.85 }}>
-              Real-time ranking based on recharge performance.
-            </div>
+        <div style={headerWrap}>
+          <div>
+            <div style={title}>Fintech Leaderboard</div>
+            <div style={subtitle}>Real-time ranking based on recharge performance.</div>
           </div>
 
-          <div style={{ display: "flex", gap: "10px" }}>
-            <SummaryChip
-              label="Total Business"
-              value={`₹${totals.business.toLocaleString()}`}
-            />
-            <SummaryChip
-              label="Total Commission"
-              value={`₹${totals.commission.toLocaleString()}`}
-            />
-            <SummaryChip
-              label="Total Transactions"
-              value={totals.txns.toLocaleString()}
-            />
+          <div style={summaryRow}>
+            <SummaryChip label="Total Business" value={`₹${totals.business.toLocaleString()}`} />
+            <SummaryChip label="Total Commission" value={`₹${totals.commission.toLocaleString()}`} />
+            <SummaryChip label="Total Transactions" value={totals.txns.toLocaleString()} />
           </div>
         </div>
 
         {/* SEARCH + FILTER */}
-        <div style={{ display: "flex", gap: "12px", marginBottom: "18px" }}>
+        <div style={filterRow}>
           <input
             placeholder="Search by name or phone..."
             value={searchTerm}
@@ -165,17 +141,7 @@ const LeaderBoard = () => {
               setSearchTerm(e.target.value);
               setCurrentPage(1);
             }}
-            style={{
-              flex: "1 1 220px",
-              minWidth: "200px",
-              padding: "10px 12px",
-              borderRadius: "999px",
-              border: "1px solid rgba(255,255,255,0.4)",
-              background: "rgba(10,10,30,0.25)",
-              color: "#fff",
-              outline: "none",
-              fontSize: "14px",
-            }}
+            style={searchInput}
           />
 
           <select
@@ -212,7 +178,6 @@ const LeaderBoard = () => {
 
         {/* MAIN TABLE */}
         <div style={tableCard}>
-          {/* HEADER */}
           <div style={tableHeader}>
             <HeaderCell label="Rank" sortKey="rank" current={sortConfig} onClick={handleSort} />
             <HeaderCell label="Name" sortKey="name" current={sortConfig} onClick={handleSort} />
@@ -224,7 +189,6 @@ const LeaderBoard = () => {
             <HeaderCell label="Growth" sortKey="growth" current={sortConfig} onClick={handleSort} align="right" />
           </div>
 
-          {/* BODY */}
           {paginatedOthers.length === 0 ? (
             <div style={emptyMsg}>No records found.</div>
           ) : (
@@ -245,7 +209,7 @@ const LeaderBoard = () => {
             ))
           )}
 
-          {/* Pagination */}
+          {/* PAGINATION */}
           <div style={paginationFooter}>
             <span>Page {safePage} of {totalPages}</span>
             <div>
@@ -259,7 +223,7 @@ const LeaderBoard = () => {
   );
 };
 
-/* ---------- SMALL COMPONENTS ---------- */
+/* ===================== SMALL COMPONENTS ===================== */
 
 const SummaryChip = ({ label, value }) => (
   <div style={summaryChip}>
@@ -273,7 +237,7 @@ const TopCard = ({ item, index }) => {
   const colors = [
     "linear-gradient(135deg, #facc15, #f97316)",
     "linear-gradient(135deg, #e5e7eb, #9ca3af)",
-    "linear-gradient(135deg, #fb923c, #f97316)"
+    "linear-gradient(135deg, #fb923c, #f97316)",
   ];
 
   return (
@@ -281,21 +245,21 @@ const TopCard = ({ item, index }) => {
       <div style={{ ...rankBadge, background: colors[index] }}>{badges[index]}</div>
       <div style={topName}>{item.name}</div>
       <div style={topRole}>{item.role} · {item.transactions} txns</div>
+
       <div style={topStats}>
         <div>
           <div style={smallLabel}>Business</div>
           <div style={bold}>₹{item.business.toLocaleString()}</div>
         </div>
-
         <div>
           <div style={smallLabel}>Commission</div>
           <div style={bold}>₹{item.commission.toLocaleString()}</div>
         </div>
-
         <div style={{ textAlign: "right" }}>
           <div style={smallLabel}>Growth</div>
           <div style={{ color: item.growth >= 0 ? "#4effa1" : "#ff6b6b" }}>
-            {item.growth >= 0 ? "+" : ""}{item.growth}%
+            {item.growth >= 0 ? "+" : ""}
+            {item.growth}%
           </div>
         </div>
       </div>
@@ -305,28 +269,32 @@ const TopCard = ({ item, index }) => {
 
 const HeaderCell = ({ label, sortKey, current, onClick, align }) => {
   const active = current.key === sortKey;
-  const icon =
-    current.key !== sortKey ? "↕" : current.direction === "asc" ? "▲" : "▼";
+  const icon = current.key !== sortKey ? "↕" : current.direction === "asc" ? "▲" : "▼";
 
   return (
     <button
       onClick={() => onClick(sortKey)}
       style={{
         ...headerBtn,
-        justifyContent:
-          align === "right" ? "flex-end" : "flex-start",
+        justifyContent: align === "right" ? "flex-end" : "flex-start",
         fontWeight: active ? 700 : 500,
       }}
     >
       {label}
-      <span style={{ fontSize: "10px", marginLeft: "5px" }}>{icon}</span>
+      <span style={{ marginLeft: 4, fontSize: 10 }}>{icon}</span>
     </button>
   );
 };
 
-/* ---------- STYLES ---------- */
+/* ===================== ALL STYLES BELOW ===================== */
 
-const inputStyle = {
+const headerWrap = { display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap" };
+const title = { fontSize: "26px", fontWeight: 700 };
+const subtitle = { fontSize: "13px", opacity: 0.8 };
+const summaryRow = { display: "flex", gap: "10px", flexWrap: "wrap" };
+
+const filterRow = { display: "flex", gap: "12px", marginTop: "20px", marginBottom: "20px" };
+const searchInput = {
   flex: 1,
   padding: "10px 14px",
   borderRadius: "999px",
@@ -336,23 +304,60 @@ const inputStyle = {
   outline: "none",
 };
 
-const selectStyle = {
-  padding: "10px 14px",
-  borderRadius: "999px",
-  border: "1px solid rgba(255,255,255,0.4)",
-  background: "linear-gradient(135deg, rgba(15,23,42,0.9), rgba(15,23,42,0.6))",
-  color: "#fff",
+const topThreeGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+  gap: "18px",
+  marginBottom: "20px",
+};
+
+const tableCard = {
+  background: "rgba(3,7,26,0.72)",
+  borderRadius: "16px",
+  border: "1px solid rgba(255,255,255,0.2)",
+  overflow: "hidden",
+  marginTop: "15px",
+};
+
+const tableHeader = {
+  display: "grid",
+  gridTemplateColumns: "60px 1fr 1fr 1fr 1fr 1fr 1fr 1fr",
+  padding: "12px 16px",
+  background: "rgba(255,255,255,0.08)",
+  borderBottom: "1px solid rgba(255,255,255,0.2)",
+  fontWeight: 600,
   fontSize: "13px",
+};
+
+const rowStyle = (i) => ({
+  display: "grid",
+  gridTemplateColumns: "60px 1fr 1fr 1fr 1fr 1fr 1fr 1fr",
+  padding: "12px 16px",
+  background: i % 2 === 0 ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
+  fontSize: "14px",
+});
+
+const emptyMsg = {
+  padding: "20px",
+  textAlign: "center",
+  opacity: 0.8,
+};
+
+const paginationFooter = {
+  padding: "12px 16px",
+  display: "flex",
+  justifyContent: "space-between",
+  borderTop: "1px solid rgba(255,255,255,0.2)",
 };
 
 const pageBtn = {
   padding: "6px 12px",
   borderRadius: "8px",
   border: "1px solid rgba(255,255,255,0.4)",
-  background: "rgba(255,255,255,0.1)",
+  background: "rgba(255,255,255,0.12)",
   color: "#fff",
-  cursor: "pointer",
   marginLeft: "8px",
+  cursor: "pointer",
 };
 
 const summaryChip = {
@@ -362,43 +367,46 @@ const summaryChip = {
   background: "rgba(0,0,0,0.25)",
 };
 
-const chipLabel = {
-  fontSize: "11px",
-  opacity: 0.8,
-};
-
-const chipValue = {
-  fontSize: "14px",
-  fontWeight: 700,
-};
+const chipLabel = { fontSize: "11px", opacity: 0.8 };
+const chipValue = { fontSize: "14px", fontWeight: "700" };
 
 const topCardStyle = {
   position: "relative",
+  padding: "18px",
   borderRadius: "16px",
-  padding: "16px",
-  background: "rgba(0,0,0,0.35)",
-  border: "1px solid rgba(255,255,255,0.3)",
+  background: "rgba(0,0,0,0.3)",
+  border: "1px solid rgba(255,255,255,0.28)",
 };
 
 const rankBadge = {
   position: "absolute",
   top: "-10px",
   right: "10px",
-  padding: "3px 10px",
+  padding: "4px 10px",
   borderRadius: "999px",
-  fontSize: "11px",
+  color: "#111",
   fontWeight: 700,
 };
 
-const topName = { fontSize: "16px", fontWeight: 700 };
+const topName = { fontSize: "16px", fontWeight: 700, marginBottom: 4 };
 const topRole = { opacity: 0.8, fontSize: "13px", marginBottom: "10px" };
 
 const topStats = {
   display: "flex",
   justifyContent: "space-between",
+  fontSize: "13px",
 };
 
 const smallLabel = { opacity: 0.7, fontSize: "12px" };
-const bold = { fontWeight: 700, fontSize: "14px" };
+const bold = { fontSize: "14px", fontWeight: 700 };
+
+const headerBtn = {
+  background: "transparent",
+  border: "none",
+  color: "#fff",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+};
 
 export default LeaderBoard;
