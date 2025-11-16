@@ -387,16 +387,19 @@ try {
                       Fetch DTH Plans
                     </button>
                   </div>
-                  <div
-                    style={{
-                      ...styles.resultBox,
-                      ...(result.type === "success"
-                        ? styles.successBox
-                        : styles.errorBox),
-                    }}
-                  >
-                    {result.message}
-                  </div>
+                 {result && (
+  <div
+    style={{
+      ...styles.resultBox,
+      ...(result.type === "success"
+        ? styles.successBox
+        : styles.errorBox),
+    }}
+  >
+    {result.message}
+  </div>
+)}
+
                 </form>
               </div>
             </div>
