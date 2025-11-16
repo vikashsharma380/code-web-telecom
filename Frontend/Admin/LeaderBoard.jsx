@@ -13,7 +13,12 @@ const LeaderBoard = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [rawData, setRawData] = useState([]); // BACKEND DATA
+  const [rawData, setRawData] = useState([]);
+  const [balances, setBalances] = useState({
+    apiBalance: 0,
+    utilityBalance: 0,
+  });
+
   const itemsPerPage = 7;
 
   // ⭐ FETCH REAL LEADERBOARD
@@ -38,6 +43,31 @@ const LeaderBoard = () => {
     };
 
     fetchLeaderboard();
+  }, []);
+
+  // ⭐ FETCH ADMIN BALANCE
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/get-balance`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const data = await res.json();
+        console.log("Admin Balance:", data);
+
+        setBalances({
+          apiBalance: data.apiBalance || 0,
+          utilityBalance: data.utilityBalance || 0,
+        });
+      } catch (error) {
+        console.log("Balance fetch error:", error);
+      }
+    };
+
+    fetchBalance();
   }, []);
 
   // ⭐ SORTING
@@ -69,7 +99,6 @@ const LeaderBoard = () => {
       );
     }
 
-    // SORT LOGIC
     filtered.sort((a, b) => {
       const key = sortConfig.key;
       const dir = sortConfig.direction === "asc" ? 1 : -1;
@@ -126,6 +155,9 @@ const LeaderBoard = () => {
           </div>
 
           <div style={summaryRow}>
+            <SummaryChip label="API Balance" value={`₹${balances.apiBalance}`} />
+            <SummaryChip label="Utility Balance" value={`₹${balances.utilityBalance}`} />
+
             <SummaryChip label="Total Business" value={`₹${totals.business.toLocaleString()}`} />
             <SummaryChip label="Total Commission" value={`₹${totals.commission.toLocaleString()}`} />
             <SummaryChip label="Total Transactions" value={totals.txns.toLocaleString()} />
